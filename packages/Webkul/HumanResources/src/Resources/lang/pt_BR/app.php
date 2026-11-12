@@ -5,11 +5,13 @@ return [
         'title' => 'Pessoas',
         'employees' => 'Colaboradores',
         'departments' => 'Departamentos',
+        'contracts' => 'Clientes e contratos',
     ],
     'acl' => [
         'title' => 'Pessoas',
         'employees' => 'Colaboradores',
         'departments' => 'Departamentos',
+        'contracts' => 'Contratos',
         'create' => 'Criar',
         'edit' => 'Editar',
         'delete' => 'Excluir',
@@ -83,6 +85,14 @@ return [
             'updated' => 'Colaborador atualizado com sucesso.',
             'deleted' => 'Colaborador excluído com sucesso.',
         ],
+    ],
+    'contracts' => [
+        'index' => ['title' => 'Clientes e contratos', 'description' => 'Vigência, valores e situação dos contratos de prestação de serviços.', 'create' => 'Novo contrato'],
+        'create' => ['title' => 'Novo contrato'],
+        'edit' => ['title' => 'Editar contrato'],
+        'fields' => ['organization_id' => 'Cliente', 'organization_name' => 'Cliente', 'manager_id' => 'Responsável', 'contract_number' => 'Número', 'title' => 'Objeto do contrato', 'starts_at' => 'Início', 'ends_at' => 'Término', 'monthly_value' => 'Valor mensal', 'status' => 'Situação', 'description' => 'Observações'],
+        'statuses' => ['draft' => 'Rascunho', 'active' => 'Ativo', 'suspended' => 'Suspenso', 'expired' => 'Vencido', 'terminated' => 'Encerrado'],
+        'messages' => ['created' => 'Contrato criado com sucesso.', 'updated' => 'Contrato atualizado com sucesso.', 'deleted' => 'Contrato excluído com sucesso.'],
     ],
     'documents' => [
         'title' => 'Documentos',

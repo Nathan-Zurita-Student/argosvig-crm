@@ -43,6 +43,26 @@ return [
         'route' => 'admin.human_resources.employees.delete',
         'sort' => 5,
     ], [
+        'key' => 'human-resources.contracts',
+        'name' => 'human_resources::app.acl.contracts',
+        'route' => 'admin.human_resources.contracts.index',
+        'sort' => 3,
+    ], [
+        'key' => 'human-resources.contracts.create',
+        'name' => 'human_resources::app.acl.create',
+        'route' => ['admin.human_resources.contracts.create', 'admin.human_resources.contracts.store'],
+        'sort' => 1,
+    ], [
+        'key' => 'human-resources.contracts.edit',
+        'name' => 'human_resources::app.acl.edit',
+        'route' => ['admin.human_resources.contracts.edit', 'admin.human_resources.contracts.update'],
+        'sort' => 2,
+    ], [
+        'key' => 'human-resources.contracts.delete',
+        'name' => 'human_resources::app.acl.delete',
+        'route' => 'admin.human_resources.contracts.delete',
+        'sort' => 3,
+    ], [
         'key' => 'human-resources.departments',
         'name' => 'human_resources::app.acl.departments',
         'route' => 'admin.human_resources.departments.index',

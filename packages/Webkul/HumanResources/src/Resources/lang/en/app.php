@@ -5,11 +5,13 @@ return [
         'title' => 'People',
         'employees' => 'Employees',
         'departments' => 'Departments',
+        'contracts' => 'Customers & contracts',
     ],
     'acl' => [
         'title' => 'People',
         'employees' => 'Employees',
         'departments' => 'Departments',
+        'contracts' => 'Contracts',
         'create' => 'Create',
         'edit' => 'Edit',
         'delete' => 'Delete',
@@ -83,6 +85,14 @@ return [
             'updated' => 'Employee updated successfully.',
             'deleted' => 'Employee deleted successfully.',
         ],
+    ],
+    'contracts' => [
+        'index' => ['title' => 'Customers and contracts', 'description' => 'Service contract terms, values and lifecycle.', 'create' => 'New contract'],
+        'create' => ['title' => 'New contract'],
+        'edit' => ['title' => 'Edit contract'],
+        'fields' => ['organization_id' => 'Customer', 'organization_name' => 'Customer', 'manager_id' => 'Manager', 'contract_number' => 'Number', 'title' => 'Contract subject', 'starts_at' => 'Start', 'ends_at' => 'End', 'monthly_value' => 'Monthly value', 'status' => 'Status', 'description' => 'Notes'],
+        'statuses' => ['draft' => 'Draft', 'active' => 'Active', 'suspended' => 'Suspended', 'expired' => 'Expired', 'terminated' => 'Terminated'],
+        'messages' => ['created' => 'Contract created successfully.', 'updated' => 'Contract updated successfully.', 'deleted' => 'Contract deleted successfully.'],
     ],
     'documents' => [
         'title' => 'Documents',
