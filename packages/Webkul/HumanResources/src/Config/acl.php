@@ -88,6 +88,26 @@ return [
         'route' => 'admin.human_resources.incidents.delete',
         'sort' => 4,
     ], [
+        'key' => 'human-resources.work-sites',
+        'name' => 'human_resources::app.acl.work_sites',
+        'route' => 'admin.human_resources.work_sites.index',
+        'sort' => 5,
+    ], [
+        'key' => 'human-resources.work-sites.create',
+        'name' => 'human_resources::app.acl.create',
+        'route' => ['admin.human_resources.work_sites.create', 'admin.human_resources.work_sites.store'],
+        'sort' => 1,
+    ], [
+        'key' => 'human-resources.work-sites.edit',
+        'name' => 'human_resources::app.acl.edit',
+        'route' => ['admin.human_resources.work_sites.edit', 'admin.human_resources.work_sites.update'],
+        'sort' => 2,
+    ], [
+        'key' => 'human-resources.work-sites.delete',
+        'name' => 'human_resources::app.acl.delete',
+        'route' => 'admin.human_resources.work_sites.delete',
+        'sort' => 3,
+    ], [
         'key' => 'human-resources.departments',
         'name' => 'human_resources::app.acl.departments',
         'route' => 'admin.human_resources.departments.index',

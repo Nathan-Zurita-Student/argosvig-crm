@@ -7,6 +7,7 @@ return [
         'departments' => 'Departamentos',
         'contracts' => 'Clientes e contratos',
         'incidents' => 'Ocorrências',
+        'work_sites' => 'Postos e escalas',
     ],
     'acl' => [
         'title' => 'Pessoas',
@@ -14,6 +15,7 @@ return [
         'departments' => 'Departamentos',
         'contracts' => 'Contratos',
         'incidents' => 'Ocorrências',
+        'work_sites' => 'Postos operacionais',
         'create' => 'Criar',
         'edit' => 'Editar',
         'delete' => 'Excluir',
@@ -119,6 +121,14 @@ return [
         'severity' => ['low' => 'Baixa', 'medium' => 'Média', 'high' => 'Alta', 'critical' => 'Crítica'],
         'status' => ['open' => 'Aberta', 'investigating' => 'Em investigação', 'resolved' => 'Resolvida', 'closed' => 'Encerrada'],
         'messages' => ['created' => 'Ocorrência registrada com sucesso.', 'updated' => 'Ocorrência atualizada com sucesso.', 'deleted' => 'Ocorrência excluída com sucesso.'],
+    ],
+    'work_sites' => [
+        'index' => ['title' => 'Postos operacionais', 'description' => 'Postos vinculados aos contratos e necessidade de efetivo.', 'create' => 'Novo posto'],
+        'create' => ['title' => 'Novo posto'],
+        'edit' => ['title' => 'Editar posto'],
+        'fields' => ['service_contract_id' => 'Contrato', 'contract_number' => 'Contrato', 'code' => 'Código', 'name' => 'Nome do posto', 'address' => 'Endereço', 'city' => 'Cidade', 'state' => 'UF', 'required_staff' => 'Efetivo necessário', 'status' => 'Situação', 'notes' => 'Observações'],
+        'status' => ['active' => 'Ativo', 'inactive' => 'Inativo'],
+        'messages' => ['created' => 'Posto criado com sucesso.', 'updated' => 'Posto atualizado com sucesso.', 'deleted' => 'Posto excluído com sucesso.'],
     ],
     'documents' => [
         'title' => 'Documentos',

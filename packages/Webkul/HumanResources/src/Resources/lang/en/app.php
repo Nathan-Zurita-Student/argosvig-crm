@@ -7,6 +7,7 @@ return [
         'departments' => 'Departments',
         'contracts' => 'Customers & contracts',
         'incidents' => 'Incidents',
+        'work_sites' => 'Sites & schedules',
     ],
     'acl' => [
         'title' => 'People',
@@ -14,6 +15,7 @@ return [
         'departments' => 'Departments',
         'contracts' => 'Contracts',
         'incidents' => 'Incidents',
+        'work_sites' => 'Operational sites',
         'create' => 'Create',
         'edit' => 'Edit',
         'delete' => 'Delete',
@@ -119,6 +121,14 @@ return [
         'severity' => ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'critical' => 'Critical'],
         'status' => ['open' => 'Open', 'investigating' => 'Investigating', 'resolved' => 'Resolved', 'closed' => 'Closed'],
         'messages' => ['created' => 'Incident created successfully.', 'updated' => 'Incident updated successfully.', 'deleted' => 'Incident deleted successfully.'],
+    ],
+    'work_sites' => [
+        'index' => ['title' => 'Operational sites', 'description' => 'Contract-linked sites and staffing requirements.', 'create' => 'New site'],
+        'create' => ['title' => 'New site'],
+        'edit' => ['title' => 'Edit site'],
+        'fields' => ['service_contract_id' => 'Contract', 'contract_number' => 'Contract', 'code' => 'Code', 'name' => 'Site name', 'address' => 'Address', 'city' => 'City', 'state' => 'State', 'required_staff' => 'Required staff', 'status' => 'Status', 'notes' => 'Notes'],
+        'status' => ['active' => 'Active', 'inactive' => 'Inactive'],
+        'messages' => ['created' => 'Site created successfully.', 'updated' => 'Site updated successfully.', 'deleted' => 'Site deleted successfully.'],
     ],
     'documents' => [
         'title' => 'Documents',
