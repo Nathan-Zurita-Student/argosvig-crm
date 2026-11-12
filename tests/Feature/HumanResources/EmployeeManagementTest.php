@@ -12,6 +12,12 @@ it('shows the employee and department areas to an administrator', function () {
     $admin = getDefaultAdmin();
 
     test()->actingAs($admin)
+        ->get(route('admin.dashboard.index'))
+        ->assertSuccessful()
+        ->assertSee(trans('human_resources::app.dashboard.title'))
+        ->assertSee(trans('human_resources::app.dashboard.active_employees'));
+
+    test()->actingAs($admin)
         ->get(route('admin.human_resources.employees.index'))
         ->assertSuccessful()
         ->assertSee(trans('human_resources::app.employees.index.title'));

@@ -30,6 +30,18 @@ return [
         'select' => 'Selecione',
         'status' => 'Situação',
     ],
+    'dashboard' => [
+        'title' => 'Visão operacional',
+        'description' => 'Indicadores de pessoas, documentos e contratos para acompanhar a operação da empresa.',
+        'active_employees' => 'Colaboradores ativos',
+        'total_employees' => ':count colaboradores cadastrados',
+        'active_contracts' => 'Contratos ativos',
+        'expiring_contracts' => ':count contratos vencem em até 30 dias',
+        'monthly_value' => 'Valor mensal contratado',
+        'departments' => ':count departamentos ativos',
+        'expiring_documents' => 'Documentos a vencer',
+        'next_thirty_days' => 'Próximos 30 dias',
+    ],
     'departments' => [
         'index' => [
             'title' => 'Departamentos',

@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -53,7 +54,24 @@ class DashboardController extends Controller
             'endDate' => $this->dashboardHelper->getEndDate(),
             'pipelines' => $this->pipelineRepository->all(),
             'defaultPipeline' => $this->pipelineRepository->getDefaultPipeline(),
+            'operationalStats' => $this->getOperationalStats(),
         ]);
+    }
+
+    private function getOperationalStats(): array
+    {
+        $today = now()->startOfDay();
+        $nextThirtyDays = $today->copy()->addDays(30);
+
+        return [
+            'employees' => DB::table('hr_employees')->whereNull('deleted_at')->count(),
+            'active_employees' => DB::table('hr_employees')->whereNull('deleted_at')->where('status', 'active')->count(),
+            'departments' => DB::table('hr_departments')->where('is_active', true)->count(),
+            'documents_expiring' => DB::table('hr_employee_documents')->whereBetween('expires_at', [$today, $nextThirtyDays])->count(),
+            'active_contracts' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->count(),
+            'contracts_expiring' => DB::table('hr_service_contracts')->whereNull('deleted_at')->whereBetween('ends_at', [$today, $nextThirtyDays])->count(),
+            'monthly_contract_value' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->sum('monthly_value'),
+        ];
     }
 
     /**

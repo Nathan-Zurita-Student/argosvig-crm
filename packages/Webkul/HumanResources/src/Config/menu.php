@@ -2,28 +2,22 @@
 
 return [
     [
-        'key' => 'human-resources',
-        'name' => 'human_resources::app.menu.title',
+        'key' => 'workforce',
+        'name' => 'human_resources::app.menu.employees',
         'route' => 'admin.human_resources.employees.index',
         'sort' => 8,
         'icon-class' => 'icon-user',
     ], [
-        'key' => 'human-resources.employees',
-        'name' => 'human_resources::app.menu.employees',
-        'route' => 'admin.human_resources.employees.index',
-        'sort' => 1,
-        'icon-class' => '',
-    ], [
-        'key' => 'human-resources.contracts',
+        'key' => 'service-contracts',
         'name' => 'human_resources::app.menu.contracts',
         'route' => 'admin.human_resources.contracts.index',
-        'sort' => 3,
-        'icon-class' => '',
+        'sort' => 9,
+        'icon-class' => 'icon-quote',
     ], [
-        'key' => 'human-resources.departments',
+        'key' => 'departments',
         'name' => 'human_resources::app.menu.departments',
         'route' => 'admin.human_resources.departments.index',
-        'sort' => 2,
-        'icon-class' => '',
+        'sort' => 10,
+        'icon-class' => 'icon-contact',
     ],
 ];

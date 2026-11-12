@@ -30,6 +30,18 @@ return [
         'select' => 'Select',
         'status' => 'Status',
     ],
+    'dashboard' => [
+        'title' => 'Operational overview',
+        'description' => 'People, document and contract indicators for company operations.',
+        'active_employees' => 'Active employees',
+        'total_employees' => ':count registered employees',
+        'active_contracts' => 'Active contracts',
+        'expiring_contracts' => ':count contracts expire within 30 days',
+        'monthly_value' => 'Monthly contracted value',
+        'departments' => ':count active departments',
+        'expiring_documents' => 'Expiring documents',
+        'next_thirty_days' => 'Next 30 days',
+    ],
     'departments' => [
         'index' => [
             'title' => 'Departments',
