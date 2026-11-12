@@ -20,6 +20,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 * [fixed] Standardized operational module contrast in light and dark themes and prioritized daily-use navigation.
 
+* [fixed] Included operational package views in the Tailwind build and restored the dashboard hero, quick actions and responsive KPI grid.
+
 ## **v2.2.8 (5th of Nov 2026)**
 
 * [feature] Added the Argosvig white-label identity across authentication, navigation, support content, email defaults, and compiled admin assets.

@@ -47,14 +47,14 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.human_resources.employees.index') }}" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-[#0a2454]">@lang('human_resources::app.menu.employees')</a>
+                <a href="{{ route('admin.human_resources.employees.index') }}" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-950 shadow-sm hover:bg-blue-50">@lang('human_resources::app.menu.employees')</a>
                 <a href="{{ route('admin.human_resources.contracts.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.contracts')</a>
                 <a href="{{ route('admin.human_resources.incidents.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.incidents')</a>
             </div>
         </div>
     </section>
 
-    <section class="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section class="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         @foreach ([
             ['label' => trans('human_resources::app.dashboard.active_employees'), 'value' => $operationalStats['active_employees'], 'detail' => trans('human_resources::app.dashboard.total_employees', ['count' => $operationalStats['employees']]), 'color' => 'text-blue-600'],
             ['label' => trans('human_resources::app.dashboard.active_contracts'), 'value' => $operationalStats['active_contracts'], 'detail' => trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'color' => 'text-emerald-600'],
