@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
 use Webkul\HumanResources\Http\Controllers\EmployeeController;
 use Webkul\HumanResources\Http\Controllers\EmployeeDocumentController;
+use Webkul\HumanResources\Http\Controllers\IncidentController;
 use Webkul\HumanResources\Http\Controllers\ServiceContractController;
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
@@ -39,5 +40,15 @@ Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(funct
         Route::get('{id}/edit', 'edit')->name('admin.human_resources.contracts.edit');
         Route::put('{id}', 'update')->name('admin.human_resources.contracts.update');
         Route::delete('{id}', 'destroy')->name('admin.human_resources.contracts.delete');
+    });
+
+    Route::controller(IncidentController::class)->prefix('incidents')->group(function () {
+        Route::get('', 'index')->name('admin.human_resources.incidents.index');
+        Route::get('create', 'create')->name('admin.human_resources.incidents.create');
+        Route::post('', 'store')->name('admin.human_resources.incidents.store');
+        Route::get('{id}', 'show')->name('admin.human_resources.incidents.show');
+        Route::get('{id}/edit', 'edit')->name('admin.human_resources.incidents.edit');
+        Route::put('{id}', 'update')->name('admin.human_resources.incidents.update');
+        Route::delete('{id}', 'destroy')->name('admin.human_resources.incidents.delete');
     });
 });

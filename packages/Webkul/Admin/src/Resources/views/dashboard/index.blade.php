@@ -49,6 +49,7 @@
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('admin.human_resources.employees.index') }}" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-[#0a2454]">@lang('human_resources::app.menu.employees')</a>
                 <a href="{{ route('admin.human_resources.contracts.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.contracts')</a>
+                <a href="{{ route('admin.human_resources.incidents.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.incidents')</a>
             </div>
         </div>
     </section>
@@ -59,6 +60,7 @@
             ['label' => trans('human_resources::app.dashboard.active_contracts'), 'value' => $operationalStats['active_contracts'], 'detail' => trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'color' => 'text-emerald-600'],
             ['label' => trans('human_resources::app.dashboard.monthly_value'), 'value' => core()->formatBasePrice($operationalStats['monthly_contract_value']), 'detail' => trans('human_resources::app.dashboard.departments', ['count' => $operationalStats['departments']]), 'color' => 'text-violet-600'],
             ['label' => trans('human_resources::app.dashboard.expiring_documents'), 'value' => $operationalStats['documents_expiring'], 'detail' => trans('human_resources::app.dashboard.next_thirty_days'), 'color' => 'text-amber-600'],
+            ['label' => trans('human_resources::app.dashboard.open_incidents'), 'value' => $operationalStats['open_incidents'], 'detail' => trans('human_resources::app.dashboard.requires_attention'), 'color' => 'text-red-600'],
         ] as $card)
             <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <p class="text-sm font-medium text-gray-500">{{ $card['label'] }}</p>

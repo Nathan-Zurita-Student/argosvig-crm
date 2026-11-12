@@ -6,12 +6,14 @@ return [
         'employees' => 'Colaboradores',
         'departments' => 'Departamentos',
         'contracts' => 'Clientes e contratos',
+        'incidents' => 'Ocorrências',
     ],
     'acl' => [
         'title' => 'Pessoas',
         'employees' => 'Colaboradores',
         'departments' => 'Departamentos',
         'contracts' => 'Contratos',
+        'incidents' => 'Ocorrências',
         'create' => 'Criar',
         'edit' => 'Editar',
         'delete' => 'Excluir',
@@ -41,6 +43,8 @@ return [
         'departments' => ':count departamentos ativos',
         'expiring_documents' => 'Documentos a vencer',
         'next_thirty_days' => 'Próximos 30 dias',
+        'open_incidents' => 'Ocorrências em aberto',
+        'requires_attention' => 'Demandam acompanhamento operacional',
     ],
     'departments' => [
         'index' => [
@@ -105,6 +109,16 @@ return [
         'fields' => ['organization_id' => 'Cliente', 'organization_name' => 'Cliente', 'manager_id' => 'Responsável', 'contract_number' => 'Número', 'title' => 'Objeto do contrato', 'starts_at' => 'Início', 'ends_at' => 'Término', 'monthly_value' => 'Valor mensal', 'status' => 'Situação', 'description' => 'Observações'],
         'statuses' => ['draft' => 'Rascunho', 'active' => 'Ativo', 'suspended' => 'Suspenso', 'expired' => 'Vencido', 'terminated' => 'Encerrado'],
         'messages' => ['created' => 'Contrato criado com sucesso.', 'updated' => 'Contrato atualizado com sucesso.', 'deleted' => 'Contrato excluído com sucesso.'],
+    ],
+    'incidents' => [
+        'index' => ['title' => 'Ocorrências', 'description' => 'Registro, investigação e resolução de ocorrências operacionais.', 'create' => 'Nova ocorrência'],
+        'create' => ['title' => 'Nova ocorrência'],
+        'edit' => ['title' => 'Editar ocorrência'],
+        'show' => ['title' => 'Detalhes da ocorrência'],
+        'fields' => ['code' => 'Código', 'title' => 'Título', 'description' => 'Descrição', 'occurred_at' => 'Data e hora', 'location' => 'Local', 'severity' => 'Gravidade', 'status' => 'Situação', 'employee_id' => 'Colaborador envolvido', 'employee_name' => 'Colaborador', 'service_contract_id' => 'Contrato/cliente', 'assigned_to' => 'Responsável', 'resolution' => 'Resolução'],
+        'severity' => ['low' => 'Baixa', 'medium' => 'Média', 'high' => 'Alta', 'critical' => 'Crítica'],
+        'status' => ['open' => 'Aberta', 'investigating' => 'Em investigação', 'resolved' => 'Resolvida', 'closed' => 'Encerrada'],
+        'messages' => ['created' => 'Ocorrência registrada com sucesso.', 'updated' => 'Ocorrência atualizada com sucesso.', 'deleted' => 'Ocorrência excluída com sucesso.'],
     ],
     'documents' => [
         'title' => 'Documentos',

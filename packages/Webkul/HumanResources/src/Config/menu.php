@@ -14,6 +14,12 @@ return [
         'sort' => 9,
         'icon-class' => 'icon-quote',
     ], [
+        'key' => 'incidents',
+        'name' => 'human_resources::app.menu.incidents',
+        'route' => 'admin.human_resources.incidents.index',
+        'sort' => 11,
+        'icon-class' => 'icon-activity',
+    ], [
         'key' => 'departments',
         'name' => 'human_resources::app.menu.departments',
         'route' => 'admin.human_resources.departments.index',

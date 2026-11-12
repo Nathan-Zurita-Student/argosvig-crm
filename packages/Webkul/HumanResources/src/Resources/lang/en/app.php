@@ -6,12 +6,14 @@ return [
         'employees' => 'Employees',
         'departments' => 'Departments',
         'contracts' => 'Customers & contracts',
+        'incidents' => 'Incidents',
     ],
     'acl' => [
         'title' => 'People',
         'employees' => 'Employees',
         'departments' => 'Departments',
         'contracts' => 'Contracts',
+        'incidents' => 'Incidents',
         'create' => 'Create',
         'edit' => 'Edit',
         'delete' => 'Delete',
@@ -41,6 +43,8 @@ return [
         'departments' => ':count active departments',
         'expiring_documents' => 'Expiring documents',
         'next_thirty_days' => 'Next 30 days',
+        'open_incidents' => 'Open incidents',
+        'requires_attention' => 'Require operational attention',
     ],
     'departments' => [
         'index' => [
@@ -105,6 +109,16 @@ return [
         'fields' => ['organization_id' => 'Customer', 'organization_name' => 'Customer', 'manager_id' => 'Manager', 'contract_number' => 'Number', 'title' => 'Contract subject', 'starts_at' => 'Start', 'ends_at' => 'End', 'monthly_value' => 'Monthly value', 'status' => 'Status', 'description' => 'Notes'],
         'statuses' => ['draft' => 'Draft', 'active' => 'Active', 'suspended' => 'Suspended', 'expired' => 'Expired', 'terminated' => 'Terminated'],
         'messages' => ['created' => 'Contract created successfully.', 'updated' => 'Contract updated successfully.', 'deleted' => 'Contract deleted successfully.'],
+    ],
+    'incidents' => [
+        'index' => ['title' => 'Incidents', 'description' => 'Operational incident reporting, investigation and resolution.', 'create' => 'New incident'],
+        'create' => ['title' => 'New incident'],
+        'edit' => ['title' => 'Edit incident'],
+        'show' => ['title' => 'Incident details'],
+        'fields' => ['code' => 'Code', 'title' => 'Title', 'description' => 'Description', 'occurred_at' => 'Date and time', 'location' => 'Location', 'severity' => 'Severity', 'status' => 'Status', 'employee_id' => 'Employee involved', 'employee_name' => 'Employee', 'service_contract_id' => 'Contract/customer', 'assigned_to' => 'Assignee', 'resolution' => 'Resolution'],
+        'severity' => ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'critical' => 'Critical'],
+        'status' => ['open' => 'Open', 'investigating' => 'Investigating', 'resolved' => 'Resolved', 'closed' => 'Closed'],
+        'messages' => ['created' => 'Incident created successfully.', 'updated' => 'Incident updated successfully.', 'deleted' => 'Incident deleted successfully.'],
     ],
     'documents' => [
         'title' => 'Documents',

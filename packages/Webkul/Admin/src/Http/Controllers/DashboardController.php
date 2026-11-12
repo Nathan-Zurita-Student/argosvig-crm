@@ -71,6 +71,7 @@ class DashboardController extends Controller
             'active_contracts' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->count(),
             'contracts_expiring' => DB::table('hr_service_contracts')->whereNull('deleted_at')->whereBetween('ends_at', [$today, $nextThirtyDays])->count(),
             'monthly_contract_value' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->sum('monthly_value'),
+            'open_incidents' => DB::table('hr_incidents')->whereNull('deleted_at')->whereIn('status', ['open', 'investigating'])->count(),
         ];
     }
 

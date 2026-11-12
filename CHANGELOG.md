@@ -12,6 +12,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 * [feature] Added the Argosvig operational overview and promoted workforce, contracts and departments to visible navigation areas.
 
+* [feature] Added operational incident management with severity, assignment, investigation and resolution tracking.
+
 ## **v2.2.8 (5th of Nov 2026)**
 
 * [feature] Added the Argosvig white-label identity across authentication, navigation, support content, email defaults, and compiled admin assets.
