@@ -4,6 +4,10 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.8 (5th of Nov 2026)**
 
+* [feature] Added the Argosvig white-label identity across authentication, navigation, support content, email defaults, and compiled admin assets.
+
+* [fixed] Made locale initialization compatible with PHP 8.4 without dynamic middleware properties.
+
 * [security] Fixed Sercurity issue.
 
 ## **v2.2.7 (16th of Oct 2026)**

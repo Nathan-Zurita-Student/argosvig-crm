@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-[10001] flex items-center justify-between gap-1 border-b border-gray-300 bg-white px-4 py-2.5 transition-all dark:border-gray-800 dark:bg-gray-900">  
+<header class="sticky top-0 z-[10001] flex items-center justify-between gap-1 border-b border-blue-100 bg-white px-4 py-2.5 shadow-sm transition-all dark:border-blue-950 dark:bg-[#061A42]">
     <!-- logo -->
     <div class="flex items-center gap-1.5">
         <!-- Sidebar Menu -->
@@ -99,10 +99,7 @@
                         />
                     @endif
 
-                    <!-- Version -->
-                    <p class="text-gray-400">
-                        @lang('admin::app.layouts.app-version', ['version' => core()->version()])
-                    </p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Portal Corporativo</p>
                 </div>
 
                 <div class="grid gap-1 pb-2.5">

@@ -1,0 +1,8 @@
+<svg width="220" height="40" viewBox="0 0 308 56" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Argosvig">
+    <path d="M9 6C18 10 25 9 31 6C37 9 44 10 53 6C57 12 61 15 66 18C62 21 60 25 60 31C60 42 49 49 31 53C13 49 2 42 2 31C2 25 0 21 -4 18C1 15 5 12 9 6Z" transform="translate(4 0)" stroke="#061A42" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M35 13L19 42H27L30 36H40L43 42H51L35 13ZM33 30L35 25L37 30H33Z" fill="#061A42"/>
+    <path d="M35 18L36.8 21.6L41 22.2L38 25.1L38.7 29.2L35 27.3L31.3 29.2L32 25.1L29 22.2L33.2 21.6L35 18Z" fill="#244A96"/>
+    <path d="M30 35L35 38L40 35M28 40L35 44L42 40" stroke="#244A96" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="77" y="8" width="3" height="40" rx="1.5" fill="#3F68C5"/>
+    <text x="94" y="39" fill="#061A42" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" letter-spacing="1.2">ARGOSVIG</text>
+</svg>

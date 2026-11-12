@@ -6,7 +6,7 @@
 >
 
 <head>
-    <title>{{ $title ?? '' }}</title>
+    <title>{{ $title ?? 'Argosvig' }}</title>
 
     <meta charset="UTF-8">
 
@@ -48,24 +48,24 @@
         rel="stylesheet"
     />
 
-    @if ($favicon = core()->getConfigData('general.design.admin_logo.favicon'))
+    @if ($favicon = core()->getConfigData('general.general.admin_logo.favicon_image'))
         <link
-            type="image/x-icon"
+            type="image/svg+xml"
             href="{{ Storage::url($favicon) }}"
             rel="shortcut icon"
             sizes="16x16"
         >
     @else
         <link
-            type="image/x-icon"
-            href="{{ vite()->asset('images/favicon.ico') }}"
+            type="image/svg+xml"
+            href="{{ vite()->asset('images/favicon.svg') }}"
             rel="shortcut icon"
             sizes="16x16"
         />
     @endif
 
     @php
-        $brandColor = core()->getConfigData('general.settings.menu_color.brand_color') ?? '#0E90D9';
+        $brandColor = core()->getConfigData('general.settings.menu_color.brand_color') ?? '#244A96';
     @endphp
 
     @stack('styles')

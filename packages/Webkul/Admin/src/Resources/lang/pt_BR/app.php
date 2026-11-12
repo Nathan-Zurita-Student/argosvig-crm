@@ -337,7 +337,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => 'Desenvolvido por :krayin, um projeto de código aberto da :webkul.',
+                'description' => 'Portal corporativo Argosvig.',
             ],
             'header' => [
                 'mega-search' => [
@@ -2304,25 +2304,25 @@ return [
     'help' => [
         'index' => [
             'title' => 'Ajuda e recursos',
-            'description' => 'Tudo o que você precisa para aproveitar ao máximo o Krayin Admin — hospedagem, suporte e serviços profissionais, além de extensões e documentação para desenvolvedores.',
+            'description' => 'Central de orientação, suporte e recursos do Portal Corporativo Argosvig.',
             'contact-us' => 'Fale conosco',
             'view-all' => 'Ver tudo',
             'still-need-help-title' => 'Ainda precisa de ajuda?',
-            'still-need-help-description' => 'Fale com a equipe Krayin sobre hospedagem, desenvolvimento personalizado ou qualquer outra coisa.',
+            'still-need-help-description' => 'Entre em contato com o suporte interno responsável pelo Portal Argosvig.',
 
             'services' => [
                 'title' => 'Serviços e recursos',
                 'cloud-hosting' => [
-                    'title' => 'Hospedagem na nuvem',
-                    'description' => 'Hospedagem na nuvem gerenciada e econômica — experimente e coloque o Krayin na nuvem em minutos, totalmente otimizado e escalável.',
+                    'title' => 'Infraestrutura',
+                    'description' => 'Informações sobre disponibilidade, acesso e operação segura do ambiente corporativo.',
                 ],
                 'support' => [
                     'title' => 'Suporte e manutenção',
-                    'description' => 'Suporte técnico dedicado e planos de manutenção contínua para manter seu CRM seguro, atualizado e funcionando sem problemas.',
+                    'description' => 'Apoio técnico e manutenção contínua para manter o Portal Argosvig seguro e disponível.',
                 ],
                 'extensions' => [
-                    'title' => 'Extensões',
-                    'description' => 'Navegue por complementos oficiais e da comunidade para ampliar o Krayin com novos conectores, canais e recursos.',
+                    'title' => 'Módulos corporativos',
+                    'description' => 'Recursos e integrações desenvolvidos para os processos internos da Argosvig.',
                 ],
             ],
 
@@ -2338,14 +2338,14 @@ return [
                 ],
                 'api-docs' => [
                     'title' => 'Documentação da API',
-                    'description' => 'Referência completa da API REST com endpoints, autenticação e exemplos para integrar o Krayin ao seu stack.',
+                    'description' => 'Referências das integrações autorizadas para conectar o Portal Argosvig a outros sistemas.',
                 ],
             ],
 
             'community' => [
                 'forums' => [
                     'title' => 'Fóruns da comunidade',
-                    'description' => 'Conecte-se com milhares de outros usuários e desenvolvedores do Krayin para compartilhar dicas e resolver problemas.',
+                    'description' => 'Consulte comunicados e orientações compartilhados pela equipe responsável pelo sistema.',
                     'link' => 'Participe da comunidade',
                 ],
                 'tutorials' => [
