@@ -1,9 +1,16 @@
 <div
     id="admin-sidebar"
     ref="sidebar"
-    class="duration-80 fixed top-[60px] z-[10002] h-full w-[200px] border-gray-300 bg-white pt-4 transition-all group-[.sidebar-collapsed]/container:w-[70px] dark:border-gray-800 dark:bg-gray-900 max-lg:hidden ltr:border-r rtl:border-l"
+    class="duration-80 fixed top-[60px] z-[10002] flex h-[calc(100vh-60px)] w-[200px] flex-col border-gray-300 bg-white py-3 transition-all group-[.sidebar-collapsed]/container:w-[70px] dark:border-gray-800 dark:bg-gray-900 max-lg:hidden ltr:border-r rtl:border-l"
 >
-    <div class="journal-scroll h-[calc(100vh-100px)] overflow-hidden group-[.sidebar-collapsed]/container:overflow-visible">
+    {!! view_render_event('admin.layout.sidebar.toggle.before') !!}
+
+    <!-- Collapse menu -->
+    <v-sidebar-collapse></v-sidebar-collapse>
+
+    {!! view_render_event('admin.layout.sidebar.toggle.after') !!}
+
+    <div class="journal-scroll min-h-0 flex-1 overflow-hidden group-[.sidebar-collapsed]/container:overflow-visible">
         <nav class="sidebar-rounded grid w-full gap-2">
             <!-- Navigation Menu -->
             @foreach (menu()->getItems('admin') as $menuItem)
@@ -60,12 +67,6 @@
         </nav>
     </div>
 
-    {!! view_render_event('admin.layout.sidebar.toggle.before') !!}
-
-    <!-- Collapse menu -->
-    <v-sidebar-collapse></v-sidebar-collapse>
-
-    {!! view_render_event('admin.layout.sidebar.toggle.after') !!}
 </div>
 
 @pushOnce('scripts')
@@ -73,21 +74,23 @@
         type="text/x-template"
         id="v-sidebar-collapse-template"
     >
-        <div
-            class="fixed bottom-0 w-full max-w-[200px] cursor-pointer border-t border-gray-200 bg-white px-4 transition-all duration-300 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-950 max-lg:hidden"
-            :class="{'max-w-[70px]': isCollapsed}"
+        <button
+            type="button"
+            class="mx-4 mb-3 flex h-9 shrink-0 items-center justify-end rounded-lg px-1.5 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brandColor/40 group-[.sidebar-collapsed]/container:justify-center dark:text-gray-300 dark:hover:bg-gray-950 dark:hover:text-white"
             :title="isCollapsed
                 ? '@lang('admin::app.layouts.sidebar.expand')'
                 : '@lang('admin::app.layouts.sidebar.collapse')'"
+            :aria-label="isCollapsed
+                ? '@lang('admin::app.layouts.sidebar.expand')'
+                : '@lang('admin::app.layouts.sidebar.collapse')'"
+            :aria-expanded="! isCollapsed"
             @click="toggle"
         >
-            <div class="flex items-center gap-2.5 p-1.5">
-                <span
-                    class="icon-left-arrow text-2xl transition-all"
-                    :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
-                ></span>
-            </div>
-        </div>
+            <span
+                class="icon-left-arrow text-2xl transition-transform"
+                :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
+            ></span>
+        </button>
     </script>
 
     <script type="module">
