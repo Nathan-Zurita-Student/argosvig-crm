@@ -2,6 +2,10 @@
 
 This changelog consists of the bug & security fixes and new features being included in the releases listed below.
 
+## **v2.2.9 (Upcoming)**
+
+* [feature] Added department and employee management with access control and Alterdata employee identifiers.
+
 ## **v2.2.8 (5th of Nov 2026)**
 
 * [feature] Added the Argosvig white-label identity across authentication, navigation, support content, email defaults, and compiled admin assets.

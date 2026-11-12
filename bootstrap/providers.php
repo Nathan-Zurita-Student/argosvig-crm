@@ -15,6 +15,7 @@ use Webkul\DataTransfer\Providers\DataTransferServiceProvider;
 use Webkul\Email\Providers\EmailServiceProvider;
 use Webkul\EmailTemplate\Providers\EmailTemplateServiceProvider;
 use Webkul\GoogleContact\Providers\GoogleContactServiceProvider;
+use Webkul\HumanResources\Providers\HumanResourcesServiceProvider;
 use Webkul\Installer\Providers\InstallerServiceProvider;
 use Webkul\Lead\Providers\LeadServiceProvider;
 use Webkul\Marketing\Providers\MarketingServiceProvider;
@@ -52,6 +53,7 @@ return [
     EmailTemplateServiceProvider::class,
     EmailServiceProvider::class,
     GoogleContactServiceProvider::class,
+    HumanResourcesServiceProvider::class,
     MarketingServiceProvider::class,
     InstallerServiceProvider::class,
     LeadServiceProvider::class,
