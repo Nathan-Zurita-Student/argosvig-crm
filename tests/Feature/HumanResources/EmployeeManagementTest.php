@@ -8,6 +8,20 @@ use Webkul\HumanResources\Models\Employee;
 
 uses(DatabaseTransactions::class);
 
+it('keeps operational navigation in priority order before administrative areas', function () {
+    $rootKeys = collect(config('menu.admin'))
+        ->filter(fn (array $item) => ! str_contains($item['key'], '.'))
+        ->sortBy('sort')
+        ->pluck('key')
+        ->values();
+
+    expect($rootKeys->search('workforce'))->toBeLessThan($rootKeys->search('work-sites'))
+        ->and($rootKeys->search('work-sites'))->toBeLessThan($rootKeys->search('incidents'))
+        ->and($rootKeys->search('incidents'))->toBeLessThan($rootKeys->search('service-contracts'))
+        ->and($rootKeys->search('service-contracts'))->toBeLessThan($rootKeys->search('departments'))
+        ->and($rootKeys->search('departments'))->toBeLessThan($rootKeys->search('settings'));
+});
+
 it('shows the employee and department areas to an administrator', function () {
     $admin = getDefaultAdmin();
 

@@ -63,9 +63,9 @@
             ['label' => trans('human_resources::app.dashboard.open_incidents'), 'value' => $operationalStats['open_incidents'], 'detail' => trans('human_resources::app.dashboard.requires_attention'), 'color' => 'text-red-600'],
         ] as $card)
             <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p class="text-sm font-medium text-gray-500">{{ $card['label'] }}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $card['label'] }}</p>
                 <p class="mt-2 text-3xl font-bold {{ $card['color'] }}">{{ $card['value'] }}</p>
-                <p class="mt-2 text-xs text-gray-500">{{ $card['detail'] }}</p>
+                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ $card['detail'] }}</p>
             </div>
         @endforeach
     </section>

@@ -18,6 +18,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 * [feature] Added employee shift assignments by work site with schedule and attendance status.
 
+* [fixed] Standardized operational module contrast in light and dark themes and prioritized daily-use navigation.
+
 ## **v2.2.8 (5th of Nov 2026)**
 
 * [feature] Added the Argosvig white-label identity across authentication, navigation, support content, email defaults, and compiled admin assets.

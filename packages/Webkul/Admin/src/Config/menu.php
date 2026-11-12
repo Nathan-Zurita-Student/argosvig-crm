@@ -133,7 +133,7 @@ return [
         'key' => 'settings',
         'name' => 'admin::app.layouts.settings',
         'route' => 'admin.settings.index',
-        'sort' => 8,
+        'sort' => 90,
         'icon-class' => 'icon-setting',
     ], [
         'key' => 'settings.user',
@@ -284,7 +284,7 @@ return [
         'key' => 'configuration',
         'name' => 'admin::app.layouts.configuration',
         'route' => 'admin.configuration.index',
-        'sort' => 9,
+        'sort' => 91,
         'icon-class' => 'icon-configuration',
     ],
 
@@ -295,7 +295,7 @@ return [
         'key' => 'help',
         'name' => 'admin::app.layouts.help',
         'route' => 'admin.help.index',
-        'sort' => 10,
+        'sort' => 92,
         'icon-class' => 'icon-help',
     ],
 ];
