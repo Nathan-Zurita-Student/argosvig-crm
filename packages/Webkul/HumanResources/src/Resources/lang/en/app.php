@@ -8,6 +8,8 @@ return [
         'contracts' => 'Customers & contracts',
         'incidents' => 'Incidents',
         'work_sites' => 'Sites & schedules',
+        'sites' => 'Sites',
+        'shifts' => 'Schedules',
     ],
     'acl' => [
         'title' => 'People',
@@ -16,6 +18,7 @@ return [
         'contracts' => 'Contracts',
         'incidents' => 'Incidents',
         'work_sites' => 'Operational sites',
+        'shifts' => 'Schedules',
         'create' => 'Create',
         'edit' => 'Edit',
         'delete' => 'Delete',
@@ -129,6 +132,12 @@ return [
         'fields' => ['service_contract_id' => 'Contract', 'contract_number' => 'Contract', 'code' => 'Code', 'name' => 'Site name', 'address' => 'Address', 'city' => 'City', 'state' => 'State', 'required_staff' => 'Required staff', 'status' => 'Status', 'notes' => 'Notes'],
         'status' => ['active' => 'Active', 'inactive' => 'Inactive'],
         'messages' => ['created' => 'Site created successfully.', 'updated' => 'Site updated successfully.', 'deleted' => 'Site deleted successfully.'],
+    ],
+    'shifts' => [
+        'index' => ['title' => 'Schedules', 'description' => 'Employee assignment by site, shift and period.', 'create' => 'New schedule'], 'create' => ['title' => 'New schedule'], 'edit' => ['title' => 'Edit schedule'],
+        'fields' => ['work_site_id' => 'Site', 'work_site_name' => 'Site', 'employee_id' => 'Employee', 'employee_name' => 'Employee', 'starts_at' => 'Start', 'ends_at' => 'End', 'shift_type' => 'Shift', 'status' => 'Status', 'notes' => 'Notes'],
+        'shift_type' => ['day' => 'Day', 'night' => 'Night', 'flexible' => 'Flexible'], 'status' => ['planned' => 'Planned', 'confirmed' => 'Confirmed', 'completed' => 'Completed', 'absence' => 'Absence'],
+        'messages' => ['created' => 'Schedule created successfully.', 'updated' => 'Schedule updated successfully.', 'deleted' => 'Schedule deleted successfully.'],
     ],
     'documents' => [
         'title' => 'Documents',

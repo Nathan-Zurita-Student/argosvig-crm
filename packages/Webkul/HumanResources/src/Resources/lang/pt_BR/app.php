@@ -8,6 +8,8 @@ return [
         'contracts' => 'Clientes e contratos',
         'incidents' => 'Ocorrências',
         'work_sites' => 'Postos e escalas',
+        'sites' => 'Postos',
+        'shifts' => 'Escalas',
     ],
     'acl' => [
         'title' => 'Pessoas',
@@ -16,6 +18,7 @@ return [
         'contracts' => 'Contratos',
         'incidents' => 'Ocorrências',
         'work_sites' => 'Postos operacionais',
+        'shifts' => 'Escalas',
         'create' => 'Criar',
         'edit' => 'Editar',
         'delete' => 'Excluir',
@@ -129,6 +132,12 @@ return [
         'fields' => ['service_contract_id' => 'Contrato', 'contract_number' => 'Contrato', 'code' => 'Código', 'name' => 'Nome do posto', 'address' => 'Endereço', 'city' => 'Cidade', 'state' => 'UF', 'required_staff' => 'Efetivo necessário', 'status' => 'Situação', 'notes' => 'Observações'],
         'status' => ['active' => 'Ativo', 'inactive' => 'Inativo'],
         'messages' => ['created' => 'Posto criado com sucesso.', 'updated' => 'Posto atualizado com sucesso.', 'deleted' => 'Posto excluído com sucesso.'],
+    ],
+    'shifts' => [
+        'index' => ['title' => 'Escalas', 'description' => 'Alocação de colaboradores por posto, turno e período.', 'create' => 'Nova escala'], 'create' => ['title' => 'Nova escala'], 'edit' => ['title' => 'Editar escala'],
+        'fields' => ['work_site_id' => 'Posto', 'work_site_name' => 'Posto', 'employee_id' => 'Colaborador', 'employee_name' => 'Colaborador', 'starts_at' => 'Início', 'ends_at' => 'Fim', 'shift_type' => 'Turno', 'status' => 'Situação', 'notes' => 'Observações'],
+        'shift_type' => ['day' => 'Diurno', 'night' => 'Noturno', 'flexible' => 'Flexível'], 'status' => ['planned' => 'Planejada', 'confirmed' => 'Confirmada', 'completed' => 'Concluída', 'absence' => 'Falta'],
+        'messages' => ['created' => 'Escala criada com sucesso.', 'updated' => 'Escala atualizada com sucesso.', 'deleted' => 'Escala excluída com sucesso.'],
     ],
     'documents' => [
         'title' => 'Documentos',

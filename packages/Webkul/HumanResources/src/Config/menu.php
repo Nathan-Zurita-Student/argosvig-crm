@@ -26,6 +26,10 @@ return [
         'sort' => 12,
         'icon-class' => 'icon-product',
     ], [
+        'key' => 'work-sites.sites', 'name' => 'human_resources::app.menu.sites', 'route' => 'admin.human_resources.work_sites.index', 'sort' => 1, 'icon-class' => '',
+    ], [
+        'key' => 'work-sites.shifts', 'name' => 'human_resources::app.menu.shifts', 'route' => 'admin.human_resources.shifts.index', 'sort' => 2, 'icon-class' => '',
+    ], [
         'key' => 'departments',
         'name' => 'human_resources::app.menu.departments',
         'route' => 'admin.human_resources.departments.index',

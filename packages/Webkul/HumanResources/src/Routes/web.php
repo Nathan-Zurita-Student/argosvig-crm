@@ -6,6 +6,7 @@ use Webkul\HumanResources\Http\Controllers\EmployeeController;
 use Webkul\HumanResources\Http\Controllers\EmployeeDocumentController;
 use Webkul\HumanResources\Http\Controllers\IncidentController;
 use Webkul\HumanResources\Http\Controllers\ServiceContractController;
+use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
@@ -60,5 +61,14 @@ Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(funct
         Route::get('{id}/edit', 'edit')->name('admin.human_resources.work_sites.edit');
         Route::put('{id}', 'update')->name('admin.human_resources.work_sites.update');
         Route::delete('{id}', 'destroy')->name('admin.human_resources.work_sites.delete');
+    });
+
+    Route::controller(ShiftAssignmentController::class)->prefix('shifts')->group(function () {
+        Route::get('', 'index')->name('admin.human_resources.shifts.index');
+        Route::get('create', 'create')->name('admin.human_resources.shifts.create');
+        Route::post('', 'store')->name('admin.human_resources.shifts.store');
+        Route::get('{id}/edit', 'edit')->name('admin.human_resources.shifts.edit');
+        Route::put('{id}', 'update')->name('admin.human_resources.shifts.update');
+        Route::delete('{id}', 'destroy')->name('admin.human_resources.shifts.delete');
     });
 });
