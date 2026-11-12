@@ -63,6 +63,16 @@ class EmployeeDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
+        if (bouncer()->hasPermission('human-resources.employees.view')) {
+            $this->addAction([
+                'index' => 'view',
+                'icon' => 'icon-eye',
+                'title' => trans('human_resources::app.acl.view'),
+                'method' => 'GET',
+                'url' => fn ($row) => route('admin.human_resources.employees.show', $row->id),
+            ]);
+        }
+
         if (bouncer()->hasPermission('human-resources.employees.edit')) {
             $this->addAction([
                 'index' => 'edit',

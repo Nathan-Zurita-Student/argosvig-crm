@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Webkul\HumanResources\Models\Department;
+use Webkul\HumanResources\Models\Employee;
 
 uses(DatabaseTransactions::class);
 
@@ -81,4 +84,58 @@ it('requires unique employee and Alterdata identifiers', function () {
         ->post(route('admin.human_resources.employees.store'), $payload)
         ->assertRedirect(route('admin.human_resources.employees.create'))
         ->assertSessionHasErrors(['employee_number', 'alterdata_employee_id']);
+});
+
+it('stores employee documents privately and protects document ownership', function () {
+    Storage::fake('local');
+
+    $admin = getDefaultAdmin();
+    $employee = Employee::query()->create([
+        'employee_number' => fake()->unique()->numerify('ARG#####'),
+        'full_name' => fake()->name(),
+        'status' => 'active',
+    ]);
+    $otherEmployee = Employee::query()->create([
+        'employee_number' => fake()->unique()->numerify('ARG#####'),
+        'full_name' => fake()->name(),
+        'status' => 'active',
+    ]);
+
+    expect($otherEmployee->id)->not->toBe($employee->id);
+
+    test()->actingAs($admin)
+        ->post(route('admin.human_resources.employee_documents.store', $employee->id), [
+            'type' => 'occupational_health',
+            'name' => 'ASO admissional',
+            'expires_at' => now()->addYear()->toDateString(),
+            'file' => UploadedFile::fake()->create('aso.pdf', 120, 'application/pdf'),
+        ])
+        ->assertRedirect(route('admin.human_resources.employees.show', $employee->id));
+
+    $document = $employee->documents()->firstOrFail();
+
+    expect($document->employee_id)->toBe($employee->id);
+
+    Storage::disk('local')->assertExists($document->path);
+
+    test()->actingAs($admin)
+        ->get(route('admin.human_resources.employees.show', $employee->id))
+        ->assertSuccessful()
+        ->assertSee($employee->full_name)
+        ->assertSee('ASO admissional');
+
+    test()->actingAs($admin)
+        ->get(route('admin.human_resources.employee_documents.download', [$otherEmployee->id, $document->id]))
+        ->assertNotFound();
+
+    test()->actingAs($admin)
+        ->get(route('admin.human_resources.employee_documents.download', [$employee->id, $document->id]))
+        ->assertDownload('aso.pdf');
+
+    test()->actingAs($admin)
+        ->delete(route('admin.human_resources.employee_documents.delete', [$employee->id, $document->id]))
+        ->assertRedirect(route('admin.human_resources.employees.show', $employee->id));
+
+    Storage::disk('local')->assertMissing($document->path);
+    $this->assertDatabaseMissing('hr_employee_documents', ['id' => $document->id]);
 });

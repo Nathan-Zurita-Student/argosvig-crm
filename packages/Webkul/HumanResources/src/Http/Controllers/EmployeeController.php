@@ -36,6 +36,15 @@ class EmployeeController extends Controller
         return view('human_resources::employees.create', compact('departments'));
     }
 
+    public function show(int $id): View
+    {
+        $employee = $this->employeeRepository
+            ->with(['department', 'documents.uploader'])
+            ->findOrFail($id);
+
+        return view('human_resources::employees.show', compact('employee'));
+    }
+
     public function store(EmployeeRequest $request)
     {
         Event::dispatch('human_resources.employee.create.before');

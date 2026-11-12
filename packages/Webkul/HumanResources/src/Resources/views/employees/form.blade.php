@@ -3,6 +3,8 @@
         ['employee_number', 'text', true],
         ['full_name', 'text', true],
         ['cpf', 'text', false],
+        ['birth_date', 'date', false],
+        ['rg', 'text', false],
         ['email', 'email', false],
         ['phone', 'text', false],
         ['job_title', 'text', false],
@@ -67,5 +69,21 @@
         </x-admin::form.control-group.control>
 
         <x-admin::form.control-group.error control-name="status" />
+    </x-admin::form.control-group>
+
+    <x-admin::form.control-group class="md:col-span-2">
+        <x-admin::form.control-group.label>
+            @lang('human_resources::app.employees.fields.notes')
+        </x-admin::form.control-group.label>
+
+        <x-admin::form.control-group.control
+            type="textarea"
+            name="notes"
+            id="notes"
+            :value="old('notes', $employee?->notes)"
+            :label="trans('human_resources::app.employees.fields.notes')"
+        />
+
+        <x-admin::form.control-group.error control-name="notes" />
     </x-admin::form.control-group>
 </div>

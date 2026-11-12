@@ -17,15 +17,31 @@ return [
         'route' => ['admin.human_resources.employees.create', 'admin.human_resources.employees.store'],
         'sort' => 1,
     ], [
+        'key' => 'human-resources.employees.view',
+        'name' => 'human_resources::app.acl.view',
+        'route' => [
+            'admin.human_resources.employees.show',
+            'admin.human_resources.employee_documents.download',
+        ],
+        'sort' => 2,
+    ], [
         'key' => 'human-resources.employees.edit',
         'name' => 'human_resources::app.acl.edit',
         'route' => ['admin.human_resources.employees.edit', 'admin.human_resources.employees.update'],
-        'sort' => 2,
+        'sort' => 3,
+    ], [
+        'key' => 'human-resources.employees.documents',
+        'name' => 'human_resources::app.acl.documents',
+        'route' => [
+            'admin.human_resources.employee_documents.store',
+            'admin.human_resources.employee_documents.delete',
+        ],
+        'sort' => 4,
     ], [
         'key' => 'human-resources.employees.delete',
         'name' => 'human_resources::app.acl.delete',
         'route' => 'admin.human_resources.employees.delete',
-        'sort' => 3,
+        'sort' => 5,
     ], [
         'key' => 'human-resources.departments',
         'name' => 'human_resources::app.acl.departments',
