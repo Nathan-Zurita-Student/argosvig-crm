@@ -38,11 +38,16 @@ class EmployeeController extends Controller
 
     public function show(int $id): View
     {
-        $employee = $this->employeeRepository
-            ->with(['department', 'documents.uploader'])
-            ->findOrFail($id);
+        $canManageDocuments = auth()->guard('user')->user()->view_permission === 'global'
+            && bouncer()->hasPermission('human-resources.employees.documents');
 
-        return view('human_resources::employees.show', compact('employee'));
+        $employee = $this->employeeRepository->with('department')->findOrFail($id);
+
+        if ($canManageDocuments) {
+            $employee->load('documents');
+        }
+
+        return view('human_resources::employees.show', compact('employee', 'canManageDocuments'));
     }
 
     public function store(EmployeeRequest $request)

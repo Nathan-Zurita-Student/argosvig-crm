@@ -21,7 +21,6 @@ return [
         'name' => 'human_resources::app.acl.view',
         'route' => [
             'admin.human_resources.employees.show',
-            'admin.human_resources.employee_documents.download',
         ],
         'sort' => 2,
     ], [
@@ -34,6 +33,7 @@ return [
         'name' => 'human_resources::app.acl.documents',
         'route' => [
             'admin.human_resources.employee_documents.store',
+            'admin.human_resources.employee_documents.download',
             'admin.human_resources.employee_documents.delete',
         ],
         'sort' => 4,
@@ -42,6 +42,48 @@ return [
         'name' => 'human_resources::app.acl.delete',
         'route' => 'admin.human_resources.employees.delete',
         'sort' => 5,
+    ], [
+        'key' => 'document-center',
+        'name' => 'human_resources::workforce.documents',
+        'route' => [
+            'admin.human_resources.document_center.index',
+            'admin.human_resources.document_center.show',
+            'admin.human_resources.document_center.download',
+            'admin.human_resources.document_center.edit',
+            'admin.human_resources.document_center.update',
+            'admin.human_resources.document_center.delete',
+        ],
+        'sort' => 7,
+    ], [
+        'key' => 'human-resources.document-center',
+        'name' => 'human_resources::workforce.employee_files',
+        'route' => [],
+        'sort' => 8,
+    ], [
+        'key' => 'human-resources.document-center.manage',
+        'name' => 'human_resources::workforce.manage',
+        'route' => ['admin.human_resources.document_center.create', 'admin.human_resources.document_center.store'],
+        'sort' => 1,
+    ], [
+        'key' => 'human-resources.shared-documents',
+        'name' => 'human_resources::workforce.shared',
+        'route' => [],
+        'sort' => 9,
+    ], [
+        'key' => 'human-resources.shared-documents.manage',
+        'name' => 'human_resources::workforce.manage',
+        'route' => ['admin.human_resources.document_center.create_shared', 'admin.human_resources.document_center.store_shared'],
+        'sort' => 1,
+    ], [
+        'key' => 'timekeeping',
+        'name' => 'human_resources::workforce.timekeeping',
+        'route' => ['admin.human_resources.timekeeping.index', 'admin.human_resources.timekeeping.export'],
+        'sort' => 10,
+    ], [
+        'key' => 'timekeeping.import',
+        'name' => 'human_resources::workforce.import',
+        'route' => ['admin.human_resources.timekeeping.import', 'admin.human_resources.timekeeping.template'],
+        'sort' => 1,
     ], [
         'key' => 'human-resources.vacations',
         'name' => 'human_resources::app.acl.vacations',

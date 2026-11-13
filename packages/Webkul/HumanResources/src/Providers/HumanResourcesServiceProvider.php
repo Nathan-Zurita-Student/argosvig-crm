@@ -3,6 +3,7 @@
 namespace Webkul\HumanResources\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
 
 class HumanResourcesServiceProvider extends ServiceProvider
 {
@@ -12,6 +13,10 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'human_resources');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([SyncAlterdataTimekeeping::class]);
+        }
     }
 
     public function register(): void

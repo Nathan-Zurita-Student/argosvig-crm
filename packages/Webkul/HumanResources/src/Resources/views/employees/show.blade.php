@@ -70,6 +70,7 @@
             </div>
         </div>
 
+        @if ($canManageDocuments)
         <div class="grid gap-4 xl:grid-cols-3">
             <div class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 xl:col-span-2">
                 <div class="mb-4">
@@ -77,7 +78,7 @@
                     <p class="text-sm text-gray-500">@lang('human_resources::app.documents.description')</p>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div v-pre class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="border-b border-gray-200 text-xs uppercase text-gray-500 dark:border-gray-800">
                             <tr>
@@ -95,7 +96,7 @@
                                         <p class="font-medium text-gray-800 dark:text-gray-200">{{ $document->name }}</p>
                                         <p class="text-xs text-gray-500">{{ $document->original_name }} · {{ number_format($document->size / 1024, 1, ',', '.') }} KB</p>
                                     </td>
-                                    <td class="px-2 py-3">@lang("human_resources::app.documents.types.{$document->type}")</td>
+                                    <td class="px-2 py-3">@lang("human_resources::workforce.types.{$document->type}")</td>
                                     <td class="px-2 py-3">{{ $document->expires_at?->format('d/m/Y') ?: '—' }}</td>
                                     <td class="px-2 py-3">
                                         <span class="{{ $document->is_expired ? 'text-red-600' : 'text-green-600' }}">
@@ -109,9 +110,11 @@
                                             </a>
 
                                             @if (bouncer()->hasPermission('human-resources.employees.documents'))
-                                                <x-admin::form :action="route('admin.human_resources.employee_documents.delete', [$employee->id, $document->id])" method="DELETE">
+                                                <form action="{{ route('admin.human_resources.employee_documents.delete', [$employee->id, $document->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:underline">@lang('human_resources::app.common.delete')</button>
-                                                </x-admin::form>
+                                                </form>
                                             @endif
                                         </div>
                                     </td>
@@ -134,8 +137,8 @@
                         <x-admin::form.control-group>
                             <x-admin::form.control-group.label class="required">@lang('human_resources::app.documents.fields.type')</x-admin::form.control-group.label>
                             <x-admin::form.control-group.control type="select" name="type" rules="required" :label="trans('human_resources::app.documents.fields.type')">
-                                @foreach (['identity', 'contract', 'certificate', 'occupational_health', 'payslip', 'other'] as $type)
-                                    <option value="{{ $type }}">@lang("human_resources::app.documents.types.{$type}")</option>
+                                @foreach (\Webkul\HumanResources\Models\EmployeeDocument::EMPLOYEE_TYPES as $type)
+                                    <option value="{{ $type }}">@lang("human_resources::workforce.types.{$type}")</option>
                                 @endforeach
                             </x-admin::form.control-group.control>
                             <x-admin::form.control-group.error control-name="type" />
@@ -154,6 +157,12 @@
                         </x-admin::form.control-group>
 
                         <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>@lang('human_resources::workforce.competence')</x-admin::form.control-group.label>
+                            <input type="month" name="competence" value="{{ old('competence') }}" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
+                            <x-admin::form.control-group.error control-name="competence" />
+                        </x-admin::form.control-group>
+
+                        <x-admin::form.control-group>
                             <x-admin::form.control-group.label class="required">@lang('human_resources::app.documents.fields.file')</x-admin::form.control-group.label>
                             <x-admin::form.control-group.control type="file" name="file" rules="required" :label="trans('human_resources::app.documents.fields.file')" />
                             <x-admin::form.control-group.error control-name="file" />
@@ -164,5 +173,6 @@
                 </div>
             @endif
         </div>
+        @endif
     </div>
 </x-admin::layouts>

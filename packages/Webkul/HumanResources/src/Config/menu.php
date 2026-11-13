@@ -2,6 +2,19 @@
 
 return [
     [
+        'key' => 'document-center',
+        'name' => 'human_resources::workforce.documents',
+        'route' => 'admin.human_resources.document_center.index',
+        'sort' => 14,
+        'icon-class' => 'icon-quote',
+    ], [
+        'key' => 'timekeeping',
+        'name' => 'human_resources::workforce.timekeeping',
+        'route' => 'admin.human_resources.timekeeping.index',
+        'sort' => 15,
+        'icon-class' => 'icon-activity',
+    ],
+    [
         'key' => 'workforce',
         'name' => 'human_resources::app.menu.employees',
         'route' => 'admin.human_resources.employees.index',

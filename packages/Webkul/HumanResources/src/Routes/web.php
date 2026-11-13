@@ -2,15 +2,37 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
+use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
 use Webkul\HumanResources\Http\Controllers\EmployeeController;
 use Webkul\HumanResources\Http\Controllers\EmployeeDocumentController;
 use Webkul\HumanResources\Http\Controllers\IncidentController;
 use Webkul\HumanResources\Http\Controllers\ServiceContractController;
 use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
+use Webkul\HumanResources\Http\Controllers\TimekeepingController;
 use Webkul\HumanResources\Http\Controllers\VacationController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
+    Route::controller(DocumentCenterController::class)->prefix('documents')->name('admin.human_resources.document_center.')->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('', 'store')->name('store');
+        Route::get('shared/create', 'createShared')->name('create_shared');
+        Route::post('shared', 'storeShared')->name('store_shared');
+        Route::get('{id}', 'show')->whereNumber('id')->name('show');
+        Route::get('{id}/edit', 'edit')->whereNumber('id')->name('edit');
+        Route::put('{id}', 'update')->whereNumber('id')->name('update');
+        Route::get('{id}/download', 'download')->whereNumber('id')->name('download');
+        Route::delete('{id}', 'destroy')->whereNumber('id')->name('delete');
+    });
+
+    Route::controller(TimekeepingController::class)->prefix('timekeeping')->name('admin.human_resources.timekeeping.')->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('export', 'export')->name('export');
+        Route::get('template', 'template')->name('template');
+        Route::post('import', 'import')->name('import');
+    });
+
     Route::controller(EmployeeController::class)->prefix('employees')->group(function () {
         Route::get('', 'index')->name('admin.human_resources.employees.index');
         Route::get('create', 'create')->name('admin.human_resources.employees.create');
