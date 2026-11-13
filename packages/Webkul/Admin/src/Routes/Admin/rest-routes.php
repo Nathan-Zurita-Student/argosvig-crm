@@ -6,6 +6,7 @@ use Webkul\Admin\Http\Controllers\DataGrid\SavedFilterController;
 use Webkul\Admin\Http\Controllers\DataGridController;
 use Webkul\Admin\Http\Controllers\TinyMCEController;
 use Webkul\Admin\Http\Controllers\User\AccountController;
+use Webkul\Admin\Http\Controllers\User\TwoFactorController;
 
 /**
  * Dashboard routes.
@@ -53,4 +54,13 @@ Route::controller(AccountController::class)->prefix('account')->group(function (
     Route::get('', 'edit')->name('admin.user.account.edit');
 
     Route::put('update', 'update')->name('admin.user.account.update');
+});
+
+Route::controller(TwoFactorController::class)->prefix('account/two-factor')->name('admin.user.account.')->group(function () {
+    Route::get('', 'index')->name('two_factor');
+    Route::middleware('throttle:5,1')->group(function () {
+        Route::post('begin', 'begin')->name('two_factor.begin');
+        Route::post('', 'enable')->name('two_factor.enable');
+        Route::delete('', 'disable')->name('two_factor.disable');
+    });
 });

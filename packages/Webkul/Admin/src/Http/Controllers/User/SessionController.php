@@ -3,12 +3,16 @@
 namespace Webkul\Admin\Http\Controllers\User;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Security\TwoFactorAuthentication;
 use Webkul\Core\Menu\MenuItem;
+use Webkul\User\Models\UserProxy;
 
 class SessionController extends Controller
 {
@@ -18,6 +22,8 @@ class SessionController extends Controller
     private const MAX_ATTEMPTS_PER_CREDENTIAL = 5;
 
     private const MAX_ATTEMPTS_PER_ADDRESS = 20;
+
+    private const PENDING_KEY = 'admin.two_factor_pending';
 
     /**
      * Show the form for creating a new resource.
@@ -42,7 +48,7 @@ class SessionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(): RedirectResponse
+    public function store(TwoFactorAuthentication $twoFactor): RedirectResponse
     {
         $this->validate(request(), [
             'email' => 'required|email',
@@ -51,7 +57,11 @@ class SessionController extends Controller
 
         $this->ensureIsNotRateLimited();
 
-        if (! auth()->guard('user')->attempt(request(['email', 'password']), request('remember'))) {
+        session()->forget(self::PENDING_KEY);
+        $guard = auth()->guard('user');
+        $credentials = request(['email', 'password']);
+
+        if (! $guard->validate($credentials)) {
             $this->recordFailedAttempt();
 
             session()->flash('error', trans('admin::app.users.login-error'));
@@ -61,13 +71,109 @@ class SessionController extends Controller
 
         $this->clearRateLimit();
 
-        if (auth()->guard('user')->user()->status == 0) {
+        $user = $guard->getLastAttempted();
+
+        if (! $user->status) {
             session()->flash('warning', trans('admin::app.users.activate-warning'));
 
-            auth()->guard('user')->logout();
+            $guard->logout();
 
             return redirect()->route('admin.session.create');
         }
+
+        $guard->getProvider()->rehashPasswordIfRequired($user, $credentials);
+
+        if ($user->two_factor_secret !== null) {
+            session()->regenerate(true);
+            session()->put(self::PENDING_KEY, [
+                'user_id' => $user->id,
+                'fingerprint' => $twoFactor->fingerprint($user),
+                'password_fingerprint' => hash('sha256', $user->getAuthPassword()),
+                'expires_at' => now()->addMinutes(5)->timestamp,
+            ]);
+
+            return redirect()->route('admin.session.two_factor');
+        }
+
+        $guard->login($user, $user->two_factor_session_version === null && request()->boolean('remember'));
+        session()->put(TwoFactorAuthentication::SESSION_KEY, $twoFactor->fingerprint($user));
+
+        return $this->afterLogin();
+    }
+
+    public function twoFactor(): RedirectResponse|Response
+    {
+        if (! $this->pendingChallenge()) {
+            return redirect()->route('admin.session.create');
+        }
+
+        return response()->view('admin::sessions.two-factor')->header('Cache-Control', 'private, no-store');
+    }
+
+    public function verifyTwoFactor(TwoFactorAuthentication $twoFactor): RedirectResponse
+    {
+        if (! $pending = $this->pendingChallenge()) {
+            return redirect()->route('admin.session.create');
+        }
+
+        $code = request()->validate(['verification_code' => ['required', 'string', 'max:32']])['verification_code'];
+        $key = 'admin-two-factor:'.$pending['user_id'];
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            abort(429);
+        }
+
+        $user = DB::transaction(function () use ($pending, $key, $code, $twoFactor) {
+            $user = UserProxy::query()->whereKey($pending['user_id'])->where('status', true)->lockForUpdate()->first();
+
+            if (! $user || $user->two_factor_secret === null
+                || ! hash_equals($pending['fingerprint'], $twoFactor->fingerprint($user))
+                || ! hash_equals($pending['password_fingerprint'], hash('sha256', $user->getAuthPassword()))) {
+                session()->forget(self::PENDING_KEY);
+
+                return null;
+            }
+
+            if (RateLimiter::tooManyAttempts($key, 5)) {
+                abort(429);
+            }
+
+            if (! $twoFactor->consume($user, $code)) {
+                RateLimiter::hit($key, 300);
+
+                return null;
+            }
+
+            return $user;
+        });
+
+        if (! $user) {
+            return back()->withErrors(['verification_code' => trans('admin::two_factor.invalid')]);
+        }
+
+        RateLimiter::clear($key);
+        session()->forget(self::PENDING_KEY);
+        auth()->guard('user')->login($user);
+        session()->put(TwoFactorAuthentication::SESSION_KEY, $twoFactor->fingerprint($user));
+
+        return $this->afterLogin();
+    }
+
+    private function pendingChallenge(): ?array
+    {
+        $pending = session()->get(self::PENDING_KEY);
+
+        if (! $pending || now()->timestamp >= $pending['expires_at']) {
+            session()->forget(self::PENDING_KEY);
+
+            return null;
+        }
+
+        return $pending;
+    }
+
+    private function afterLogin(): RedirectResponse
+    {
 
         $menus = menu()->getItems('admin');
 

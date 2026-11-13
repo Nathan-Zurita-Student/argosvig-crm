@@ -6,6 +6,8 @@ Use `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`. Use 
 
 Após aplicar as migrações e atualizar a configuração do ambiente, rode `php artisan crm:check-production`. Configure o monitor externo para consultar `/up` por HTTPS. A rota verifica que a aplicação responde. A verificação via CLI cobre o banco e os discos de arquivos. Configure o agendador do servidor para executar `php artisan schedule:run` a cada minuto e acompanhar falhas. Os lembretes de documentos rodam às 08h no fuso da aplicação.
 
+Cada administrador pode ativar a verificação em duas etapas em **Minha conta**. O fluxo pede a senha atual, confirma um código do autenticador e exibe códigos de recuperação de uso único. Guarde os códigos em local seguro e valide um novo login antes de encerrar a sessão de configuração.
+
 ## Backup e teste de recuperação
 
 Prepare um arquivo de opções do cliente MySQL, fora do projeto, com permissões de leitura limitadas ao operador. Preencha host, usuário e senha na seção `[client]`. Mantenha um destino privado de backup com acesso restrito, criptografia em repouso e cópia fora do servidor. O diretório padrão dos arquivos do CRM é `storage/app`.

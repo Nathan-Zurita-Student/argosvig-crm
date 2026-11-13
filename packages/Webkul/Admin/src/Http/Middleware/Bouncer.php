@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Webkul\Admin\Security\TwoFactorAuthentication;
 
 class Bouncer
 {
@@ -25,6 +26,14 @@ class Bouncer
          * logged out.
          */
         if (! (bool) auth()->guard($guard)->user()->status) {
+            $this->terminateSession($guard);
+
+            return redirect()->route('admin.session.create');
+        }
+
+        $user = auth()->guard($guard)->user();
+
+        if ($user->two_factor_session_version !== null && ! hash_equals(app(TwoFactorAuthentication::class)->fingerprint($user), (string) $request->session()->get(TwoFactorAuthentication::SESSION_KEY))) {
             $this->terminateSession($guard);
 
             return redirect()->route('admin.session.create');
@@ -140,6 +149,10 @@ class Bouncer
             'admin.reset_password.store',
             'admin.user.account.edit',
             'admin.user.account.update',
+            'admin.user.account.two_factor',
+            'admin.user.account.two_factor.begin',
+            'admin.user.account.two_factor.enable',
+            'admin.user.account.two_factor.disable',
 
             /**
              * Every user has notifications, whatever their role, and each request is scoped to the

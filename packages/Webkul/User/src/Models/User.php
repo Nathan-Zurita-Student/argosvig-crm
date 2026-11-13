@@ -38,6 +38,16 @@ class User extends Authenticatable implements UserContract
         'password',
         'api_token',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_last_step',
+        'two_factor_session_version',
+    ];
+
+    protected $casts = [
+        'two_factor_secret' => 'encrypted',
+        'two_factor_recovery_codes' => 'encrypted:array',
+        'two_factor_last_step' => 'integer',
     ];
 
     /**

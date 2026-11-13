@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [security] Added optional authenticator-based two-factor login with one-time recovery codes for staff accounts.
+
 * [feature] Added a company migration preview and transactional import with persistent source-to-CRM IDs.
 
 * [feature] Added a production readiness check and a database and attachment backup script with integrity checks.

@@ -31,6 +31,8 @@ class Handler extends ExceptionHandler
     {
         parent::__construct($container);
 
+        $this->dontFlash(['verification_code']);
+
         $this->jsonErrorMessages = [
             '404' => trans('admin::app.errors.404.title'),
             '403' => trans('admin::app.errors.403.title'),
@@ -77,6 +79,10 @@ class Handler extends ExceptionHandler
     private function renderCustomResponse(Throwable $exception)
     {
         if ($exception instanceof HttpException) {
+            if (in_array($exception->getStatusCode(), [409, 429], true)) {
+                return parent::render(request(), $exception);
+            }
+
             $statusCode = in_array($exception->getStatusCode(), [401, 403, 404, 503])
                 ? $exception->getStatusCode()
                 : 500;

@@ -38,6 +38,8 @@
                 <div class="flex items-center gap-x-2.5">
                     {!! view_render_event('admin.user.account.save_btn.before', ['user' => $user]) !!}
 
+                    <a class="secondary-button" href="{{ route('admin.user.account.two_factor') }}">@lang('admin::two_factor.title')</a>
+
                     <button
                         type="submit"
                         class="primary-button"

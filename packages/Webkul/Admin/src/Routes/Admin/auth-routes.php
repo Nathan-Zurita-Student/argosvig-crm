@@ -24,6 +24,8 @@ Route::withoutMiddleware(['user'])->group(function () {
              * correct sign-in never consumes the budget.
              */
             Route::post('', 'store')->name('admin.session.store');
+            Route::get('two-factor', 'twoFactor')->name('admin.session.two_factor');
+            Route::post('two-factor', 'verifyTwoFactor')->name('admin.session.two_factor.verify');
         });
 
         Route::middleware(['user'])->group(function () {
