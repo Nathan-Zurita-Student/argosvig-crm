@@ -14,6 +14,7 @@ use Webkul\DataTransfer\Contracts\ImportBatch as ImportBatchContract;
 use Webkul\DataTransfer\Helpers\Import;
 use Webkul\DataTransfer\Helpers\Importers\AbstractImporter;
 use Webkul\DataTransfer\Repositories\ImportBatchRepository;
+use Webkul\Lead\Models\StageProxy;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\Lead\Repositories\ProductRepository as LeadProductRepository;
 
@@ -187,6 +188,24 @@ class Importer extends AbstractImporter
             'lead_pipeline_id' => 'required|exists:lead_pipelines,id',
             'lead_pipeline_stage_id' => 'required|exists:lead_pipeline_stages,id',
         ]);
+
+        $validator->after(function ($validator) use ($rowData) {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $stage = StageProxy::query()->find($rowData['lead_pipeline_stage_id']);
+
+            if (! $stage || (int) $stage->lead_pipeline_id !== (int) $rowData['lead_pipeline_id']) {
+                $validator->errors()->add('lead_pipeline_stage_id', trans('admin::pipeline_requirements.invalid_stage'));
+
+                return;
+            }
+
+            foreach ($stage->missingFields($rowData) as $field => $message) {
+                $validator->errors()->add($field, $message);
+            }
+        });
 
         if ($validator->fails()) {
             $failedAttributes = $validator->failed();

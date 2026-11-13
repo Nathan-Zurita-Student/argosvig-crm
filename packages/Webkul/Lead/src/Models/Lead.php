@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\ValidationException;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Activity\Traits\LogsActivity;
 use Webkul\Attribute\Traits\CustomAttribute;
@@ -60,6 +61,27 @@ class Lead extends Model implements LeadContract
     protected $appends = [
         'rotten_days',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $lead) {
+            if (! $lead->isDirty('lead_pipeline_stage_id')) {
+                return;
+            }
+
+            $stage = $lead->stage()->first();
+
+            if (! $stage || ($lead->lead_pipeline_id !== null && (int) $stage->lead_pipeline_id !== (int) $lead->lead_pipeline_id)) {
+                throw ValidationException::withMessages(['lead_pipeline_stage_id' => trans('admin::pipeline_requirements.invalid_stage')]);
+            }
+
+            $errors = $stage->missingFields($lead->getAttributes());
+
+            if ($errors) {
+                throw ValidationException::withMessages($errors);
+            }
+        });
+    }
 
     /**
      * Get the user that owns the lead.

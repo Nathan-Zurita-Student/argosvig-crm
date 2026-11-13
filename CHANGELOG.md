@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added configurable entry requirements for opportunity pipeline stages.
+
 * [security] Restricted operational dashboard figures to the permitted modules and document categories for globally scoped users.
 
 * [feature] Added a 30-day contract expiry filter and linked renewal drafts that preserve the previous contract.

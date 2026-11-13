@@ -220,6 +220,7 @@
                                         </x-admin::form.control-group>
 
                                         {!! view_render_event('admin.settings.pipelines.edit.form.stages.probability.after', ['pipeline' => $pipeline]) !!}
+                                        @include('admin::settings.pipelines.requirements')
                                     </div>
                                 </div>
                                 

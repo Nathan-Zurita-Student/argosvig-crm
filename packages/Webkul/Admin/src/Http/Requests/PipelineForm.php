@@ -4,6 +4,8 @@ namespace Webkul\Admin\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Factory as ValidationFactory;
+use Illuminate\Validation\Rule;
+use Webkul\Lead\Models\Stage;
 
 class PipelineForm extends FormRequest
 {
@@ -34,12 +36,23 @@ class PipelineForm extends FormRequest
      */
     public function rules()
     {
+        $requirements = [
+            'stages.*.required_fields.*' => ['nullable', Rule::in(Stage::REQUIRED_FIELD_OPTIONS)],
+            'stages.*.required_fields' => ['sometimes', 'array', 'max:'.(count(Stage::REQUIRED_FIELD_OPTIONS) + 1), function ($attribute, $value, $fail) {
+                $stage = str_replace('.required_fields', '', $attribute);
+
+                if (is_array($value) && in_array('lost_reason', $value, true) && $this->input($stage.'.code') !== 'lost') {
+                    $fail(trans('admin::pipeline_requirements.lost_only'));
+                }
+            }],
+        ];
+
         if (request('id')) {
             return [
                 'name' => 'required|unique:lead_pipelines,name,'.request('id'),
                 'stages.*.name' => 'unique_key',
                 'stages.*.code' => 'unique_key',
-            ];
+            ] + $requirements;
         }
 
         return [
@@ -47,7 +60,7 @@ class PipelineForm extends FormRequest
             'rotten_days' => 'required',
             'stages.*.name' => 'unique_key',
             'stages.*.code' => 'unique_key',
-        ];
+        ] + $requirements;
     }
 
     /**

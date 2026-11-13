@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Webkul\Admin\DataGrids\Lead\LeadDataGrid;
@@ -204,7 +206,7 @@ class LeadController extends Controller
             $data['closed_at'] = Carbon::now();
         }
 
-        $lead = $this->leadRepository->create($data);
+        $lead = DB::transaction(fn () => $this->leadRepository->create($data));
 
         Event::dispatch('lead.create.after', $lead);
 
@@ -289,7 +291,7 @@ class LeadController extends Controller
             $data['lead_pipeline_stage_id'] = $stage->id;
         }
 
-        $lead = $this->leadRepository->update($data, $id);
+        $lead = DB::transaction(fn () => $this->leadRepository->update($data, $id));
 
         Event::dispatch('lead.update.after', $lead);
 
@@ -316,10 +318,11 @@ class LeadController extends Controller
         $this->preventUnauthorizedAccess($this->leadRepository->findOrFail($id)->user_id);
 
         $data = request()->all();
+        unset($data['lead_pipeline_id'], $data['lead_pipeline_stage_id']);
 
         $attributes = $this->attributeRepository->findWhere([
             'entity_type' => 'leads',
-            ['code', 'NOTIN', ['title', 'description']],
+            ['code', 'NOTIN', ['title', 'description', 'lead_pipeline_id', 'lead_pipeline_stage_id']],
         ]);
 
         Event::dispatch('lead.update.before', $id);
@@ -423,19 +426,30 @@ class LeadController extends Controller
         );
 
         try {
-            foreach ($leads as $lead) {
-                Event::dispatch('lead.update.before', $lead->id);
+            DB::transaction(function () use ($leads, $massUpdateRequest) {
+                foreach ($leads as $lead) {
+                    $stage = $lead->pipeline->stages()->find($massUpdateRequest->input('value'));
 
-                $lead = $this->leadRepository->find($lead->id);
+                    if (! $stage) {
+                        throw ValidationException::withMessages(['value' => trans('admin::pipeline_requirements.invalid_stage')]);
+                    }
 
-                $lead?->update(['lead_pipeline_stage_id' => $massUpdateRequest->input('value')]);
+                    Event::dispatch('lead.update.before', $lead->id);
 
-                Event::dispatch('lead.update.before', $lead->id);
-            }
+                    $updated = $this->leadRepository->update([
+                        'lead_pipeline_stage_id' => $stage->id,
+                        'entity_type' => 'leads',
+                    ], $lead->id, ['lead_pipeline_stage_id']);
+
+                    Event::dispatch('lead.update.after', $updated);
+                }
+            });
 
             return response()->json([
                 'message' => trans('admin::app.leads.update-success'),
             ]);
+        } catch (ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $th) {
             return response()->json([
                 'message' => trans('admin::app.leads.update-failed'),
