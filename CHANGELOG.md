@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a 30-day contract expiry filter and linked renewal drafts that preserve the previous contract.
+
 * [feature] Added quote send history, acceptance and decline recording, and linked contract drafts from accepted versions.
 
 * [feature] Added commercial follow-up for open opportunities without upcoming actions and overdue activities.

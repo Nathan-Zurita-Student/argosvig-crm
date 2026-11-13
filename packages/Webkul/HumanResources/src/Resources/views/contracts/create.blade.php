@@ -15,6 +15,10 @@
                     <input type="hidden" name="quote_version_id" value="{{ $quoteVersion->id }}">
                     <p v-pre class="mb-4 font-medium">{{ trans('human_resources::commercial.quote.contract_source', ['subject' => $quoteVersion->snapshot['subject'], 'number' => $quoteVersion->number]) }}</p>
                 @endif
+                @if ($previous)
+                    <input type="hidden" name="renews_contract_id" value="{{ $previous->id }}">
+                    <p v-pre class="mb-4 font-medium">{{ trans('human_resources::readiness.renewal_source', ['number' => $previous->contract_number]) }}</p>
+                @endif
                 @include('human_resources::workforce.errors')
                 @include('human_resources::contracts.form')
             </div>

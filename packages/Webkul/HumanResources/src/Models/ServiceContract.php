@@ -2,8 +2,10 @@
 
 namespace Webkul\HumanResources\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\HumanResources\Contracts\ServiceContract as ServiceContractContract;
@@ -27,5 +29,21 @@ class ServiceContract extends Model implements ServiceContractContract
     public function manager(): BelongsTo
     {
         return $this->belongsTo(UserProxy::modelClass(), 'manager_id');
+    }
+
+    public function renewal(): HasOne
+    {
+        return $this->hasOne(ServiceContractProxy::modelClass(), 'renews_contract_id')->withTrashed();
+    }
+
+    public function previousContract(): BelongsTo
+    {
+        return $this->belongsTo(ServiceContractProxy::modelClass(), 'renews_contract_id')->withTrashed();
+    }
+
+    public function scopeExpiring(Builder $query): Builder
+    {
+        return $query->where('status', 'active')
+            ->whereBetween('ends_at', [today()->toDateString(), today()->addDays(30)->toDateString()]);
     }
 }

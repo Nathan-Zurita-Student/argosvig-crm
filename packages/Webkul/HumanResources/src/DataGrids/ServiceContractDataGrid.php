@@ -5,12 +5,17 @@ namespace Webkul\HumanResources\DataGrids;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\DataGrid\DataGrid;
+use Webkul\HumanResources\Models\ServiceContractProxy;
 
 class ServiceContractDataGrid extends DataGrid
 {
     public function prepareQueryBuilder(): Builder
     {
         $query = DB::table('hr_service_contracts')->join('organizations', 'hr_service_contracts.organization_id', '=', 'organizations.id')->whereNull('hr_service_contracts.deleted_at')->select('hr_service_contracts.id', 'hr_service_contracts.contract_number', 'hr_service_contracts.title', 'hr_service_contracts.monthly_value', 'hr_service_contracts.status', 'hr_service_contracts.ends_at', 'organizations.name as organization_name');
+
+        if (request()->query('expiry') === 'soon') {
+            $query->whereIn('hr_service_contracts.id', ServiceContractProxy::query()->expiring()->select('id')->toBase());
+        }
         foreach (['contract_number', 'title', 'status', 'ends_at'] as $field) {
             $this->addFilter($field, "hr_service_contracts.{$field}");
         }
@@ -22,7 +27,7 @@ class ServiceContractDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         foreach (['contract_number', 'title', 'organization_name', 'ends_at'] as $field) {
-            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.contracts.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $field === 'title' ? $this->primaryLink($row->title, route('admin.human_resources.contracts.edit', $row->id)) : ($row->{$field} ?: '—')]);
+            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.contracts.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $field === 'title' && bouncer()->hasPermission('human-resources.contracts.edit') ? $this->primaryLink($row->title, route('admin.human_resources.contracts.edit', $row->id)) : ($row->{$field} ?: '—')]);
         }
         $this->addColumn([
             'index' => 'monthly_value',

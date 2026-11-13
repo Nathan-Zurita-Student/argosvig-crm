@@ -17,7 +17,8 @@ class ServiceContractRequest extends FormRequest
         $id = $this->route('id');
 
         return [
-            'quote_version_id' => [$id ? 'prohibited' : 'nullable', 'integer', 'min:1'],
+            'quote_version_id' => [$id ? 'prohibited' : 'nullable', 'prohibits:renews_contract_id', 'integer', 'min:1'],
+            'renews_contract_id' => [$id ? 'prohibited' : 'nullable', 'integer', 'min:1'],
             'organization_id' => ['required', 'integer', 'exists:organizations,id'],
             'manager_id' => ['nullable', 'integer', 'exists:users,id'],
             'contract_number' => ['required', 'string', 'max:100', Rule::unique('hr_service_contracts')->ignore($id)],
