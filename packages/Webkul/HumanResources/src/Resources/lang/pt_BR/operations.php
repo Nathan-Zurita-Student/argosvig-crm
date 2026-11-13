@@ -18,4 +18,11 @@ return [
     'answer' => 'Resumo para revisão',
     'ai_unavailable' => 'O provedor de IA está indisponível para esta consulta. Os registros continuam acessíveis abaixo.',
     'shift_reference' => 'Escala :id',
+    'incident_draft' => 'Rascunho com IA',
+    'draft_privacy' => 'O texto ou áudio informado será enviado ao provedor de IA. Evite mencionar CPF, dados médicos ou outras informações pessoais desnecessárias.',
+    'audio' => 'Áudio do relato (até 8 MB)',
+    'narrative' => 'Relato por escrito',
+    'invalid_audio' => 'Use um arquivo de áudio WAV, MP3, M4A, OGG ou WebM válido.',
+    'generate_draft' => 'Gerar rascunho',
+    'review_draft' => 'Revise o rascunho e confirme data, local e gravidade antes de salvar.',
 ];

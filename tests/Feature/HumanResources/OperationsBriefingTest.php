@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Webkul\Core\Models\CoreConfig;
 use Webkul\HumanResources\Models\Incident;
@@ -62,4 +63,28 @@ it('sends only permitted operational metadata and treats the model answer as pla
     $this->actingAs(getDefaultAdmin(), 'user')->post($url, ['question' => 'Pendências?'])->assertOk();
     Http::assertSent(fn ($request) => str_contains($request->body(), $private->code)
         && ! str_contains($request->body(), 'Private title') && ! str_contains($request->body(), 'Private CPF field'));
+});
+
+it('transcribes a valid attachment and previews a draft for an authorized creator without saving it', function () {
+    enableOperationsAiForTest();
+    config(['operations.transcription_model' => 'test/transcribe']);
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://openrouter.ai/api/v1/audio/transcriptions' => Http::response(['text' => 'Portão travado na troca de plantão.']),
+        'https://openrouter.ai/api/v1/chat/completions' => Http::response(['choices' => [['message' => ['content' => json_encode([
+            'title' => 'Portão travado', 'description' => 'Falha ao abrir o portão.', 'location' => 'Entrada', 'occurred_at' => null,
+            'employee_id' => 100, 'status' => 'closed',
+        ])]]]]),
+    ]);
+    $wav = 'RIFF'.pack('V', 38).'WAVEfmt '.pack('VvvVVvv', 16, 1, 1, 8000, 16000, 2, 16).'data'.pack('Vv', 2, 0);
+    $upload = UploadedFile::fake()->createWithContent('relato.wav', $wav);
+    $url = route('admin.operations.incident_draft.store');
+    $this->actingAs(operationsUser(['operations-assistant', 'operations-assistant.ai']), 'user')->post($url, ['audio' => $upload])->assertUnauthorized();
+    Http::assertNothingSent();
+
+    $this->actingAs(getDefaultAdmin(), 'user')->post($url, ['audio' => $upload])->assertRedirect(route('admin.human_resources.incidents.create'))
+        ->assertSessionHas('incident_draft', fn ($draft) => $draft['title'] === 'Portão travado' && ! isset($draft['employee_id'], $draft['status']));
+    $this->get(route('admin.human_resources.incidents.create'))->assertOk()->assertSee('Falha ao abrir o portão.');
+    $this->assertDatabaseMissing('hr_incidents', ['title' => 'Portão travado']);
+    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/audio/transcriptions') && $request['input_audio']['format'] === 'wav');
 });

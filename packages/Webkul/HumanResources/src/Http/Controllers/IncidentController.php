@@ -26,7 +26,11 @@ class IncidentController extends Controller
 
     public function create(): View
     {
-        return view('human_resources::incidents.create', $this->formData());
+        $draft = session()->pull('incident_draft');
+
+        return view('human_resources::incidents.create', $this->formData() + [
+            'draft' => $draft ? $this->repository->makeModel()->fill($draft) : null,
+        ]);
     }
 
     public function show(int $id): View

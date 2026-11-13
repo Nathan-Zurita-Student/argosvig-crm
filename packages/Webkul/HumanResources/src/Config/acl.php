@@ -10,7 +10,7 @@ return [
     [
         'key' => 'operations-assistant.ai',
         'name' => 'human_resources::operations.ai_title',
-        'route' => 'admin.operations.ask',
+        'route' => ['admin.operations.ask', 'admin.operations.incident_draft', 'admin.operations.incident_draft.store'],
         'sort' => 1,
     ],
     [

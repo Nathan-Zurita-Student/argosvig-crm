@@ -18,4 +18,11 @@ return [
     'answer' => 'Summary for review',
     'ai_unavailable' => 'The AI provider is unavailable for this request. The records remain available below.',
     'shift_reference' => 'Shift :id',
+    'incident_draft' => 'AI incident draft',
+    'draft_privacy' => 'The text or audio you provide is sent to the AI provider. Leave out identification numbers, medical data and other unnecessary personal information.',
+    'audio' => 'Incident recording (up to 8 MB)',
+    'narrative' => 'Written account',
+    'invalid_audio' => 'Use a valid WAV, MP3, M4A, OGG or WebM audio file.',
+    'generate_draft' => 'Generate draft',
+    'review_draft' => 'Review the draft and confirm its date, location and severity before saving.',
 ];
