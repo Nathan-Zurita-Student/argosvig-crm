@@ -9,6 +9,7 @@ use Webkul\HumanResources\Models\EmployeeDocument;
 use Webkul\HumanResources\Models\Incident;
 use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Models\ShiftAssignment;
+use Webkul\HumanResources\Models\Vacation;
 use Webkul\HumanResources\Models\WorkSite;
 
 class ModuleServiceProvider extends BaseModuleServiceProvider
@@ -21,5 +22,6 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         Incident::class,
         WorkSite::class,
         ShiftAssignment::class,
+        Vacation::class,
     ];
 }

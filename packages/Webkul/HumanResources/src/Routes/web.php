@@ -7,6 +7,7 @@ use Webkul\HumanResources\Http\Controllers\EmployeeDocumentController;
 use Webkul\HumanResources\Http\Controllers\IncidentController;
 use Webkul\HumanResources\Http\Controllers\ServiceContractController;
 use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
+use Webkul\HumanResources\Http\Controllers\VacationController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
@@ -24,6 +25,15 @@ Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(funct
         Route::post('', 'store')->name('admin.human_resources.employee_documents.store');
         Route::get('{documentId}/download', 'download')->name('admin.human_resources.employee_documents.download');
         Route::delete('{documentId}', 'destroy')->name('admin.human_resources.employee_documents.delete');
+    });
+
+    Route::controller(VacationController::class)->prefix('vacations')->group(function () {
+        Route::get('', 'index')->name('admin.human_resources.vacations.index');
+        Route::get('create', 'create')->name('admin.human_resources.vacations.create');
+        Route::post('', 'store')->name('admin.human_resources.vacations.store');
+        Route::get('{id}/edit', 'edit')->name('admin.human_resources.vacations.edit');
+        Route::put('{id}', 'update')->name('admin.human_resources.vacations.update');
+        Route::delete('{id}', 'destroy')->name('admin.human_resources.vacations.delete');
     });
 
     Route::controller(DepartmentController::class)->prefix('departments')->group(function () {

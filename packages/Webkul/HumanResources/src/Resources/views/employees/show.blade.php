@@ -34,10 +34,17 @@
                         trans('human_resources::app.employees.fields.cpf') => $employee->cpf,
                         trans('human_resources::app.employees.fields.rg') => $employee->rg,
                         trans('human_resources::app.employees.fields.birth_date') => $employee->birth_date?->format('d/m/Y'),
+                        trans('human_resources::app.employees.fields.gender') => $employee->gender ? trans("human_resources::app.employees.genders.{$employee->gender}") : null,
+                        trans('human_resources::app.employees.fields.pis') => $employee->pis,
                         trans('human_resources::app.employees.fields.email') => $employee->email,
                         trans('human_resources::app.employees.fields.phone') => $employee->phone,
                         trans('human_resources::app.employees.fields.department') => $employee->department?->name,
                         trans('human_resources::app.employees.fields.hire_date') => $employee->hire_date?->format('d/m/Y'),
+                        trans('human_resources::app.employees.fields.termination_date') => $employee->termination_date?->format('d/m/Y'),
+                        trans('human_resources::app.employees.fields.salary') => $employee->salary ? core()->formatBasePrice($employee->salary) : null,
+                        trans('human_resources::app.employees.fields.cnv_number') => $employee->cnv_number,
+                        trans('human_resources::app.employees.fields.cnv_issued_at') => $employee->cnv_issued_at?->format('d/m/Y'),
+                        trans('human_resources::app.employees.fields.cnv_expires_at') => $employee->cnv_expires_at?->format('d/m/Y'),
                         trans('human_resources::app.employees.fields.alterdata_employee_id') => $employee->alterdata_employee_id,
                     ] as $label => $value)
                         <div>

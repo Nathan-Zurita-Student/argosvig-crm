@@ -16,6 +16,7 @@ use Webkul\HumanResources\Models\EmployeeDocument;
 use Webkul\HumanResources\Models\Incident;
 use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Models\ShiftAssignment;
+use Webkul\HumanResources\Models\Vacation;
 use Webkul\HumanResources\Models\WorkSite;
 use Webkul\Lead\Models\Lead;
 use Webkul\Lead\Models\Pipeline;
@@ -334,6 +335,7 @@ class DemoCrmSeeder extends Seeder
         $this->createShiftAssignments($workSites, $employees);
         $this->createIncidents($contracts, $employees, $ownerId);
         $this->createEmployeeDocuments($employees, $ownerId);
+        $this->createVacations($employees);
     }
 
     /**
@@ -387,11 +389,18 @@ class DemoCrmSeeder extends Seeder
                     'full_name' => $name,
                     'cpf' => sprintf('900.%03d.%03d-%02d', $index + 100, $index + 200, $index + 10),
                     'birth_date' => now()->subYears(24 + ($index % 24))->subDays($index)->toDateString(),
+                    'gender' => $index % 2 === 0 ? 'male' : 'female',
                     'rg' => sprintf('DEMO-%08d', $index + 1),
+                    'pis' => sprintf('DEMO-PIS-%06d', $index + 1),
                     'email' => sprintf('colaborador%02d@argosvig.test', $index + 1),
                     'phone' => sprintf('+55 11 988%02d-%04d', $index, 3000 + $index),
                     'job_title' => $jobTitles[$index % count($jobTitles)],
+                    'salary' => 2200 + (($index % 8) * 350),
                     'hire_date' => now()->subMonths(2 + $index)->toDateString(),
+                    'termination_date' => $status === 'inactive' ? now()->subDays(20)->toDateString() : null,
+                    'cnv_number' => $index % 3 === 0 ? sprintf('CNV-DEMO-%05d', $index + 1) : null,
+                    'cnv_issued_at' => $index % 3 === 0 ? now()->subYear()->toDateString() : null,
+                    'cnv_expires_at' => $index % 3 === 0 ? now()->addYears(4)->toDateString() : null,
                     'status' => $status,
                     'alterdata_employee_id' => sprintf('ALT-DEMO-%04d', $index + 1),
                     'notes' => 'Cadastro demonstrativo para validação dos fluxos internos.',
@@ -543,6 +552,30 @@ class DemoCrmSeeder extends Seeder
                     'expires_at' => now()->addDays(15 + ($index * 8))->toDateString(),
                     'status' => 'valid',
                     'uploaded_by' => $ownerId,
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param  array<int, Employee>  $employees
+     */
+    private function createVacations(array $employees): void
+    {
+        foreach (array_slice($employees, 0, 12) as $index => $employee) {
+            $startsAt = now()->addMonths(($index % 6) - 2)->startOfMonth()->addDays($index % 10);
+            $endsAt = $startsAt->copy()->addDays($index % 4 === 0 ? 14 : 29);
+            $status = $endsAt->isPast() ? 'completed' : ($startsAt->isPast() ? 'in_progress' : 'scheduled');
+
+            Vacation::withTrashed()->updateOrCreate(
+                ['employee_id' => $employee->id, 'starts_at' => $startsAt->toDateString()],
+                [
+                    'ends_at' => $endsAt->toDateString(),
+                    'days' => $startsAt->diffInDays($endsAt) + 1,
+                    'type' => $index % 4 === 0 ? 'split' : 'regular',
+                    'status' => $status,
+                    'notes' => 'Período demonstrativo para planejamento operacional.',
+                    'deleted_at' => null,
                 ]
             );
         }

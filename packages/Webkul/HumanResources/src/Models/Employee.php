@@ -20,11 +20,18 @@ class Employee extends Model implements EmployeeContract
         'full_name',
         'cpf',
         'birth_date',
+        'gender',
         'rg',
+        'pis',
         'email',
         'phone',
         'job_title',
+        'salary',
         'hire_date',
+        'termination_date',
+        'cnv_number',
+        'cnv_issued_at',
+        'cnv_expires_at',
         'status',
         'alterdata_employee_id',
         'notes',
@@ -33,6 +40,10 @@ class Employee extends Model implements EmployeeContract
     protected $casts = [
         'birth_date' => 'date',
         'hire_date' => 'date',
+        'termination_date' => 'date',
+        'cnv_issued_at' => 'date',
+        'cnv_expires_at' => 'date',
+        'salary' => 'decimal:2',
     ];
 
     public function department(): BelongsTo
@@ -43,5 +54,10 @@ class Employee extends Model implements EmployeeContract
     public function documents(): HasMany
     {
         return $this->hasMany(EmployeeDocumentProxy::modelClass());
+    }
+
+    public function vacations(): HasMany
+    {
+        return $this->hasMany(VacationProxy::modelClass());
     }
 }

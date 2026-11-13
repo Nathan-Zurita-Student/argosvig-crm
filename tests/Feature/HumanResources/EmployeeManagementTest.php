@@ -16,6 +16,8 @@ it('keeps operational navigation in priority order before administrative areas',
         ->values();
 
     expect($rootKeys->search('workforce'))->toBeLessThan($rootKeys->search('work-sites'))
+        ->and($rootKeys->search('workforce'))->toBeLessThan($rootKeys->search('vacations'))
+        ->and($rootKeys->search('vacations'))->toBeLessThan($rootKeys->search('work-sites'))
         ->and($rootKeys->search('work-sites'))->toBeLessThan($rootKeys->search('incidents'))
         ->and($rootKeys->search('incidents'))->toBeLessThan($rootKeys->search('service-contracts'))
         ->and($rootKeys->search('service-contracts'))->toBeLessThan($rootKeys->search('departments'))
@@ -72,6 +74,12 @@ it('creates a department and an employee linked to Alterdata', function () {
             'employee_number' => "ARG{$suffix}",
             'full_name' => "Employee {$suffix}",
             'email' => "employee{$suffix}@example.com",
+            'gender' => 'female',
+            'pis' => "PIS{$suffix}",
+            'salary' => 3450.75,
+            'cnv_number' => "CNV{$suffix}",
+            'cnv_issued_at' => now()->subYear()->toDateString(),
+            'cnv_expires_at' => now()->addYears(4)->toDateString(),
             'status' => 'active',
             'alterdata_employee_id' => "ALT{$suffix}",
         ])
@@ -81,6 +89,10 @@ it('creates a department and an employee linked to Alterdata', function () {
         'department_id' => $department->id,
         'employee_number' => "ARG{$suffix}",
         'alterdata_employee_id' => "ALT{$suffix}",
+        'gender' => 'female',
+        'pis' => "PIS{$suffix}",
+        'salary' => '3450.75',
+        'cnv_number' => "CNV{$suffix}",
     ]);
 });
 

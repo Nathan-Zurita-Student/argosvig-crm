@@ -12,6 +12,7 @@ use Webkul\HumanResources\Models\EmployeeDocument;
 use Webkul\HumanResources\Models\Incident;
 use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Models\ShiftAssignment;
+use Webkul\HumanResources\Models\Vacation;
 use Webkul\HumanResources\Models\WorkSite;
 use Webkul\Lead\Models\Lead;
 use Webkul\Product\Models\Product;
@@ -42,5 +43,6 @@ it('creates a complete and repeatable CRM demonstration database', function () {
         ->and(WorkSite::query()->where('code', 'like', 'POSTO-DEMO-%')->count())->toBe(10)
         ->and(ShiftAssignment::query()->where('notes', 'Escala demonstrativa 12x36.')->count())->toBe(30)
         ->and(Incident::query()->where('code', 'like', 'OCR-DEMO-%')->count())->toBe(8)
-        ->and(EmployeeDocument::query()->where('name', 'like', 'Documento demonstrativo %')->count())->toBe(12);
+        ->and(EmployeeDocument::query()->where('name', 'like', 'Documento demonstrativo %')->count())->toBe(12)
+        ->and(Vacation::query()->where('notes', 'Período demonstrativo para planejamento operacional.')->count())->toBe(12);
 });

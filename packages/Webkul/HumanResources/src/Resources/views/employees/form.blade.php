@@ -5,10 +5,15 @@
         ['cpf', 'text', false],
         ['birth_date', 'date', false],
         ['rg', 'text', false],
+        ['pis', 'text', false],
         ['email', 'email', false],
         ['phone', 'text', false],
         ['job_title', 'text', false],
         ['hire_date', 'date', false],
+        ['termination_date', 'date', false],
+        ['cnv_number', 'text', false],
+        ['cnv_issued_at', 'date', false],
+        ['cnv_expires_at', 'date', false],
         ['alterdata_employee_id', 'text', false],
     ] as [$field, $type, $required])
         <x-admin::form.control-group>
@@ -28,6 +33,23 @@
             <x-admin::form.control-group.error :control-name="$field" />
         </x-admin::form.control-group>
     @endforeach
+
+    <x-admin::form.control-group>
+        <x-admin::form.control-group.label>@lang('human_resources::app.employees.fields.gender')</x-admin::form.control-group.label>
+        <x-admin::form.control-group.control type="select" name="gender" id="gender" :value="old('gender', $employee?->gender)" :label="trans('human_resources::app.employees.fields.gender')">
+            <option value="">@lang('human_resources::app.common.select')</option>
+            @foreach (['female', 'male', 'other', 'not_informed'] as $gender)
+                <option value="{{ $gender }}">@lang("human_resources::app.employees.genders.{$gender}")</option>
+            @endforeach
+        </x-admin::form.control-group.control>
+        <x-admin::form.control-group.error control-name="gender" />
+    </x-admin::form.control-group>
+
+    <x-admin::form.control-group>
+        <x-admin::form.control-group.label>@lang('human_resources::app.employees.fields.salary')</x-admin::form.control-group.label>
+        <x-admin::form.control-group.control type="number" name="salary" id="salary" step="0.01" min="0" :value="old('salary', $employee?->salary)" :label="trans('human_resources::app.employees.fields.salary')" />
+        <x-admin::form.control-group.error control-name="salary" />
+    </x-admin::form.control-group>
 
     <x-admin::form.control-group>
         <x-admin::form.control-group.label>

@@ -8,22 +8,28 @@ return [
         'sort' => 8,
         'icon-class' => 'icon-user',
     ], [
+        'key' => 'vacations',
+        'name' => 'human_resources::app.menu.vacations',
+        'route' => 'admin.human_resources.vacations.index',
+        'sort' => 9,
+        'icon-class' => 'icon-activity',
+    ], [
         'key' => 'service-contracts',
         'name' => 'human_resources::app.menu.contracts',
         'route' => 'admin.human_resources.contracts.index',
-        'sort' => 11,
+        'sort' => 12,
         'icon-class' => 'icon-quote',
     ], [
         'key' => 'incidents',
         'name' => 'human_resources::app.menu.incidents',
         'route' => 'admin.human_resources.incidents.index',
-        'sort' => 10,
+        'sort' => 11,
         'icon-class' => 'icon-activity',
     ], [
         'key' => 'work-sites',
         'name' => 'human_resources::app.menu.work_sites',
         'route' => 'admin.human_resources.work_sites.index',
-        'sort' => 9,
+        'sort' => 10,
         'icon-class' => 'icon-product',
     ], [
         'key' => 'work-sites.sites', 'name' => 'human_resources::app.menu.sites', 'route' => 'admin.human_resources.work_sites.index', 'sort' => 1, 'icon-class' => '',
@@ -33,7 +39,7 @@ return [
         'key' => 'departments',
         'name' => 'human_resources::app.menu.departments',
         'route' => 'admin.human_resources.departments.index',
-        'sort' => 12,
+        'sort' => 13,
         'icon-class' => 'icon-contact',
     ],
 ];
