@@ -19,6 +19,7 @@ use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/operations')->name('admin.operations.')->group(function () {
     Route::get('', [OperationsAssistantController::class, 'index'])->name('index');
     Route::post('ask', [OperationsAssistantController::class, 'ask'])->middleware('throttle:8,1')->name('ask');
+    Route::get('coverage/{site}', [OperationsAssistantController::class, 'coverage'])->whereNumber('site')->name('coverage');
     Route::get('incident-draft', [IncidentDraftController::class, 'create'])->name('incident_draft');
     Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:4,1')->name('incident_draft.store');
 });

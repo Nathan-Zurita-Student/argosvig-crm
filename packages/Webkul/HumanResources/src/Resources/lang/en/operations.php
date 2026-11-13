@@ -25,4 +25,11 @@ return [
     'invalid_audio' => 'Use a valid WAV, MP3, M4A, OGG or WebM audio file.',
     'generate_draft' => 'Generate draft',
     'review_draft' => 'Review the draft and confirm its date, location and severity before saving.',
+    'coverage_title' => 'Coverage in the next 48 hours',
+    'coverage_scope' => 'The review uses recorded shift intervals and highlights where confirmed staffing is below the site requirement.',
+    'coverage_count' => ':confirmed of :required confirmed',
+    'find_cover' => 'View potential replacements',
+    'candidate_scope' => 'Active employees without overlapping shifts or time off. Confirm rest periods and site qualifications before assigning anyone.',
+    'coverage_updated' => 'Coverage has changed. Check the updated handover.',
+    'partial' => 'Showing the first results out of :total intervals.',
 ];

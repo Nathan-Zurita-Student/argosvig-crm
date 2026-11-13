@@ -24,7 +24,7 @@ class OperationsBriefing
     public function sites(): Collection
     {
         return bouncer()->hasPermission('human-resources.work-sites')
-            ? $this->sites->getModel()->newQuery()->where('status', 'active')->orderBy('name')->get(['id', 'name', 'service_contract_id'])
+            ? $this->sites->getModel()->newQuery()->where('status', 'active')->orderBy('name')->get(['id', 'name', 'service_contract_id', 'required_staff'])
             : collect();
     }
 

@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\HumanResources\Services\OperationsAi;
 use Webkul\HumanResources\Services\OperationsBriefing;
+use Webkul\HumanResources\Services\ShiftCoverage;
 
 class OperationsAssistantController extends Controller
 {
@@ -43,6 +44,11 @@ class OperationsAssistantController extends Controller
             ])->values()->all(),
             'total_ocorrencias' => $data['incidents']?->total(),
             'total_escalas' => $data['shifts']?->total(),
+            'total_lacunas_48h' => $data['canSeeCoverage'] ? $data['gapCount'] : null,
+            'lacunas_48h' => ! $data['canSeeCoverage'] ? null : array_map(fn ($gap) => [
+                'posto' => 'Posto '.$gap['site']->id, 'inicio' => $gap['from']->toDateTimeString(),
+                'fim' => $gap['to']->toDateTimeString(), 'confirmados' => $gap['confirmed'], 'necessarios' => $gap['required'],
+            ], $data['gaps']),
         ];
 
         try {
@@ -54,6 +60,28 @@ class OperationsAssistantController extends Controller
         return view('human_resources::operations.index', $data + ['question' => $question]);
     }
 
+    public function coverage(int $site, Request $request, OperationsBriefing $briefing, ShiftCoverage $coverage): View
+    {
+        abort_unless(OperationsBriefing::allowed() && ShiftCoverage::canSuggest(), 401);
+        $filters = $request->validate([
+            'start' => ['required', 'date_format:Y-m-d H:i:s'],
+            'end' => ['required', 'date_format:Y-m-d H:i:s', 'after:start'],
+        ]);
+        $workSite = $briefing->sites()->firstWhere('id', $site);
+        abort_unless($workSite, 404);
+        $from = Carbon::parse($filters['start']);
+        $to = Carbon::parse($filters['end']);
+        $now = now();
+        abort_if($to->lte($now) || $to->gt($now->copy()->addHours(48)), 404);
+        $from = max($now, $from);
+        $current = $coverage->gaps(collect([$workSite]), $from, $to);
+        $gap = count($current) === 1 && $current[0]['from']->timestamp === $from->timestamp && $current[0]['to']->timestamp === $to->timestamp ? $current[0] : null;
+
+        return view('human_resources::operations.coverage', [
+            'site' => $workSite, 'gap' => $gap, 'candidates' => $gap ? $coverage->candidates($from, $to) : collect(),
+        ]);
+    }
+
     private function data(Request $request, OperationsBriefing $briefing, OperationsAi $ai): array
     {
         $filters = $request->validate([
@@ -63,14 +91,26 @@ class OperationsAssistantController extends Controller
         ]);
 
         $from = isset($filters['from']) ? Carbon::parse($filters['from']) : today();
-        $to = isset($filters['to']) ? Carbon::parse($filters['to']) : $from->copy()->addDay();
+        $to = isset($filters['to']) ? Carbon::parse($filters['to']) : $from->copy()->addDays(2);
         if ($to->lt($from) || $from->diffInDays($to) > 30) {
             throw ValidationException::withMessages(['to' => trans('human_resources::operations.period_limit')]);
         }
 
+        $end = $to->copy()->addDay();
+        $report = $briefing->report(isset($filters['site']) ? (int) $filters['site'] : null, $from, $end);
+        $sites = $briefing->sites();
+        $now = now();
+        $gaps = ShiftCoverage::allowed() ? app(ShiftCoverage::class)->gaps(
+            $report['site'] ? $sites->where('id', $report['site']->id) : $sites,
+            max($now, $from), min($now->copy()->addHours(48), $end),
+        ) : [];
+
         return [
-            ...$briefing->report(isset($filters['site']) ? (int) $filters['site'] : null, $from, $to->copy()->addDay()),
-            'sites' => $briefing->sites(),
+            ...$report,
+            'sites' => $sites,
+            'gaps' => array_slice($gaps, 0, 15),
+            'gapCount' => count($gaps),
+            'canSeeCoverage' => ShiftCoverage::allowed(),
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
             'canAsk' => bouncer()->hasPermission('operations-assistant.ai') && $ai->available(),

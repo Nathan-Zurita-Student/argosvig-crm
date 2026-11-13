@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added staffing gaps for the next 48 hours and replacement suggestions checked against shifts and vacations.
+
 * [feature] Added AI-assisted incident drafts from text and recorded audio with review before saving.
 
 * [feature] Added an optional AI assistant that answers operational questions using authorized handover records.

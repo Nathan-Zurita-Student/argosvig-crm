@@ -51,6 +51,33 @@
             </section>
         @endif
 
+        @if ($canSeeCoverage)
+            <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                <h2 class="font-semibold">@lang('human_resources::operations.coverage_title')</h2>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">@lang('human_resources::operations.coverage_scope')</p>
+                <ul class="mt-3 flex flex-col gap-3">
+                    @forelse ($gaps as $gap)
+                        <li class="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
+                            <div>
+                                <p class="font-medium">{{ $gap['site']->name }} · {{ trans('human_resources::operations.coverage_count', ['confirmed' => $gap['confirmed'], 'required' => $gap['required']]) }}</p>
+                                <p class="text-sm">{{ $gap['from']->format('d/m/Y H:i') }} – {{ $gap['to']->format('d/m/Y H:i') }}</p>
+                            </div>
+                            @if (\Webkul\HumanResources\Services\ShiftCoverage::canSuggest())
+                                <a class="secondary-button" href="{{ route('admin.operations.coverage', ['site' => $gap['site']->id, 'start' => $gap['from']->toDateTimeString(), 'end' => $gap['to']->toDateTimeString()]) }}">
+                                    @lang('human_resources::operations.find_cover')
+                                </a>
+                            @endif
+                        </li>
+                    @empty
+                        <li>@lang('human_resources::operations.empty')</li>
+                    @endforelse
+                </ul>
+                @if ($gapCount > count($gaps))
+                    <p class="mt-3 text-sm">{{ trans('human_resources::operations.partial', ['total' => $gapCount]) }}</p>
+                @endif
+            </section>
+        @endif
+
         <div class="grid gap-4 lg:grid-cols-2">
             @if ($incidents)
                 <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">

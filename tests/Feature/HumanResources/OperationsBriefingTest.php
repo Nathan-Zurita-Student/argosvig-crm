@@ -4,7 +4,11 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Webkul\Core\Models\CoreConfig;
+use Webkul\HumanResources\Models\Employee;
 use Webkul\HumanResources\Models\Incident;
+use Webkul\HumanResources\Models\ShiftAssignment;
+use Webkul\HumanResources\Models\Vacation;
+use Webkul\HumanResources\Models\WorkSite;
 use Webkul\User\Models\Role;
 use Webkul\User\Models\User;
 
@@ -87,4 +91,24 @@ it('transcribes a valid attachment and previews a draft for an authorized creato
     $this->get(route('admin.human_resources.incidents.create'))->assertOk()->assertSee('Falha ao abrir o portão.');
     $this->assertDatabaseMissing('hr_incidents', ['title' => 'Portão travado']);
     Http::assertSent(fn ($request) => str_ends_with($request->url(), '/audio/transcriptions') && $request['input_audio']['format'] === 'wav');
+});
+
+it('counts distinct confirmed staff and excludes overlapping shifts and vacations from coverage suggestions', function () {
+    $site = WorkSite::create(['code' => fake()->uuid(), 'name' => 'Posto QA', 'status' => 'active', 'required_staff' => 2]);
+    $employee = fn (string $name) => Employee::create(['employee_number' => fake()->uuid(), 'full_name' => $name, 'status' => 'active']);
+    $working = $employee('Colaborador QA trabalhando');
+    $available = $employee('AAA QA disponível');
+    $vacation = $employee('AAA QA férias');
+    $from = now()->addHours(2)->startOfMinute();
+    $to = $from->copy()->addHours(4);
+    $shift = ['work_site_id' => $site->id, 'employee_id' => $working->id, 'starts_at' => $from, 'ends_at' => $to, 'shift_type' => 'day', 'status' => 'confirmed'];
+    ShiftAssignment::create(['starts_at' => $from->copy()->subHour()] + $shift);
+    ShiftAssignment::create($shift);
+    Vacation::create(['employee_id' => $vacation->id, 'starts_at' => $from->toDateString(), 'ends_at' => $to->toDateString(), 'days' => 1, 'type' => 'regular', 'status' => 'scheduled']);
+
+    $this->actingAs(getDefaultAdmin(), 'user')->get(route('admin.operations.index', ['site' => $site->id]))->assertOk()
+        ->assertSee(trans('human_resources::operations.coverage_count', ['confirmed' => 1, 'required' => 2]));
+    $url = route('admin.operations.coverage', ['site' => $site->id, 'start' => $from->toDateTimeString(), 'end' => $to->toDateTimeString()]);
+    $this->get($url)->assertOk()->assertSee($available->full_name)->assertDontSee($working->full_name)->assertDontSee($vacation->full_name);
+    $this->actingAs(operationsUser(['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts']), 'user')->get($url)->assertUnauthorized();
 });

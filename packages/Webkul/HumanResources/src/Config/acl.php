@@ -4,7 +4,7 @@ return [
     [
         'key' => 'operations-assistant',
         'name' => 'human_resources::operations.title',
-        'route' => 'admin.operations.index',
+        'route' => ['admin.operations.index', 'admin.operations.coverage'],
         'sort' => 11,
     ],
     [

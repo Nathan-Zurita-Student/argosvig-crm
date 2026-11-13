@@ -25,4 +25,11 @@ return [
     'invalid_audio' => 'Use um arquivo de áudio WAV, MP3, M4A, OGG ou WebM válido.',
     'generate_draft' => 'Gerar rascunho',
     'review_draft' => 'Revise o rascunho e confirme data, local e gravidade antes de salvar.',
+    'coverage_title' => 'Cobertura nas próximas 48 horas',
+    'coverage_scope' => 'A análise considera os horários com escala cadastrada e mostra onde o efetivo confirmado está abaixo do exigido pelo posto.',
+    'coverage_count' => ':confirmed de :required confirmados',
+    'find_cover' => 'Ver possíveis substitutos',
+    'candidate_scope' => 'Colaboradores ativos sem férias ou escala sobreposta no intervalo. Confirme o descanso e a habilitação exigida pelo posto antes de alocar.',
+    'coverage_updated' => 'A cobertura mudou. Confira o quadro atualizado na passagem de plantão.',
+    'partial' => 'Exibindo os primeiros resultados de :total intervalos.',
 ];
