@@ -74,23 +74,29 @@
         type="text/x-template"
         id="v-sidebar-collapse-template"
     >
-        <button
-            type="button"
-            class="absolute top-4 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-all hover:border-brandColor hover:bg-blue-50 hover:text-brandColor focus:outline-none focus:ring-2 focus:ring-brandColor/40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-brandColor dark:hover:bg-gray-800 dark:hover:text-white ltr:-right-3.5 rtl:-left-3.5"
-            :title="isCollapsed
-                ? '@lang('admin::app.layouts.sidebar.expand')'
-                : '@lang('admin::app.layouts.sidebar.collapse')'"
-            :aria-label="isCollapsed
-                ? '@lang('admin::app.layouts.sidebar.expand')'
-                : '@lang('admin::app.layouts.sidebar.collapse')'"
-            :aria-expanded="! isCollapsed"
-            @click="toggle"
-        >
-            <span
-                class="icon-left-arrow text-lg transition-transform"
-                :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
-            ></span>
-        </button>
+        <div class="mb-2 flex h-9 items-center px-4 group-[.sidebar-collapsed]/container:justify-center">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 group-[.sidebar-collapsed]/container:hidden">
+                @lang('admin::app.layouts.sidebar.menu')
+            </span>
+
+            <button
+                type="button"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-brandColor focus:outline-none focus-visible:ring-2 focus-visible:ring-brandColor/40 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white group-[.sidebar-not-collapsed]/container:ltr:ml-auto group-[.sidebar-not-collapsed]/container:rtl:mr-auto"
+                :title="isCollapsed
+                    ? '@lang('admin::app.layouts.sidebar.expand')'
+                    : '@lang('admin::app.layouts.sidebar.collapse')'"
+                :aria-label="isCollapsed
+                    ? '@lang('admin::app.layouts.sidebar.expand')'
+                    : '@lang('admin::app.layouts.sidebar.collapse')'"
+                :aria-expanded="! isCollapsed"
+                @click="toggle"
+            >
+                <span
+                    class="icon-left-arrow text-lg transition-transform"
+                    :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
+                ></span>
+            </button>
+        </div>
     </script>
 
     <script type="module">
