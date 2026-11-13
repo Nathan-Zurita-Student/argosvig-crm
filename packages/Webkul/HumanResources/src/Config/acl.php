@@ -2,6 +2,12 @@
 
 return [
     [
+        'key' => 'operations-assistant',
+        'name' => 'human_resources::operations.title',
+        'route' => 'admin.operations.index',
+        'sort' => 11,
+    ],
+    [
         'key' => 'human-resources',
         'name' => 'human_resources::app.acl.title',
         'route' => 'admin.human_resources.employees.index',

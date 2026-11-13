@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a cross-module shift handover with incident and schedule records and source links.
+
 * [security] Enabled SMTP certificate verification and production TLS, and added an explicit SMTP delivery test command.
 
 * [security] Added optional authenticator-based two-factor login with one-time recovery codes for staff accounts.

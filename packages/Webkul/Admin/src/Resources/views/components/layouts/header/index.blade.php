@@ -46,6 +46,7 @@
     </div>
 
     <div class="flex items-center gap-2.5">
+        {!! view_render_event('admin.layout.header.actions.before') !!}
         <div class="md:hidden">
             <!-- Mega Search Bar -->
             @include('admin::components.layouts.header.mobile.mega-search')

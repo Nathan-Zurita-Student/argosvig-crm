@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Webkul\Core\ViewRenderEventManager;
 use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
+use Webkul\HumanResources\Services\OperationsBriefing;
 
 class HumanResourcesServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,12 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'human_resources');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
+
+        Event::listen('admin.layout.header.actions.before', function (ViewRenderEventManager $event) {
+            if (OperationsBriefing::allowed()) {
+                $event->addTemplate('human_resources::operations.shortcut');
+            }
+        });
 
         Event::listen('admin.leads.index.header.right.before', function (ViewRenderEventManager $event) {
             if (bouncer()->hasPermission('leads') && bouncer()->hasPermission('leads.view')) {

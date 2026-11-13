@@ -1,0 +1,73 @@
+<x-admin::layouts>
+    <x-slot:title>@lang('human_resources::operations.title')</x-slot>
+
+    <div class="flex flex-col gap-4">
+        <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
+            <h1 class="text-xl font-bold dark:text-white">@lang('human_resources::operations.title')</h1>
+            <form method="GET" action="{{ route('admin.operations.index') }}" class="mt-4 flex flex-wrap items-end gap-3">
+                @if ($sites->isNotEmpty())
+                    <label>
+                        @lang('human_resources::operations.site')
+                        <select name="site" class="block rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
+                            <option value="">@lang('human_resources::workforce.all')</option>
+                            @foreach ($sites as $option)
+                                <option value="{{ $option->id }}" @selected($site?->id === $option->id)>{{ $option->name }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                @endif
+                @foreach (['from' => $from, 'to' => $to] as $field => $date)
+                    <label>
+                        @lang('human_resources::operations.'.$field)
+                        <input type="date" name="{{ $field }}" value="{{ $date }}" class="block rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
+                    </label>
+                @endforeach
+                <button class="primary-button" type="submit">@lang('human_resources::workforce.filter')</button>
+            </form>
+            @include('human_resources::workforce.errors')
+        </section>
+
+        <div class="grid gap-4 lg:grid-cols-2">
+            @if ($incidents)
+                <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                    <h2 class="font-semibold">@lang('human_resources::operations.incidents')</h2>
+                    @if ($site)
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">@lang('human_resources::operations.contract_incidents')</p>
+                    @endif
+                    <ul class="mt-3 flex flex-col gap-3">
+                        @forelse ($incidents as $incident)
+                            <li class="border-t border-gray-200 pt-3 dark:border-gray-800">
+                                <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route('admin.human_resources.incidents.show', $incident->id) }}">{{ $incident->title }}</a>
+                                <p class="text-sm">{{ $incident->occurred_at->format('d/m/Y H:i') }} · @lang('human_resources::app.incidents.severity.'.$incident->severity) · @lang('human_resources::app.incidents.status.'.$incident->status)</p>
+                            </li>
+                        @empty
+                            <li>@lang('human_resources::operations.empty')</li>
+                        @endforelse
+                    </ul>
+                    @include('human_resources::workforce.pagination', ['page' => $incidents])
+                </section>
+            @endif
+
+            @if ($shifts)
+                <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                    <h2 class="font-semibold">@lang('human_resources::operations.shifts')</h2>
+                    <ul class="mt-3 flex flex-col gap-3">
+                        @forelse ($shifts as $shift)
+                            <li class="border-t border-gray-200 pt-3 dark:border-gray-800">
+                                @if (bouncer()->hasPermission('human-resources.shifts.edit'))
+                                    <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route('admin.human_resources.shifts.edit', $shift->id) }}">{{ $shift->workSite?->name ?? '—' }}</a>
+                                @else
+                                    <span class="font-medium">{{ $shift->workSite?->name ?? '—' }}</span>
+                                @endif
+                                <p class="text-sm">{{ $shift->starts_at->format('d/m/Y H:i') }} – {{ $shift->ends_at->format('d/m/Y H:i') }} · @lang('human_resources::app.shifts.status.'.$shift->status)</p>
+                            </li>
+                        @empty
+                            <li>@lang('human_resources::operations.empty')</li>
+                        @endforelse
+                    </ul>
+                    @include('human_resources::workforce.pagination', ['page' => $shifts])
+                </section>
+            @endif
+        </div>
+    </div>
+</x-admin::layouts>
