@@ -6,7 +6,7 @@ use Webkul\Admin\DataGrids\Mail\EmailDataGrid;
 
 uses(DatabaseTransactions::class);
 
-function mailGridActionsFor(string $route): array
+function mailGridPayloadFor(string $route): array
 {
     auth()->guard('user')->setUser(getDefaultAdmin());
 
@@ -16,50 +16,17 @@ function mailGridActionsFor(string $route): array
 
     request()->setRouteResolver(fn () => $mailRoute);
 
-    $payload = json_decode(app(EmailDataGrid::class)->process()->getContent(), true);
-
-    return $payload['actions'] ?? [];
+    return json_decode(app(EmailDataGrid::class)->process()->getContent(), true);
 }
 
-it('offers an action the list can find in every folder', function () {
+it('uses the subject as the mail opener in every folder', function () {
     foreach (['draft', 'outbox', 'inbox', 'trash'] as $route) {
-        $actions = mailGridActionsFor($route);
-
-        $opener = collect($actions)
+        $payload = mailGridPayloadFor($route);
+        $subject = collect($payload['columns'])->firstWhere('index', 'subject');
+        $opener = collect($payload['actions'])
             ->first(fn ($action) => in_array($action['index'], ['edit', 'view'], true));
 
-        expect($opener)->not->toBeNull("the {$route} folder should offer an action to open a mail");
+        expect($subject)->not->toBeNull("the {$route} folder should expose its subject column")
+            ->and($opener)->toBeNull("the {$route} folder should not duplicate its opener in the actions column");
     }
-});
-
-it('names the draft action apart from the rest', function () {
-    $draft = collect(mailGridActionsFor('draft'))
-        ->first(fn ($action) => in_array($action['index'], ['edit', 'view'], true));
-
-    expect($draft['index'])->toBe('edit');
-
-    foreach (['outbox', 'inbox', 'trash'] as $route) {
-        $opener = collect(mailGridActionsFor($route))
-            ->first(fn ($action) => in_array($action['index'], ['edit', 'view'], true));
-
-        expect($opener['index'])->toBe('view', "{$route} should not offer the draft action");
-    }
-});
-
-it('keeps the action name steady while its title follows the locale', function () {
-    app()->setLocale('en');
-
-    $english = collect(mailGridActionsFor('outbox'))
-        ->first(fn ($action) => in_array($action['index'], ['edit', 'view'], true));
-
-    app()->setLocale('es');
-
-    $spanish = collect(mailGridActionsFor('outbox'))
-        ->first(fn ($action) => in_array($action['index'], ['edit', 'view'], true));
-
-    app()->setLocale('en');
-
-    expect($spanish['title'])->not->toBe($english['title']);
-
-    expect($spanish['index'])->toBe($english['index']);
 });

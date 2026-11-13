@@ -42,6 +42,7 @@ class EmailTemplateDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.email_templates.edit', $row->id)),
             'label' => trans('admin::app.settings.email-template.index.datagrid.name'),
             'type' => 'string',
             'sortable' => true,

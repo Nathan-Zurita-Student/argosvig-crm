@@ -16,6 +16,7 @@ class VacationDataGrid extends DataGrid
             ->whereNull('hr_vacations.deleted_at')
             ->select(
                 'hr_vacations.id',
+                'hr_vacations.employee_id',
                 'hr_vacations.starts_at',
                 'hr_vacations.ends_at',
                 'hr_vacations.days',
@@ -54,7 +55,9 @@ class VacationDataGrid extends DataGrid
                 'searchable' => $type === 'string',
                 'filterable' => true,
                 'sortable' => true,
-                'closure' => fn ($row) => $row->{$index} ?: '—',
+                'closure' => fn ($row) => $index === 'employee_name'
+                    ? $this->primaryLink($row->employee_name, route('admin.human_resources.employees.show', $row->employee_id))
+                    : ($row->{$index} ?: '—'),
             ]);
         }
 

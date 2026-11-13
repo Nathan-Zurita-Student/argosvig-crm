@@ -38,6 +38,7 @@ class WebFormDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'title',
+            'closure' => fn ($row) => $this->primaryLink($row->title, route('admin.settings.web_forms.view', $row->id)),
             'label' => trans('admin::app.settings.webforms.index.datagrid.title'),
             'type' => 'string',
             'sortable' => true,
@@ -51,16 +52,6 @@ class WebFormDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('settings.other_settings.web_forms.view')) {
-            $this->addAction([
-                'index' => 'view',
-                'icon' => 'icon-eye',
-                'title' => trans('admin::app.settings.webforms.index.datagrid.view'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.settings.web_forms.view', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.other_settings.web_forms.edit')) {
             $this->addAction([
                 'index' => 'edit',

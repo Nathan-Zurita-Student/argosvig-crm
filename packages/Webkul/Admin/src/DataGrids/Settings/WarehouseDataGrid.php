@@ -49,6 +49,7 @@ class WarehouseDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.warehouses.view', $row->id)),
             'label' => trans('admin::app.settings.warehouses.index.datagrid.name'),
             'type' => 'string',
             'sortable' => true,
@@ -123,17 +124,6 @@ class WarehouseDataGrid extends DataGrid
      */
     public function prepareActions()
     {
-        if (bouncer()->hasPermission('settings.inventory.warehouse')) {
-            $this->addAction([
-                'icon' => 'icon-eye',
-                'title' => trans('admin::app.settings.warehouses.index.datagrid.view'),
-                'method' => 'GET',
-                'url' => function ($row) {
-                    return route('admin.settings.warehouses.view', $row->id);
-                },
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.inventory.warehouse.edit')) {
             $this->addAction([
                 'icon' => 'icon-edit',

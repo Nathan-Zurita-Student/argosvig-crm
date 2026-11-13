@@ -22,7 +22,7 @@ class ServiceContractDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         foreach (['contract_number', 'title', 'organization_name', 'ends_at'] as $field) {
-            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.contracts.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true]);
+            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.contracts.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $field === 'title' ? $this->primaryLink($row->title, route('admin.human_resources.contracts.edit', $row->id)) : ($row->{$field} ?: '—')]);
         }
         $this->addColumn([
             'index' => 'monthly_value',

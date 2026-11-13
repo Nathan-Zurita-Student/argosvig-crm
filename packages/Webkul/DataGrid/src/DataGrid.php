@@ -150,6 +150,30 @@ abstract class DataGrid
     }
 
     /**
+     * Format the primary record label as a same-tab navigation link.
+     *
+     * Exports keep the plain label so generated files never contain HTML.
+     */
+    protected function primaryLink(mixed $label, string $url): string
+    {
+        $label = trim((string) $label);
+
+        if ($label === '') {
+            return '—';
+        }
+
+        if (request()->boolean('export')) {
+            return $label;
+        }
+
+        return sprintf(
+            '<a class="font-medium text-brandColor hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-brandColor dark:text-blue-300 dark:hover:text-blue-200" href="%s">%s</a>',
+            e($url),
+            e($label),
+        );
+    }
+
+    /**
      * Add action.
      */
     public function addAction(array $action): void

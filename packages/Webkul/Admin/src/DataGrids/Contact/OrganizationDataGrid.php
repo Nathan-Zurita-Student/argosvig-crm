@@ -58,6 +58,7 @@ class OrganizationDataGrid extends DataGrid
             'searchable' => true,
             'sortable' => true,
             'filterable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.contacts.organizations.edit', $row->id)),
         ]);
 
         $this->addColumn([

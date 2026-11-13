@@ -58,6 +58,7 @@ class AttributeDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.attributes.edit', $row->id)),
             'label' => trans('admin::app.settings.attributes.index.datagrid.name'),
             'type' => 'string',
             'sortable' => true,

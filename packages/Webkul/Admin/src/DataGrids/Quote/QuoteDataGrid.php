@@ -69,6 +69,7 @@ class QuoteDataGrid extends DataGrid
             'filterable' => true,
             'searchable' => true,
             'sortable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->subject, route('admin.quotes.edit', $row->id)),
         ]);
 
         $this->addColumn([
@@ -106,7 +107,7 @@ class QuoteDataGrid extends DataGrid
             'closure' => function ($row) {
                 $route = route('admin.contacts.persons.view', $row->person_id);
 
-                return "<a class=\"text-brandColor transition-all hover:underline\" href='".$route."'>".$row->person_name.'</a>';
+                return $this->primaryLink($row->person_name, $route);
             },
         ]);
 

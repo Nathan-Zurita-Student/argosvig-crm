@@ -22,7 +22,7 @@ class WorkSiteDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         foreach (['code', 'name', 'contract_number', 'city', 'required_staff'] as $field) {
-            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.work_sites.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $row->{$field} ?: '—']);
+            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.work_sites.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $field === 'name' ? $this->primaryLink($row->name, route('admin.human_resources.work_sites.edit', $row->id)) : ($row->{$field} ?: '—')]);
         }
         $this->addColumn(['index' => 'status', 'label' => trans('human_resources::app.common.status'), 'type' => 'string', 'filterable' => true, 'closure' => fn ($row) => trans("human_resources::app.work_sites.status.{$row->status}")]);
     }

@@ -121,6 +121,10 @@ class EmailDataGrid extends DataGrid
             'sortable' => true,
             'searchable' => true,
             'filterable' => true,
+            'closure' => fn ($row) => $this->primaryLink(
+                $row->subject,
+                route('admin.mail.view', [request()->route('route'), $row->id]),
+            ),
         ]);
 
         $this->addColumn([
@@ -175,27 +179,6 @@ class EmailDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('mail.view')) {
-            $this->addAction([
-                'index' => request()->route('route') == 'draft'
-                    ? 'edit'
-                    : 'view',
-                'icon' => request()->route('route') == 'draft'
-                    ? 'icon-edit'
-                    : 'icon-eye',
-                'title' => request()->route('route') == 'draft'
-                    ? trans('admin::app.mail.index.datagrid.edit')
-                    : trans('admin::app.mail.index.datagrid.view'),
-                'method' => 'GET',
-                'params' => [
-                    'type' => request()->route('route') == 'trash'
-                        ? 'delete'
-                        : 'trash',
-                ],
-                'url' => fn ($row) => route('admin.mail.view', [request()->route('route'), $row->id]),
-            ]);
-        }
-
         if (bouncer()->hasPermission('mail.delete')) {
             $this->addAction([
                 'index' => 'delete',

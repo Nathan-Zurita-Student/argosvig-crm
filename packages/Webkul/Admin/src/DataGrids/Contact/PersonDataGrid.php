@@ -95,6 +95,7 @@ class PersonDataGrid extends DataGrid
             'sortable' => true,
             'filterable' => true,
             'searchable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->person_name, route('admin.contacts.persons.view', $row->id)),
         ]);
 
         $this->addColumn([
@@ -189,17 +190,6 @@ class PersonDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('contacts.persons.view')) {
-            $this->addAction([
-                'icon' => 'icon-eye',
-                'title' => trans('admin::app.contacts.persons.index.datagrid.view'),
-                'method' => 'GET',
-                'url' => function ($row) {
-                    return route('admin.contacts.persons.view', $row->id);
-                },
-            ]);
-        }
-
         if (bouncer()->hasPermission('contacts.persons.edit')) {
             $this->addAction([
                 'icon' => 'icon-edit',

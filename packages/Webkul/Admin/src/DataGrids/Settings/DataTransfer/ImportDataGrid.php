@@ -47,6 +47,7 @@ class ImportDataGrid extends DataGrid
             'searchable' => true,
             'filterable' => true,
             'sortable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->type, route('admin.settings.data_transfer.imports.edit', $row->id)),
         ]);
 
         $this->addColumn([
@@ -62,9 +63,7 @@ class ImportDataGrid extends DataGrid
             'index' => 'file_path',
             'label' => trans('admin::app.settings.data-transfer.imports.index.datagrid.uploaded-file'),
             'type' => 'string',
-            'closure' => function ($row) {
-                return '<a href="'.route('admin.settings.data_transfer.imports.download', $row->id).'" class="cursor-pointer text-blue-600 hover:underline">'.$row->file_path.'<a>';
-            },
+            'closure' => fn ($row) => $this->primaryLink($row->file_path, route('admin.settings.data_transfer.imports.download', $row->id)),
         ]);
 
         $this->addColumn([
@@ -76,7 +75,7 @@ class ImportDataGrid extends DataGrid
                     return '';
                 }
 
-                return '<a href="'.route('admin.settings.data_transfer.imports.download_error_report', $row->id).'" class="cursor-pointer text-blue-600 hover:underline">'.$row->error_file_path.'<a>';
+                return $this->primaryLink($row->error_file_path, route('admin.settings.data_transfer.imports.download_error_report', $row->id));
             },
         ]);
 

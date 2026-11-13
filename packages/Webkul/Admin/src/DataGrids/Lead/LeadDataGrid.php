@@ -167,6 +167,7 @@ class LeadDataGrid extends DataGrid
             'type' => 'string',
             'searchable' => true,
             'sortable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->title, route('admin.leads.view', $row->id)),
         ]);
 
         $this->addColumn([
@@ -241,7 +242,7 @@ class LeadDataGrid extends DataGrid
 
                 $route = route('admin.contacts.persons.view', $row->person_id);
 
-                return "<a class=\"text-brandColor transition-all hover:underline\" href='".$route."'>".$row->person_name.'</a>';
+                return $this->primaryLink($row->person_name, $route);
             },
         ]);
 
@@ -344,15 +345,6 @@ class LeadDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('leads.view')) {
-            $this->addAction([
-                'icon' => 'icon-eye',
-                'title' => trans('admin::app.leads.index.datagrid.view'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.leads.view', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('leads.delete')) {
             $this->addAction([
                 'icon' => 'icon-delete',

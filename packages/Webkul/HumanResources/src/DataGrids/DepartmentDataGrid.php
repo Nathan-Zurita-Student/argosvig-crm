@@ -41,6 +41,7 @@ class DepartmentDataGrid extends DataGrid
             'searchable' => true,
             'filterable' => true,
             'sortable' => true,
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.human_resources.departments.edit', $row->id)),
         ]);
 
         $this->addColumn([

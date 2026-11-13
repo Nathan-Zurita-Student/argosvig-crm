@@ -42,6 +42,7 @@ class WebhookDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
+            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.webhooks.edit', $row->id)),
             'label' => trans('admin::app.settings.webhooks.index.datagrid.name'),
             'type' => 'string',
             'searchable' => true,

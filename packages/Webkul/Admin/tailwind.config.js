@@ -3,6 +3,7 @@ module.exports = {
     content: [
         "./src/Resources/**/*.blade.php",
         "./src/Resources/**/*.js",
+        "../DataGrid/src/**/*.php",
         "../HumanResources/src/Resources/**/*.blade.php",
     ],
 

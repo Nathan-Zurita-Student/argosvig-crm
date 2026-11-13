@@ -22,7 +22,7 @@ class IncidentDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         foreach (['code', 'title', 'employee_name', 'occurred_at'] as $field) {
-            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.incidents.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $row->{$field} ?: '—']);
+            $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.incidents.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true, 'closure' => fn ($row) => $field === 'title' ? $this->primaryLink($row->title, route('admin.human_resources.incidents.show', $row->id)) : ($row->{$field} ?: '—')]);
         }
         foreach (['severity', 'status'] as $field) {
             $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.incidents.fields.{$field}"), 'type' => 'string', 'filterable' => true, 'closure' => fn ($row) => trans("human_resources::app.incidents.{$field}.{$row->{$field}}")]);
@@ -31,9 +31,6 @@ class IncidentDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('human-resources.incidents.view')) {
-            $this->addAction(['index' => 'view', 'icon' => 'icon-eye', 'title' => trans('human_resources::app.acl.view'), 'method' => 'GET', 'url' => fn ($row) => route('admin.human_resources.incidents.show', $row->id)]);
-        }
         if (bouncer()->hasPermission('human-resources.incidents.edit')) {
             $this->addAction(['index' => 'edit', 'icon' => 'icon-edit', 'title' => trans('human_resources::app.common.edit'), 'method' => 'GET', 'url' => fn ($row) => route('admin.human_resources.incidents.edit', $row->id)]);
         }

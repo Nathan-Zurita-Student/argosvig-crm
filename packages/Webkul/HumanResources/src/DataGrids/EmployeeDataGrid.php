@@ -47,7 +47,9 @@ class EmployeeDataGrid extends DataGrid
                 'searchable' => true,
                 'filterable' => true,
                 'sortable' => true,
-                'closure' => fn ($row) => $row->{$index} ?: '—',
+                'closure' => fn ($row) => $index === 'full_name'
+                    ? $this->primaryLink($row->full_name, route('admin.human_resources.employees.show', $row->id))
+                    : ($row->{$index} ?: '—'),
             ]);
         }
 
@@ -63,16 +65,6 @@ class EmployeeDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('human-resources.employees.view')) {
-            $this->addAction([
-                'index' => 'view',
-                'icon' => 'icon-eye',
-                'title' => trans('human_resources::app.acl.view'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.human_resources.employees.show', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('human-resources.employees.edit')) {
             $this->addAction([
                 'index' => 'edit',
