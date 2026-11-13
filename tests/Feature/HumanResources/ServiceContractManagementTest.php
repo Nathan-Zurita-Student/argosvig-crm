@@ -38,6 +38,12 @@ it('creates and lists a customer service contract', function () {
         'contract_number' => $number,
         'status' => 'active',
     ]);
+
+    test()->actingAs($admin)
+        ->withHeader('X-Requested-With', 'XMLHttpRequest')
+        ->get(route('admin.human_resources.contracts.index'))
+        ->assertSuccessful()
+        ->assertJsonPath('records.0.contract_number', $number);
 });
 
 it('validates the contract term', function () {

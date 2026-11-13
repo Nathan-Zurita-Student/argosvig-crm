@@ -24,7 +24,13 @@ class ServiceContractDataGrid extends DataGrid
         foreach (['contract_number', 'title', 'organization_name', 'ends_at'] as $field) {
             $this->addColumn(['index' => $field, 'label' => trans("human_resources::app.contracts.fields.{$field}"), 'type' => 'string', 'searchable' => true, 'filterable' => true, 'sortable' => true]);
         }
-        $this->addColumn(['index' => 'monthly_value', 'label' => trans('human_resources::app.contracts.fields.monthly_value'), 'type' => 'price', 'sortable' => true]);
+        $this->addColumn([
+            'index' => 'monthly_value',
+            'label' => trans('human_resources::app.contracts.fields.monthly_value'),
+            'type' => 'float',
+            'sortable' => true,
+            'closure' => fn ($row) => core()->formatBasePrice($row->monthly_value),
+        ]);
         $this->addColumn(['index' => 'status', 'label' => trans('human_resources::app.common.status'), 'type' => 'string', 'filterable' => true, 'closure' => fn ($row) => trans("human_resources::app.contracts.statuses.{$row->status}")]);
     }
 
