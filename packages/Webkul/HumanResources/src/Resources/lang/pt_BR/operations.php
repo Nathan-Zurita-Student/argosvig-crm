@@ -38,4 +38,5 @@ return [
     'punch' => ['matched' => 'Marcações próximas à entrada e à saída', 'missing_both' => 'Sem marcações próximas à entrada e à saída', 'missing_start' => 'Sem marcação próxima à entrada', 'missing_end' => 'Sem marcação próxima à saída', 'single_mark' => 'Uma única marcação nas duas janelas'],
     'deadlines' => 'Vencimentos nos próximos 30 dias',
     'contract_documents' => 'O filtro de posto inclui os documentos vinculados ao contrato.',
+    'handover_notification' => 'A passagem de plantão de hoje está disponível',
 ];

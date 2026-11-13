@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Core\ViewRenderEventManager;
+use Webkul\HumanResources\Console\NotifyOperationsHandover;
 use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
 use Webkul\HumanResources\Services\OperationsBriefing;
@@ -48,10 +49,11 @@ class HumanResourcesServiceProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
-            $this->commands([RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
+            $this->commands([NotifyOperationsHandover::class, RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
 
             $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
                 $schedule->command('hr:remind-document-expirations')->dailyAt('08:00')->withoutOverlapping();
+                $schedule->command('hr:notify-operations-handover')->dailyAt('06:00')->withoutOverlapping();
             });
         }
     }

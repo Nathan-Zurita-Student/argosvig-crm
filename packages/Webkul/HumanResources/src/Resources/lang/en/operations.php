@@ -38,4 +38,5 @@ return [
     'punch' => ['matched' => 'Punches near the start and end', 'missing_both' => 'No punches near the start or end', 'missing_start' => 'No punch near the start', 'missing_end' => 'No punch near the end', 'single_mark' => 'One punch in both windows'],
     'deadlines' => 'Due within the next 30 days',
     'contract_documents' => 'The site filter includes documents linked to the contract.',
+    'handover_notification' => 'Today’s shift handover is available',
 ];

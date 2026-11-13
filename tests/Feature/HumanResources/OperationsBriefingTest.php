@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Webkul\Contact\Models\Organization;
 use Webkul\Core\Models\CoreConfig;
@@ -148,4 +149,21 @@ it('opens a contract handover from the contract and limits context to its own re
     $this->get(route('admin.human_resources.contracts.edit', $contract->id))->assertOk()->assertSee($url, false);
     $this->actingAs(operationsUser(['operations-assistant', 'human-resources.incidents', 'human-resources.incidents.view']), 'user')
         ->get($url)->assertNotFound();
+});
+
+it('notifies permitted staff once when there are shifts remaining today', function () {
+    $this->travelTo(today()->addHours(6));
+    $site = WorkSite::create(['code' => fake()->uuid(), 'name' => 'Private notification site', 'status' => 'active']);
+    $employee = Employee::create(['employee_number' => fake()->uuid(), 'full_name' => 'Employee QA', 'status' => 'active']);
+    ShiftAssignment::create(['work_site_id' => $site->id, 'employee_id' => $employee->id, 'starts_at' => now()->addHour(), 'ends_at' => now()->addHours(9), 'shift_type' => 'day', 'status' => 'planned']);
+    $permissions = ['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts'];
+    $allowed = operationsUser($permissions);
+    $scoped = operationsUser($permissions, 'individual');
+    $outsider = operationsUser(['operations-assistant']);
+
+    $this->artisan('hr:notify-operations-handover')->assertSuccessful();
+    $this->artisan('hr:notify-operations-handover')->assertSuccessful();
+    $notifications = DB::table('notifications')->where('entity_type', 'hr_operations');
+    expect((clone $notifications)->where('user_id', $allowed->id)->sole()->title)->not->toContain($site->name);
+    expect($notifications->whereIn('user_id', [$scoped->id, $outsider->id])->exists())->toBeFalse();
 });
