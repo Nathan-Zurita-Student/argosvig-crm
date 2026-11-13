@@ -27,6 +27,14 @@
                 />
             @endif
         </a>
+
+        <div class="max-lg:hidden">
+            {!! view_render_event('admin.layout.sidebar.toggle.before') !!}
+
+            <v-sidebar-collapse></v-sidebar-collapse>
+
+            {!! view_render_event('admin.layout.sidebar.toggle.after') !!}
+        </div>
     </div>
 
     <div class="flex items-center gap-1.5 max-md:hidden">

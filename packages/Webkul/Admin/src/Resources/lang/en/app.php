@@ -2344,7 +2344,6 @@ return [
         'lead' => 'Lead',
         'lead-info' => 'Manage all your leads related settings in the CRM',
         'sidebar' => [
-            'menu' => 'Menu',
             'collapse' => 'Collapse',
             'expand' => 'Expand',
         ],

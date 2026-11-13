@@ -3,15 +3,8 @@
     ref="sidebar"
     class="duration-80 fixed top-[60px] z-[10002] flex h-[calc(100vh-60px)] w-[200px] flex-col border-gray-300 bg-white py-3 transition-all group-[.sidebar-collapsed]/container:w-[70px] dark:border-gray-800 dark:bg-gray-900 max-lg:hidden ltr:border-r rtl:border-l"
 >
-    {!! view_render_event('admin.layout.sidebar.toggle.before') !!}
-
-    <!-- Collapse menu -->
-    <v-sidebar-collapse></v-sidebar-collapse>
-
-    {!! view_render_event('admin.layout.sidebar.toggle.after') !!}
-
-    <div class="journal-scroll min-h-0 flex-1 overflow-hidden group-[.sidebar-collapsed]/container:overflow-visible">
-        <nav class="sidebar-rounded grid w-full gap-2">
+    <div class="journal-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto group-[.sidebar-collapsed]/container:overflow-visible">
+        <nav class="sidebar-rounded grid w-full gap-1">
             <!-- Navigation Menu -->
             @foreach (menu()->getItems('admin') as $menuItem)
                 <div class="px-4 group/item {{ $menuItem->isActive() ? 'active' : 'inactive' }}">
@@ -74,29 +67,23 @@
         type="text/x-template"
         id="v-sidebar-collapse-template"
     >
-        <div class="mb-2 flex h-9 items-center px-4 group-[.sidebar-collapsed]/container:justify-center">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 group-[.sidebar-collapsed]/container:hidden">
-                @lang('admin::app.layouts.sidebar.menu')
-            </span>
-
-            <button
-                type="button"
-                class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-brandColor focus:outline-none focus-visible:ring-2 focus-visible:ring-brandColor/40 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white group-[.sidebar-not-collapsed]/container:ltr:ml-auto group-[.sidebar-not-collapsed]/container:rtl:mr-auto"
-                :title="isCollapsed
-                    ? '@lang('admin::app.layouts.sidebar.expand')'
-                    : '@lang('admin::app.layouts.sidebar.collapse')'"
-                :aria-label="isCollapsed
-                    ? '@lang('admin::app.layouts.sidebar.expand')'
-                    : '@lang('admin::app.layouts.sidebar.collapse')'"
-                :aria-expanded="! isCollapsed"
-                @click="toggle"
-            >
-                <span
-                    class="icon-left-arrow text-lg transition-transform"
-                    :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
-                ></span>
-            </button>
-        </div>
+        <button
+            type="button"
+            class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-brandColor focus:outline-none focus-visible:ring-2 focus-visible:ring-brandColor/40 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+            :title="isCollapsed
+                ? '@lang('admin::app.layouts.sidebar.expand')'
+                : '@lang('admin::app.layouts.sidebar.collapse')'"
+            :aria-label="isCollapsed
+                ? '@lang('admin::app.layouts.sidebar.expand')'
+                : '@lang('admin::app.layouts.sidebar.collapse')'"
+            :aria-expanded="! isCollapsed"
+            @click="toggle"
+        >
+            <span
+                class="icon-left-arrow text-lg transition-transform"
+                :class="[isCollapsed ? 'ltr:rotate-[180deg] rtl:rotate-[0]' : 'ltr:rotate-[0] rtl:rotate-[180deg]']"
+            ></span>
+        </button>
     </script>
 
     <script type="module">

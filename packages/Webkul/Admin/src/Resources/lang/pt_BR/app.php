@@ -2337,7 +2337,6 @@ return [
         'lead' => 'Negócio',
         'lead-info' => 'Gerencie todas as configurações relacionadas aos Negócios no CRM',
         'sidebar' => [
-            'menu' => 'Menu',
             'collapse' => 'Recolher',
             'expand' => 'Expandir',
         ],
