@@ -15,6 +15,7 @@ use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
     Route::controller(DocumentCenterController::class)->prefix('documents')->name('admin.human_resources.document_center.')->group(function () {
         Route::get('', 'index')->name('index');
+        Route::get('missing', 'missing')->name('missing');
         Route::get('create', 'create')->name('create');
         Route::post('', 'store')->name('store');
         Route::get('shared/create', 'createShared')->name('create_shared');

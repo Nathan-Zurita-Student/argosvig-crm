@@ -2,7 +2,9 @@
 
 namespace Webkul\HumanResources\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
 
 class HumanResourcesServiceProvider extends ServiceProvider
@@ -15,7 +17,11 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([SyncAlterdataTimekeeping::class]);
+            $this->commands([RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
+
+            $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+                $schedule->command('hr:remind-document-expirations')->dailyAt('08:00')->withoutOverlapping();
+            });
         }
     }
 

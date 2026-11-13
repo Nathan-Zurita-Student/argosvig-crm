@@ -42,6 +42,44 @@ function workforceUser(array $permissions, string $scope = 'global'): User
     ]);
 }
 
+it('reports missing payroll documents for the selected month to authorized HR users', function () {
+    $missing = workforceEmployee();
+    $missing->update(['full_name' => 'RH-AAA-Pendente']);
+    $complete = workforceEmployee();
+    $complete->update(['full_name' => 'RH-AAA-Completo']);
+    $complete->documents()->create([
+        'type' => 'payslip', 'name' => 'Contracheque', 'competence' => '2026-11-01',
+        'path' => 'test.pdf', 'original_name' => 'test.pdf', 'mime_type' => 'application/pdf', 'size' => 10,
+    ]);
+
+    $url = route('admin.human_resources.document_center.missing', ['type' => 'payslip', 'competence' => '2026-11']);
+    $this->actingAs(workforceUser(['document-center', 'human-resources.document-center']), 'user')
+        ->get($url)->assertOk()->assertSee($missing->full_name)->assertDontSee($complete->full_name);
+    $this->actingAs(workforceUser(['document-center', 'human-resources.shared-documents']), 'user')
+        ->get($url)->assertUnauthorized();
+    $this->actingAs(workforceUser(['document-center', 'human-resources.document-center'], 'individual'), 'user')
+        ->get($url)->assertUnauthorized();
+});
+
+it('notifies only authorized HR users once per day without including document identities', function () {
+    workforceEmployee()->documents()->create([
+        'type' => 'identity', 'name' => 'Sensitive document name', 'expires_at' => today()->addDay(),
+        'path' => 'test.pdf', 'original_name' => 'test.pdf', 'mime_type' => 'application/pdf', 'size' => 10,
+    ]);
+
+    $allowed = workforceUser(['document-center', 'human-resources.document-center']);
+    $sharedOnly = workforceUser(['document-center', 'human-resources.shared-documents']);
+    $individual = workforceUser(['document-center', 'human-resources.document-center'], 'individual');
+
+    $this->artisan('hr:remind-document-expirations')->assertSuccessful();
+    $this->artisan('hr:remind-document-expirations')->assertSuccessful();
+
+    $notification = DB::table('notifications')->where('user_id', $allowed->id)->where('action', 'expiry_reminder')->sole();
+    expect($notification->title)->not->toContain('Sensitive document name');
+    expect($notification->route)->toContain('expiry=soon');
+    expect(DB::table('notifications')->whereIn('user_id', [$sharedOnly->id, $individual->id])->exists())->toBeFalse();
+});
+
 it('requires a payroll month and audits replacement and download of a private document', function () {
     Storage::fake('local');
     $employee = workforceEmployee();

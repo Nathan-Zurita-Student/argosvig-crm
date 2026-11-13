@@ -14,6 +14,7 @@ use Webkul\Contact\Repositories\OrganizationRepository;
 use Webkul\HumanResources\Http\Requests\EmployeeDocumentRequest;
 use Webkul\HumanResources\Models\EmployeeDocument;
 use Webkul\HumanResources\Models\EmployeeDocumentProxy;
+use Webkul\HumanResources\Models\EmployeeProxy;
 use Webkul\HumanResources\Repositories\EmployeeRepository;
 use Webkul\HumanResources\Repositories\ServiceContractRepository;
 use Webkul\HumanResources\Services\DocumentLibrary;
@@ -78,8 +79,35 @@ class DocumentCenterController extends Controller
             'documents' => $query->latest('id')->paginate(25)->withQueryString(),
             'types' => [...($private ? EmployeeDocument::EMPLOYEE_TYPES : []), ...($shared ? EmployeeDocument::SHARED_TYPES : [])],
             'canViewBoth' => $private && $shared,
+            'canReviewMissing' => $private,
             'canUpload' => $this->canManage('human-resources.document-center'),
             'canShare' => $this->canManage('human-resources.shared-documents'),
+        ]);
+    }
+
+    public function missing(Request $request): View
+    {
+        abort_unless($this->can('document-center') && $this->can('human-resources.document-center'), 401);
+
+        $filters = $request->validate([
+            'type' => ['nullable', Rule::in(EmployeeDocument::EMPLOYEE_TYPES)],
+            'competence' => ['nullable', 'date_format:Y-m'],
+        ]);
+
+        $type = $filters['type'] ?? null;
+        $competence = $filters['competence'] ?? null;
+
+        $employees = $type ? EmployeeProxy::query()
+            ->where('status', 'active')
+            ->whereDoesntHave('documents', fn ($query) => $query->where('type', $type)
+                ->where(fn ($validity) => $validity->whereNull('expires_at')->orWhereDate('expires_at', '>=', today()))
+                ->when($competence, fn ($query) => $query->whereDate('competence', $competence.'-01')))
+            ->orderBy('full_name')->orderBy('id')->paginate(25)->withQueryString() : null;
+
+        return view('human_resources::documents.missing', [
+            'employees' => $employees,
+            'types' => EmployeeDocument::EMPLOYEE_TYPES,
+            'canOpenEmployees' => bouncer()->hasPermission('human-resources.employees.view'),
         ]);
     }
 

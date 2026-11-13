@@ -5,6 +5,9 @@
         <div class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 flex flex-wrap items-center justify-between gap-3">
             <h1 class="text-xl font-bold dark:text-white">@lang('human_resources::workforce.documents')</h1>
             <div class="flex flex-wrap gap-2">
+                @if ($canReviewMissing)
+                    <a class="secondary-button" href="{{ route('admin.human_resources.document_center.missing') }}">@lang('human_resources::readiness.missing_documents')</a>
+                @endif
                 @if ($canShare)
                     <a class="secondary-button" href="{{ route('admin.human_resources.document_center.create_shared') }}">@lang('human_resources::workforce.new_shared')</a>
                 @endif

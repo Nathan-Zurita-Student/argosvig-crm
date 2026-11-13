@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a missing document report by type and payroll month, and scheduled private document expiry reminders.
+
 * [feature] Added a private document center with payroll months, expiration filters, activity history and files linked to companies or contracts.
 
 * [feature] Added attendance mark imports, employee and date filters, and a provider interface for future Alterdata API synchronization.

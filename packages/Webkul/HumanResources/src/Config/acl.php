@@ -47,6 +47,7 @@ return [
         'name' => 'human_resources::workforce.documents',
         'route' => [
             'admin.human_resources.document_center.index',
+            'admin.human_resources.document_center.missing',
             'admin.human_resources.document_center.show',
             'admin.human_resources.document_center.download',
             'admin.human_resources.document_center.edit',
