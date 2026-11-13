@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a company migration preview and transactional import with persistent source-to-CRM IDs.
+
 * [feature] Added a production readiness check and a database and attachment backup script with integrity checks.
 
 * [feature] Added configurable entry requirements for opportunity pipeline stages.

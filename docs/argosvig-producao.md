@@ -26,3 +26,14 @@ tar -xzf attachments.tar.gz -C /caminho/privado/instalacao-homologacao/storage/a
 ```
 
 Aponte a instalação isolada para o banco restaurado, configure sua `APP_KEY` original pelo canal seguro e rode `php artisan crm:check-production` com a configuração de produção. Confira totais de tabelas, o acesso de um perfil autorizado e o download de um documento privado conhecido antes de considerar a recuperação validada. Acompanhe o tamanho do backup e o tempo de recuperação para dimensionar a retenção e a janela de manutenção.
+
+## Migração do CRM antigo
+
+Faça o primeiro ensaio em homologação. Solicite exportações com identificadores estáveis e inventário dos anexos. Confira como o sistema anterior vincula contatos, oportunidades e arquivos. Para empresas, prepare um CSV UTF-8 separado por ponto e vírgula com as colunas `external_id;name;existing_organization_id`. Mantenha zeros à esquerda nos identificadores. Preencha a terceira coluna apenas para vincular uma empresa já conferida no CRM.
+
+```sh
+php artisan crm:import-organizations /caminho/privado/empresas.csv --source=crm-antigo --owner=42
+php artisan crm:import-organizations /caminho/privado/empresas.csv --source=crm-antigo --owner=42 --apply
+```
+
+O primeiro comando apresenta uma prévia. O segundo grava em uma transação e mantém o vínculo com o identificador de origem. Repita o mesmo identificador de origem em todos os lotes desse sistema. Cada lote aceita até 1.000 empresas. Confira possíveis duplicidades antes de aplicar. O relatório mostra os IDs que devem preencher `organization_id` na importação nativa de pessoas. Use a importação nativa de oportunidades após mapear os IDs dos contatos, responsáveis e etapas. Compare os totais e os vínculos em homologação. Para histórico e anexos, aguarde o inventário e valide a correspondência antes de copiar arquivos.
