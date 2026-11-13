@@ -38,6 +38,7 @@
 
     {!! view_render_event('admin.dashboard.index.header.after') !!}
 
+    @if ($operationalStats !== [])
     <section class="mb-5 overflow-hidden rounded-xl bg-gradient-to-r from-[#061534] via-[#0a2454] to-[#163d7a] p-6 text-white shadow-lg">
         <div class="flex flex-wrap items-center justify-between gap-5">
             <div>
@@ -47,28 +48,37 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.human_resources.employees.index') }}" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-950 shadow-sm hover:bg-blue-50">@lang('human_resources::app.menu.employees')</a>
-                <a href="{{ route('admin.human_resources.contracts.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.contracts')</a>
-                <a href="{{ route('admin.human_resources.incidents.index') }}" class="rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white">@lang('human_resources::app.menu.incidents')</a>
+                @foreach (['employees' => 'employees', 'active_contracts' => 'contracts', 'open_incidents' => 'incidents'] as $stat => $module)
+                    @if (isset($operationalStats[$stat]))
+                        <a href="{{ route('admin.human_resources.'.$module.'.index') }}" class="{{ $module === 'employees' ? 'rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-950 shadow-sm hover:bg-blue-50' : 'rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white' }}">@lang('human_resources::app.menu.'.$module)</a>
+                    @endif
+                @endforeach
             </div>
         </div>
     </section>
 
     <section class="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        @foreach ([
-            ['label' => trans('human_resources::app.dashboard.active_employees'), 'value' => $operationalStats['active_employees'], 'detail' => trans('human_resources::app.dashboard.total_employees', ['count' => $operationalStats['employees']]), 'color' => 'text-blue-600'],
-            ['label' => trans('human_resources::app.dashboard.active_contracts'), 'value' => $operationalStats['active_contracts'], 'detail' => trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'color' => 'text-emerald-600'],
-            ['label' => trans('human_resources::app.dashboard.monthly_value'), 'value' => core()->formatBasePrice($operationalStats['monthly_contract_value']), 'detail' => trans('human_resources::app.dashboard.departments', ['count' => $operationalStats['departments']]), 'color' => 'text-violet-600'],
-            ['label' => trans('human_resources::app.dashboard.expiring_documents'), 'value' => $operationalStats['documents_expiring'], 'detail' => trans('human_resources::app.dashboard.next_thirty_days'), 'color' => 'text-amber-600'],
-            ['label' => trans('human_resources::app.dashboard.open_incidents'), 'value' => $operationalStats['open_incidents'], 'detail' => trans('human_resources::app.dashboard.requires_attention'), 'color' => 'text-red-600'],
-        ] as $card)
+        @foreach (['active_employees', 'active_contracts', 'monthly_contract_value', 'documents_expiring', 'open_incidents'] as $metric)
+            @continue(! isset($operationalStats[$metric]))
+            @php
+                [$label, $detail, $color] = match ($metric) {
+                    'active_employees' => ['active_employees', trans('human_resources::app.dashboard.total_employees', ['count' => $operationalStats['employees']]), 'text-blue-600'],
+                    'active_contracts' => ['active_contracts', trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'text-emerald-600'],
+                    'monthly_contract_value' => ['monthly_value', isset($operationalStats['departments']) ? trans('human_resources::app.dashboard.departments', ['count' => $operationalStats['departments']]) : null, 'text-violet-600'],
+                    'documents_expiring' => ['expiring_documents', trans('human_resources::app.dashboard.next_thirty_days'), 'text-amber-600'],
+                    'open_incidents' => ['open_incidents', trans('human_resources::app.dashboard.requires_attention'), 'text-red-600'],
+                };
+            @endphp
             <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $card['label'] }}</p>
-                <p class="mt-2 text-3xl font-bold {{ $card['color'] }}">{{ $card['value'] }}</p>
-                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ $card['detail'] }}</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@lang('human_resources::app.dashboard.'.$label)</p>
+                <p class="mt-2 text-3xl font-bold {{ $color }}">{{ $metric === 'monthly_contract_value' ? core()->formatBasePrice($operationalStats[$metric]) : $operationalStats[$metric] }}</p>
+                @if ($detail)
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ $detail }}</p>
+                @endif
             </div>
         @endforeach
     </section>
+    @endif
 
     <!-- Body Component -->
     {!! view_render_event('admin.dashboard.index.content.before') !!}

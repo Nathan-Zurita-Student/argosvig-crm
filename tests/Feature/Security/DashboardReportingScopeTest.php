@@ -9,6 +9,17 @@ use Webkul\User\Models\User;
 
 uses(DatabaseTransactions::class);
 
+it('shows operational metrics only to users with both the module permission and global scope', function () {
+    $actor = dashboardScopeUser('global');
+    $actor->role->update(['permission_type' => 'custom', 'permissions' => ['dashboard', 'human-resources.contracts']]);
+    $actor->unsetRelation('role');
+    $this->actingAs($actor, 'user')->get(route('admin.dashboard.index'))->assertOk()
+        ->assertViewHas('operationalStats', fn ($stats) => isset($stats['monthly_contract_value']) && ! isset($stats['active_employees']) && ! isset($stats['documents_expiring']));
+
+    $actor->update(['view_permission' => 'individual']);
+    $this->get(route('admin.dashboard.index'))->assertOk()->assertViewHas('operationalStats', []);
+});
+
 /**
  * The dashboard's top-customer and top-product reports are held to the reader's data scope.
  *
@@ -102,7 +113,7 @@ it('reports every contact to a reader whose scope covers them all', function () 
 
     $email = 'global-'.bin2hex(random_bytes(4)).'@example.invalid';
 
-    dashboardClosedLead($owner, $email, 2000);
+    dashboardClosedLead($owner, $email, 1000000);
 
     expect(dashboardStats($administrator, 'top-persons'))->toContain($email);
 });

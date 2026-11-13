@@ -60,19 +60,45 @@ class DashboardController extends Controller
 
     private function getOperationalStats(): array
     {
+        if (bouncer()->getAuthorizedUserIds() !== null) {
+            return [];
+        }
+
         $today = now()->startOfDay();
         $nextThirtyDays = $today->copy()->addDays(30);
+        $stats = [];
 
-        return [
-            'employees' => DB::table('hr_employees')->whereNull('deleted_at')->count(),
-            'active_employees' => DB::table('hr_employees')->whereNull('deleted_at')->where('status', 'active')->count(),
-            'departments' => DB::table('hr_departments')->where('is_active', true)->count(),
-            'documents_expiring' => DB::table('hr_employee_documents')->whereBetween('expires_at', [$today, $nextThirtyDays])->count(),
-            'active_contracts' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->count(),
-            'contracts_expiring' => DB::table('hr_service_contracts')->whereNull('deleted_at')->whereBetween('ends_at', [$today, $nextThirtyDays])->count(),
-            'monthly_contract_value' => DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active')->sum('monthly_value'),
-            'open_incidents' => DB::table('hr_incidents')->whereNull('deleted_at')->whereIn('status', ['open', 'investigating'])->count(),
-        ];
+        if (bouncer()->hasPermission('human-resources.employees')) {
+            $employees = DB::table('hr_employees')->whereNull('deleted_at');
+            $stats['employees'] = $employees->count();
+            $stats['active_employees'] = $employees->where('status', 'active')->count();
+        }
+
+        if (bouncer()->hasPermission('human-resources.contracts')) {
+            $contracts = DB::table('hr_service_contracts')->whereNull('deleted_at')->where('status', 'active');
+            $stats['active_contracts'] = $contracts->count();
+            $stats['monthly_contract_value'] = $contracts->sum('monthly_value');
+            $stats['contracts_expiring'] = $contracts->whereBetween('ends_at', [$today, $nextThirtyDays])->count();
+        }
+
+        if (isset($stats['monthly_contract_value']) && bouncer()->hasPermission('human-resources.departments')) {
+            $stats['departments'] = DB::table('hr_departments')->where('is_active', true)->count();
+        }
+
+        $private = bouncer()->hasPermission('human-resources.document-center');
+        $shared = bouncer()->hasPermission('human-resources.shared-documents');
+
+        if (bouncer()->hasPermission('document-center') && ($private || $shared)) {
+            $stats['documents_expiring'] = DB::table('hr_employee_documents')->whereBetween('expires_at', [$today, $nextThirtyDays])
+                ->when(! $private, fn ($query) => $query->whereNull('employee_id'))
+                ->when(! $shared, fn ($query) => $query->whereNotNull('employee_id'))->count();
+        }
+
+        if (bouncer()->hasPermission('human-resources.incidents')) {
+            $stats['open_incidents'] = DB::table('hr_incidents')->whereNull('deleted_at')->whereIn('status', ['open', 'investigating'])->count();
+        }
+
+        return $stats;
     }
 
     /**
