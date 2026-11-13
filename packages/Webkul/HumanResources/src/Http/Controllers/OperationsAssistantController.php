@@ -10,6 +10,7 @@ use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\HumanResources\Services\OperationsAi;
 use Webkul\HumanResources\Services\OperationsBriefing;
 use Webkul\HumanResources\Services\ShiftCoverage;
+use Webkul\HumanResources\Services\WorkforceReview;
 
 class OperationsAssistantController extends Controller
 {
@@ -27,7 +28,7 @@ class OperationsAssistantController extends Controller
         $question = $request->validate(['question' => ['required', 'string', 'max:500']])['question'];
         $data = $this->data($request, $briefing, $ai);
         $filters = ['from' => $data['from'], 'to' => $data['to'], 'site' => $data['site']?->id];
-        foreach (['incidents', 'shifts'] as $section) {
+        foreach (['incidents', 'shifts', 'punches', 'documents', 'contracts'] as $section) {
             $data[$section]?->withPath(route('admin.operations.index'))->appends($filters);
         }
         $facts = [
@@ -49,6 +50,13 @@ class OperationsAssistantController extends Controller
                 'posto' => 'Posto '.$gap['site']->id, 'inicio' => $gap['from']->toDateTimeString(),
                 'fim' => $gap['to']->toDateTimeString(), 'confirmados' => $gap['confirmed'], 'necessarios' => $gap['required'],
             ], $data['gaps']),
+            'conferencia_de_ponto' => $data['punches']?->getCollection()->map(fn ($row) => [
+                'referencia' => 'Escala '.$row['shift']->id, 'resultado' => $row['result'],
+            ])->values()->all(),
+            'documentos_a_vencer' => $data['documents']?->total(),
+            'contratos_a_vencer' => $data['contracts']?->getCollection()->map(fn ($contract) => [
+                'referencia' => 'Contrato '.$contract->id, 'vence_em' => $contract->ends_at->toDateString(),
+            ])->values()->all(),
         ];
 
         try {
@@ -107,6 +115,7 @@ class OperationsAssistantController extends Controller
 
         return [
             ...$report,
+            ...app(WorkforceReview::class)->review($report['site'], $from, $end),
             'sites' => $sites,
             'gaps' => array_slice($gaps, 0, 15),
             'gapCount' => count($gaps),

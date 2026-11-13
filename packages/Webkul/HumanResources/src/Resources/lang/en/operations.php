@@ -32,4 +32,9 @@ return [
     'candidate_scope' => 'Active employees without overlapping shifts or time off. Confirm rest periods and site qualifications before assigning anyone.',
     'coverage_updated' => 'Coverage has changed. Check the updated handover.',
     'partial' => 'Showing the first results out of :total intervals.',
+    'punch_title' => 'Timekeeping review',
+    'punch_scope' => 'Compares completed shift times to imported punches, using a 30-minute window around each shift boundary. Review the results before acting.',
+    'punch' => ['matched' => 'Punches near the start and end', 'missing_both' => 'No punches near the start or end', 'missing_start' => 'No punch near the start', 'missing_end' => 'No punch near the end', 'single_mark' => 'One punch in both windows'],
+    'deadlines' => 'Due within the next 30 days',
+    'contract_documents' => 'The site filter includes documents linked to the contract.',
 ];

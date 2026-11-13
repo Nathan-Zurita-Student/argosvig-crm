@@ -32,4 +32,9 @@ return [
     'candidate_scope' => 'Colaboradores ativos sem férias ou escala sobreposta no intervalo. Confirme o descanso e a habilitação exigida pelo posto antes de alocar.',
     'coverage_updated' => 'A cobertura mudou. Confira o quadro atualizado na passagem de plantão.',
     'partial' => 'Exibindo os primeiros resultados de :total intervalos.',
+    'punch_title' => 'Conferência de ponto',
+    'punch_scope' => 'Compara o início e o fim de escalas encerradas com as marcações importadas, com uma janela de 30 minutos em cada horário. Use os resultados para conferência.',
+    'punch' => ['matched' => 'Marcações próximas à entrada e à saída', 'missing_both' => 'Sem marcações próximas à entrada e à saída', 'missing_start' => 'Sem marcação próxima à entrada', 'missing_end' => 'Sem marcação próxima à saída', 'single_mark' => 'Uma única marcação nas duas janelas'],
+    'deadlines' => 'Vencimentos nos próximos 30 dias',
+    'contract_documents' => 'O filtro de posto inclui os documentos vinculados ao contrato.',
 ];

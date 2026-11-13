@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added imported punch checks and upcoming document and contract deadlines to the operational handover.
+
 * [feature] Added staffing gaps for the next 48 hours and replacement suggestions checked against shifts and vacations.
 
 * [feature] Added AI-assisted incident drafts from text and recorded audio with review before saving.

@@ -9,6 +9,7 @@ use Webkul\HumanResources\Models\Incident;
 use Webkul\HumanResources\Models\ShiftAssignment;
 use Webkul\HumanResources\Models\Vacation;
 use Webkul\HumanResources\Models\WorkSite;
+use Webkul\HumanResources\Services\TimekeepingImporter;
 use Webkul\User\Models\Role;
 use Webkul\User\Models\User;
 
@@ -111,4 +112,21 @@ it('counts distinct confirmed staff and excludes overlapping shifts and vacation
     $url = route('admin.operations.coverage', ['site' => $site->id, 'start' => $from->toDateTimeString(), 'end' => $to->toDateTimeString()]);
     $this->get($url)->assertOk()->assertSee($available->full_name)->assertDontSee($working->full_name)->assertDontSee($vacation->full_name);
     $this->actingAs(operationsUser(['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts']), 'user')->get($url)->assertUnauthorized();
+});
+
+it('flags a missing clock-out for an ended shift and keeps private document metadata restricted', function () {
+    $site = WorkSite::create(['code' => fake()->uuid(), 'name' => 'Posto QA ponto', 'status' => 'active']);
+    $employee = Employee::create(['employee_number' => fake()->uuid(), 'full_name' => 'Ponto QA', 'status' => 'active', 'alterdata_employee_id' => fake()->uuid()]);
+    $from = now()->subDay()->startOfDay()->addHours(7);
+    $shift = ShiftAssignment::create(['work_site_id' => $site->id, 'employee_id' => $employee->id, 'starts_at' => $from, 'ends_at' => $from->copy()->addHours(8), 'shift_type' => 'day', 'status' => 'completed']);
+    app(TimekeepingImporter::class)->import([['employee_code' => $employee->alterdata_employee_id, 'occurred_at' => $from->toDateTimeString()]], 'alterdata_csv');
+
+    $link = route('admin.human_resources.timekeeping.index', ['employee_id' => $employee->id, 'from' => $from->toDateString(), 'to' => $from->toDateString()]);
+    $url = route('admin.operations.index', ['site' => $site->id, 'from' => $from->toDateString(), 'to' => $from->toDateString()]);
+    $this->actingAs(getDefaultAdmin(), 'user')->get($url)->assertOk()
+        ->assertViewHas('punches', fn ($punches) => $punches->getCollection()->contains(fn ($row) => $row['shift']->id === $shift->id && $row['result'] === 'missing_end'))
+        ->assertSee($link);
+
+    $this->actingAs(operationsUser(['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts']), 'user')
+        ->get($url)->assertOk()->assertViewHas('punches', null)->assertDontSee($link)->assertViewHas('documents', null);
 });

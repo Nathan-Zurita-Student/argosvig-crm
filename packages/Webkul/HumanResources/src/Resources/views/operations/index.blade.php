@@ -120,5 +120,7 @@
                 </section>
             @endif
         </div>
+
+        @include('human_resources::operations.review')
     </div>
 </x-admin::layouts>
