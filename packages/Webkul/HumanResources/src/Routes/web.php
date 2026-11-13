@@ -17,6 +17,7 @@ use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/operations')->name('admin.operations.')->group(function () {
     Route::get('', [OperationsAssistantController::class, 'index'])->name('index');
+    Route::post('ask', [OperationsAssistantController::class, 'ask'])->middleware('throttle:8,1')->name('ask');
 });
 
 Route::middleware(['web', 'user'])->prefix('admin/commercial-follow-up')->group(function () {

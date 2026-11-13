@@ -8,6 +8,12 @@ return [
         'sort' => 11,
     ],
     [
+        'key' => 'operations-assistant.ai',
+        'name' => 'human_resources::operations.ai_title',
+        'route' => 'admin.operations.ask',
+        'sort' => 1,
+    ],
+    [
         'key' => 'human-resources',
         'name' => 'human_resources::app.acl.title',
         'route' => 'admin.human_resources.employees.index',

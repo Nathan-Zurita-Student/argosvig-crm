@@ -27,6 +27,30 @@
             @include('human_resources::workforce.errors')
         </section>
 
+        @if ($canAsk)
+            <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                <h2 class="font-semibold">@lang('human_resources::operations.ai_title')</h2>
+                <form method="POST" action="{{ route('admin.operations.ask') }}" class="mt-3 flex flex-col gap-3">
+                    @csrf
+                    <input type="hidden" name="from" value="{{ $from }}">
+                    <input type="hidden" name="to" value="{{ $to }}">
+                    <input type="hidden" name="site" value="{{ $site?->id }}">
+                    <label for="question">@lang('human_resources::operations.question')</label>
+                    <textarea id="question" name="question" rows="2" maxlength="500" required class="rounded-md border border-gray-300 bg-white p-2 dark:border-gray-800 dark:bg-gray-950">{{ $question ?? old('question', trans('human_resources::operations.default_question')) }}</textarea>
+                    <div><button class="primary-button" type="submit">@lang('human_resources::operations.ask')</button></div>
+                </form>
+                @isset($assistantError)
+                    <p role="alert" class="mt-3 text-sm text-red-700 dark:text-red-300">{{ $assistantError }}</p>
+                @endisset
+                @isset($answer)
+                    <div class="mt-4 border-t border-gray-200 pt-4 dark:border-gray-800">
+                        <h3 class="font-medium">@lang('human_resources::operations.answer')</h3>
+                        <p class="mt-2 whitespace-pre-wrap">{{ $answer }}</p>
+                    </div>
+                @endisset
+            </section>
+        @endif
+
         <div class="grid gap-4 lg:grid-cols-2">
             @if ($incidents)
                 <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
@@ -37,7 +61,7 @@
                     <ul class="mt-3 flex flex-col gap-3">
                         @forelse ($incidents as $incident)
                             <li class="border-t border-gray-200 pt-3 dark:border-gray-800">
-                                <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route('admin.human_resources.incidents.show', $incident->id) }}">{{ $incident->title }}</a>
+                                <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route('admin.human_resources.incidents.show', $incident->id) }}">{{ $incident->code }} · {{ $incident->title }}</a>
                                 <p class="text-sm">{{ $incident->occurred_at->format('d/m/Y H:i') }} · @lang('human_resources::app.incidents.severity.'.$incident->severity) · @lang('human_resources::app.incidents.status.'.$incident->status)</p>
                             </li>
                         @empty
@@ -59,7 +83,7 @@
                                 @else
                                     <span class="font-medium">{{ $shift->workSite?->name ?? '—' }}</span>
                                 @endif
-                                <p class="text-sm">{{ $shift->starts_at->format('d/m/Y H:i') }} – {{ $shift->ends_at->format('d/m/Y H:i') }} · @lang('human_resources::app.shifts.status.'.$shift->status)</p>
+                                <p class="text-sm">{{ trans('human_resources::operations.shift_reference', ['id' => $shift->id]) }} · {{ $shift->starts_at->format('d/m/Y H:i') }} – {{ $shift->ends_at->format('d/m/Y H:i') }} · @lang('human_resources::app.shifts.status.'.$shift->status)</p>
                             </li>
                         @empty
                             <li>@lang('human_resources::operations.empty')</li>

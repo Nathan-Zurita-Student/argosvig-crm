@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added an optional AI assistant that answers operational questions using authorized handover records.
+
 * [feature] Added a cross-module shift handover with incident and schedule records and source links.
 
 * [security] Enabled SMTP certificate verification and production TLS, and added an explicit SMTP delivery test command.
