@@ -4,8 +4,13 @@
     <div class="flex flex-col gap-4">
         <section v-pre class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
             <h1 class="text-xl font-bold dark:text-white">@lang('human_resources::operations.title')</h1>
+            @if ($contextContract)
+                <p class="mt-1">{{ $contextContract->contract_number }} · {{ $contextContract->title }}</p>
+            @endif
             <form method="GET" action="{{ route('admin.operations.index') }}" class="mt-4 flex flex-wrap items-end gap-3">
-                @if ($sites->isNotEmpty())
+                @if ($contextContract)
+                    <input type="hidden" name="contract" value="{{ $contextContract->id }}">
+                @elseif ($sites->isNotEmpty())
                     <label>
                         @lang('human_resources::operations.site')
                         <select name="site" class="block rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
@@ -35,8 +40,9 @@
                     <input type="hidden" name="from" value="{{ $from }}">
                     <input type="hidden" name="to" value="{{ $to }}">
                     <input type="hidden" name="site" value="{{ $site?->id }}">
+                    <input type="hidden" name="contract" value="{{ $contextContract?->id }}">
                     <label for="question">@lang('human_resources::operations.question')</label>
-                    <textarea id="question" name="question" rows="2" maxlength="500" required class="rounded-md border border-gray-300 bg-white p-2 dark:border-gray-800 dark:bg-gray-950">{{ $question ?? old('question', trans('human_resources::operations.default_question')) }}</textarea>
+                    <textarea id="question" name="question" rows="2" maxlength="500" required class="rounded-md border border-gray-300 bg-white p-2 dark:border-gray-800 dark:bg-gray-950">{{ $question ?? old('question', trans($contextContract ? 'human_resources::operations.contract_question' : 'human_resources::operations.default_question')) }}</textarea>
                     <div><button class="primary-button" type="submit">@lang('human_resources::operations.ask')</button></div>
                 </form>
                 @isset($assistantError)

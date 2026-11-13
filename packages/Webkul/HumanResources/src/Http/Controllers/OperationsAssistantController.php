@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\HumanResources\Repositories\ServiceContractRepository;
 use Webkul\HumanResources\Services\OperationsAi;
 use Webkul\HumanResources\Services\OperationsBriefing;
 use Webkul\HumanResources\Services\ShiftCoverage;
@@ -27,13 +28,14 @@ class OperationsAssistantController extends Controller
 
         $question = $request->validate(['question' => ['required', 'string', 'max:500']])['question'];
         $data = $this->data($request, $briefing, $ai);
-        $filters = ['from' => $data['from'], 'to' => $data['to'], 'site' => $data['site']?->id];
+        $filters = ['from' => $data['from'], 'to' => $data['to'], 'site' => $data['site']?->id, 'contract' => $data['contextContract']?->id];
         foreach (['incidents', 'shifts', 'punches', 'documents', 'contracts'] as $section) {
             $data[$section]?->withPath(route('admin.operations.index'))->appends($filters);
         }
         $facts = [
             'periodo' => [$data['from'], $data['to']],
             'posto_filtrado' => $data['site'] !== null,
+            'contrato_filtrado' => $data['contextContract'] !== null,
             'ocorrencias_do_contrato_quando_filtrado' => true,
             'ocorrencias' => $data['incidents']?->getCollection()->map(fn ($incident) => [
                 'codigo' => $incident->code, 'data' => $incident->occurred_at->toDateTimeString(),
@@ -94,6 +96,7 @@ class OperationsAssistantController extends Controller
     {
         $filters = $request->validate([
             'site' => ['nullable', 'integer', 'min:1'],
+            'contract' => ['nullable', 'integer', 'min:1', 'prohibits:site'],
             'from' => ['nullable', 'date_format:Y-m-d'],
             'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
         ]);
@@ -105,8 +108,13 @@ class OperationsAssistantController extends Controller
         }
 
         $end = $to->copy()->addDay();
-        $report = $briefing->report(isset($filters['site']) ? (int) $filters['site'] : null, $from, $end);
+        $contractId = isset($filters['contract']) ? (int) $filters['contract'] : null;
+        $report = $briefing->report(isset($filters['site']) ? (int) $filters['site'] : null, $from, $end, $contractId);
+        $contextContract = $contractId ? app(ServiceContractRepository::class)->getModel()->newQuery()->select('id', 'contract_number', 'title')->findOrFail($contractId) : null;
         $sites = $briefing->sites();
+        if ($contextContract) {
+            $sites = $sites->where('service_contract_id', $contextContract->id);
+        }
         $now = now();
         $gaps = ShiftCoverage::allowed() ? app(ShiftCoverage::class)->gaps(
             $report['site'] ? $sites->where('id', $report['site']->id) : $sites,
@@ -115,8 +123,9 @@ class OperationsAssistantController extends Controller
 
         return [
             ...$report,
-            ...app(WorkforceReview::class)->review($report['site'], $from, $end),
+            ...app(WorkforceReview::class)->review($report['site'], $from, $end, $contractId),
             'sites' => $sites,
+            'contextContract' => $contextContract,
             'gaps' => array_slice($gaps, 0, 15),
             'gapCount' => count($gaps),
             'canSeeCoverage' => ShiftCoverage::allowed(),

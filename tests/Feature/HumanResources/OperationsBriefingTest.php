@@ -3,9 +3,11 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Webkul\Contact\Models\Organization;
 use Webkul\Core\Models\CoreConfig;
 use Webkul\HumanResources\Models\Employee;
 use Webkul\HumanResources\Models\Incident;
+use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Models\ShiftAssignment;
 use Webkul\HumanResources\Models\Vacation;
 use Webkul\HumanResources\Models\WorkSite;
@@ -129,4 +131,21 @@ it('flags a missing clock-out for an ended shift and keeps private document meta
 
     $this->actingAs(operationsUser(['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts']), 'user')
         ->get($url)->assertOk()->assertViewHas('punches', null)->assertDontSee($link)->assertViewHas('documents', null);
+});
+
+it('opens a contract handover from the contract and limits context to its own records', function () {
+    $organization = Organization::create(['name' => 'Briefing customer']);
+    $base = ['organization_id' => $organization->id, 'starts_at' => today(), 'status' => 'active'];
+    $contract = ServiceContract::create(['contract_number' => fake()->uuid(), 'title' => 'Target briefing contract'] + $base);
+    $other = ServiceContract::create(['contract_number' => fake()->uuid(), 'title' => 'Other briefing contract'] + $base);
+    $incident = ['occurred_at' => now(), 'description' => 'Gate', 'severity' => 'high', 'status' => 'open'];
+    Incident::create(['code' => fake()->uuid(), 'title' => 'Target contract incident', 'service_contract_id' => $contract->id] + $incident);
+    Incident::create(['code' => fake()->uuid(), 'title' => 'Other contract incident', 'service_contract_id' => $other->id] + $incident);
+    $url = route('admin.operations.index', ['contract' => $contract->id]);
+
+    $this->actingAs(getDefaultAdmin(), 'user')->get($url)->assertOk()
+        ->assertSee('Target contract incident')->assertDontSee('Other contract incident');
+    $this->get(route('admin.human_resources.contracts.edit', $contract->id))->assertOk()->assertSee($url, false);
+    $this->actingAs(operationsUser(['operations-assistant', 'human-resources.incidents', 'human-resources.incidents.view']), 'user')
+        ->get($url)->assertNotFound();
 });

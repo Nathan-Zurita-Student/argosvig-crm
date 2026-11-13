@@ -7,6 +7,9 @@
                 <h1 class="text-xl font-bold dark:text-white">@lang('human_resources::app.contracts.edit.title')</h1>
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ route('admin.human_resources.contracts.index') }}" class="secondary-button">@lang('human_resources::app.common.cancel')</a>
+                    @if (\Webkul\HumanResources\Services\OperationsBriefing::allowed() && bouncer()->hasPermission('human-resources.contracts'))
+                        <a href="{{ route('admin.operations.index', ['contract' => $contract->id, 'from' => today()->subWeek()->toDateString(), 'to' => today()->toDateString()]) }}" class="secondary-button">@lang('human_resources::operations.title')</a>
+                    @endif
                     @if ($canRenew)
                         <a href="{{ route('admin.human_resources.contracts.create', ['renews_contract_id' => $contract->id]) }}" class="secondary-button">@lang('human_resources::readiness.renew_contract')</a>
                     @endif

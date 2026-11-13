@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added contract-specific handovers for client reviews and renewal preparation.
+
 * [feature] Added imported punch checks and upcoming document and contract deadlines to the operational handover.
 
 * [feature] Added staffing gaps for the next 48 hours and replacement suggestions checked against shifts and vacations.

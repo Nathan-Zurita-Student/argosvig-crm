@@ -24,7 +24,7 @@
             <h2 class="font-semibold">@lang('human_resources::operations.deadlines')</h2>
             @if ($documents)
                 <h3 class="mt-3 font-medium">@lang('human_resources::workforce.documents')</h3>
-                @if ($site)
+                @if ($site || $contextContract)
                     <p class="text-sm">@lang('human_resources::operations.contract_documents')</p>
                 @endif
                 <ul class="mt-2 flex flex-col gap-2">

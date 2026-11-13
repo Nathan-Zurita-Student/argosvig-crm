@@ -14,6 +14,7 @@ return [
     'ai_title' => 'Assistente operacional',
     'question' => 'Pergunte sobre o período selecionado',
     'default_question' => 'Prepare a passagem de plantão com as pendências em ordem de urgência.',
+    'contract_question' => 'Prepare um resumo deste contrato para a reunião de renovação, com ocorrências, cobertura de escalas e vencimentos relevantes.',
     'ask' => 'Perguntar à IA',
     'answer' => 'Resumo para revisão',
     'ai_unavailable' => 'O provedor de IA está indisponível para esta consulta. Os registros continuam acessíveis abaixo.',
