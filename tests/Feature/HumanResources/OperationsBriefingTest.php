@@ -114,6 +114,13 @@ it('counts distinct confirmed staff and excludes overlapping shifts and vacation
         ->assertSee(trans('human_resources::operations.coverage_count', ['confirmed' => 1, 'required' => 2]));
     $url = route('admin.operations.coverage', ['site' => $site->id, 'start' => $from->toDateTimeString(), 'end' => $to->toDateTimeString()]);
     $this->get($url)->assertOk()->assertSee($available->full_name)->assertDontSee($working->full_name)->assertDontSee($vacation->full_name);
+    $payload = ['coverage' => 1, 'work_site_id' => $site->id, 'employee_id' => $available->id,
+        'starts_at' => $from->toDateTimeString(), 'ends_at' => $to->toDateTimeString()];
+    $this->get(route('admin.human_resources.shifts.create', $payload))->assertOk()->assertViewHas('suggestion', fn ($suggestion) => (int) $suggestion->employee_id === $available->id);
+    $store = route('admin.human_resources.shifts.store', ['coverage' => 1]);
+    $this->post($store, ['employee_id' => $vacation->id] + $payload + ['shift_type' => 'day', 'status' => 'planned'])->assertSessionHasErrors('employee_id');
+    $this->post($store, $payload + ['shift_type' => 'day', 'status' => 'planned'])->assertRedirect(route('admin.human_resources.shifts.index'));
+    $this->assertDatabaseHas('hr_shift_assignments', ['employee_id' => $available->id, 'work_site_id' => $site->id, 'status' => 'planned']);
     $this->actingAs(operationsUser(['operations-assistant', 'human-resources.work-sites', 'human-resources.shifts']), 'user')->get($url)->assertUnauthorized();
 });
 

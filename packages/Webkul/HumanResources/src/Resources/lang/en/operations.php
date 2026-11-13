@@ -30,6 +30,7 @@ return [
     'coverage_scope' => 'The review uses recorded shift intervals and highlights where confirmed staffing is below the site requirement.',
     'coverage_count' => ':confirmed of :required confirmed',
     'find_cover' => 'View potential replacements',
+    'use_candidate' => 'Prepare shift',
     'candidate_scope' => 'Active employees without overlapping shifts or time off. Confirm rest periods and site qualifications before assigning anyone.',
     'coverage_updated' => 'Coverage has changed. Check the updated handover.',
     'partial' => 'Showing the first results out of :total intervals.',

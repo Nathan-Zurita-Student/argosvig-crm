@@ -2,6 +2,7 @@
 
 namespace Webkul\HumanResources\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Webkul\HumanResources\Repositories\EmployeeRepository;
@@ -78,12 +79,21 @@ class ShiftCoverage
 
     public function candidates(Carbon $from, Carbon $to): Collection
     {
+        return $this->availableEmployees($from, $to)->orderBy('full_name')->orderBy('id')->limit(10)->get(['id', 'full_name', 'job_title']);
+    }
+
+    public function canCover(int $employee, Carbon $from, Carbon $to): bool
+    {
+        return $this->availableEmployees($from, $to)->whereKey($employee)->exists();
+    }
+
+    private function availableEmployees(Carbon $from, Carbon $to): Builder
+    {
         $busy = $this->shifts->getModel()->newQuery()->whereIn('status', ['planned', 'confirmed', 'completed', 'absence'])
             ->where('starts_at', '<', $to)->where('ends_at', '>', $from)->select('employee_id');
 
         return $this->employees->getModel()->newQuery()->where('status', 'active')->whereNotIn('id', $busy)
             ->whereDoesntHave('vacations', fn ($vacation) => $vacation->whereIn('status', ['scheduled', 'in_progress'])
-                ->where('starts_at', '<=', $to->copy()->subSecond()->toDateString())->where('ends_at', '>=', $from->toDateString()))
-            ->orderBy('full_name')->orderBy('id')->limit(10)->get(['id', 'full_name', 'job_title']);
+                ->where('starts_at', '<=', $to->copy()->subSecond()->toDateString())->where('ends_at', '>=', $from->toDateString()));
     }
 }

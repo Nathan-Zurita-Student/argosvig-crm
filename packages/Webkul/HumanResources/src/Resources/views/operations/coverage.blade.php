@@ -18,14 +18,17 @@
                             <span class="font-medium">{{ $candidate->full_name }}</span>
                         @endif
                         @if ($candidate->job_title) · {{ $candidate->job_title }} @endif
+                        @if (bouncer()->hasPermission('human-resources.shifts.create'))
+                            <a class="secondary-button" href="{{ route('admin.human_resources.shifts.create', [
+                                'coverage' => 1, 'work_site_id' => $site->id, 'employee_id' => $candidate->id,
+                                'starts_at' => $gap['from']->toDateTimeString(), 'ends_at' => $gap['to']->toDateTimeString(),
+                            ]) }}">@lang('human_resources::operations.use_candidate')</a>
+                        @endif
                     </li>
                 @empty
                     <li>@lang('human_resources::operations.empty')</li>
                 @endforelse
             </ul>
-            @if (bouncer()->hasPermission('human-resources.shifts.create'))
-                <a class="primary-button mt-4 inline-flex" href="{{ route('admin.human_resources.shifts.create') }}">@lang('human_resources::app.shifts.create.title')</a>
-            @endif
         @else
             <p class="mt-3">@lang('human_resources::operations.coverage_updated')</p>
         @endif

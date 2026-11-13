@@ -30,6 +30,7 @@ return [
     'coverage_scope' => 'A análise considera os horários com escala cadastrada e mostra onde o efetivo confirmado está abaixo do exigido pelo posto.',
     'coverage_count' => ':confirmed de :required confirmados',
     'find_cover' => 'Ver possíveis substitutos',
+    'use_candidate' => 'Preparar escala',
     'candidate_scope' => 'Colaboradores ativos sem férias ou escala sobreposta no intervalo. Confirme o descanso e a habilitação exigida pelo posto antes de alocar.',
     'coverage_updated' => 'A cobertura mudou. Confira o quadro atualizado na passagem de plantão.',
     'partial' => 'Exibindo os primeiros resultados de :total intervalos.',
