@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -190,11 +191,15 @@ class QuoteController extends Controller
 
         Event::dispatch('quote.update.before', $id);
 
-        $quote = $this->quoteRepository->update($request->all(), $id);
+        $quote = DB::transaction(function () use ($request, $id, $lead) {
+            $quote = $this->quoteRepository->lockForUpdate()->findOrFail($id);
+            $this->preventUnauthorizedAccess($quote->user_id);
 
-        $quote->leads()->detach();
+            $quote = $this->quoteRepository->update($request->all(), $id);
+            $quote->leads()->sync($lead ? [$lead->id] : []);
 
-        $lead?->quotes()->attach($quote->id);
+            return $quote;
+        });
 
         $leadId = $lead?->id;
 

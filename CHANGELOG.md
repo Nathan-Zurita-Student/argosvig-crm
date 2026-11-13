@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added quote send history, acceptance and decline recording, and linked contract drafts from accepted versions.
+
 * [feature] Added commercial follow-up for open opportunities without upcoming actions and overdue activities.
 
 * [feature] Added a missing document report by type and payroll month, and scheduled private document expiry reminders.

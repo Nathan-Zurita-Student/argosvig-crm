@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\HumanResources\Models\QuoteVersionProxy;
 use Webkul\Lead\Models\LeadProxy;
 
 class CommercialFollowUpController extends Controller
@@ -16,6 +17,7 @@ class CommercialFollowUpController extends Controller
         $tabs = array_filter([
             'leads' => bouncer()->hasPermission('leads') && bouncer()->hasPermission('leads.view'),
             'activities' => bouncer()->hasPermission('activities'),
+            'quotes' => bouncer()->hasPermission('quotes'),
         ]);
         $tab = $request->route('tab');
         abort_unless(isset($tabs[$tab]), 401);
@@ -35,6 +37,9 @@ class CommercialFollowUpController extends Controller
                     ->whereIn('activities.user_id', $userIds)
                     ->orWhereHas('participants', fn (Builder $participant) => $participant->whereIn('user_id', $userIds))))
                 ->orderBy('schedule_to')->orderBy('id'),
+            'quotes' => QuoteVersionProxy::query()->with('quote.user')->where('status', 'sent')
+                ->whereHas('quote', fn (Builder $quote) => bouncer()->scopeToAuthorizedUsers($quote))
+                ->orderBy('sent_at')->orderBy('id'),
         };
 
         return view('human_resources::commercial.index', [
@@ -44,6 +49,7 @@ class CommercialFollowUpController extends Controller
             'detailRoute' => match ($tab) {
                 'leads' => 'admin.leads.view',
                 'activities' => bouncer()->hasPermission('activities.edit') ? 'admin.activities.edit' : null,
+                'quotes' => bouncer()->hasPermission('quotes.edit') ? 'admin.quotes.follow_up.show' : null,
             },
         ]);
     }

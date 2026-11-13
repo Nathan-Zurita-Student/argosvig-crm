@@ -25,16 +25,25 @@
                 </thead>
                 <tbody>
                     @forelse ($records as $record)
+                        @php
+                            $label = $tab === 'quotes' ? $record->snapshot['subject'] : $record->title;
+                            $owner = $tab === 'quotes' ? $record->quote?->user : $record->user;
+                            $detail = match ($tab) {
+                                'leads' => $record->stage?->name ?? '—',
+                                'activities' => $record->schedule_to->format('d/m/Y H:i'),
+                                'quotes' => $record->sent_at->format('d/m/Y H:i'),
+                            };
+                        @endphp
                         <tr class="border-t border-gray-200 dark:border-gray-800">
                             <td class="p-2">
                                 @if ($detailRoute)
-                                    <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route($detailRoute, $record->id) }}">{{ $record->title }}</a>
+                                    <a class="font-medium text-brandColor hover:underline dark:text-blue-300" href="{{ route($detailRoute, $tab === 'quotes' ? $record->quote_id : $record->id) }}">{{ $label }}</a>
                                 @else
-                                    {{ $record->title }}
+                                    {{ $label }}
                                 @endif
                             </td>
-                            <td class="p-2">{{ $record->user?->name ?? '—' }}</td>
-                            <td class="p-2">{{ $tab === 'leads' ? ($record->stage?->name ?? '—') : $record->schedule_to->format('d/m/Y H:i') }}</td>
+                            <td class="p-2">{{ $owner?->name ?? '—' }}</td>
+                            <td class="p-2">{{ $detail }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" class="p-4 text-center">@lang('human_resources::commercial.empty')</td></tr>

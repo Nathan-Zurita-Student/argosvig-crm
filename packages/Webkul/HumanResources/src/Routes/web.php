@@ -7,6 +7,7 @@ use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
 use Webkul\HumanResources\Http\Controllers\EmployeeController;
 use Webkul\HumanResources\Http\Controllers\EmployeeDocumentController;
 use Webkul\HumanResources\Http\Controllers\IncidentController;
+use Webkul\HumanResources\Http\Controllers\QuoteVersionController;
 use Webkul\HumanResources\Http\Controllers\ServiceContractController;
 use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
 use Webkul\HumanResources\Http\Controllers\TimekeepingController;
@@ -16,6 +17,9 @@ use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 Route::middleware(['web', 'user'])->prefix('admin/commercial-follow-up')->group(function () {
     Route::get('opportunities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'leads')->name('admin.leads.follow_up');
     Route::get('activities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'activities')->name('admin.activities.follow_up');
+    Route::get('quotes', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'quotes')->name('admin.quotes.follow_up');
+    Route::get('quotes/{id}', [QuoteVersionController::class, 'index'])->whereNumber('id')->name('admin.quotes.follow_up.show');
+    Route::post('quotes/{id}', [QuoteVersionController::class, 'store'])->whereNumber('id')->name('admin.quotes.follow_up.store');
 });
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {

@@ -30,6 +30,16 @@ class HumanResourcesServiceProvider extends ServiceProvider
             }
         });
 
+        Event::listen('admin.contacts.quotes.edit.form_controls.before', function (ViewRenderEventManager $event) {
+            if (bouncer()->hasPermission('quotes') && bouncer()->hasPermission('quotes.edit')) {
+                $event->addTemplate('human_resources::commercial.quote-link');
+            }
+        });
+
+        Event::listen('admin.quotes.index.create_button.before', function (ViewRenderEventManager $event) {
+            $event->addTemplate('human_resources::commercial.link');
+        });
+
         if ($this->app->runningInConsole()) {
             $this->commands([RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
 
