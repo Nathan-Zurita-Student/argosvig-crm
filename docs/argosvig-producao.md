@@ -2,7 +2,7 @@
 
 Configure o servidor para servir apenas `public/`. Configure HTTPS no domínio do CRM, redirecionamento de HTTP para HTTPS e `APP_URL` com o endereço final. Restrinja o `.env` e os diretórios de armazenamento ao usuário da aplicação. Em migração de uma instalação existente, preserve a `APP_KEY` pelo canal seguro usado para as credenciais.
 
-Use `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`. Use `APP_TIMEZONE=America/Sao_Paulo`, `APP_LOCALE=pt_BR` e `APP_CURRENCY=BRL` para a instalação da Argosvig. Configure `LOG_CHANNEL=daily` e `LOG_LEVEL=warning` para rotação de logs. Configure o SMTP corporativo no servidor e valide o envio a uma caixa de teste antes da liberação.
+Use `APP_ENV=production`, `APP_DEBUG=false` e `SESSION_SECURE_COOKIE=true`. Use `APP_TIMEZONE=America/Sao_Paulo`, `APP_LOCALE=pt_BR` e `APP_CURRENCY=BRL` para a instalação da Argosvig. Configure `LOG_CHANNEL=daily` e `LOG_LEVEL=warning` para rotação de logs. Configure o SMTP corporativo no servidor com `MAIL_REQUIRE_TLS=true`. Valide o envio com `php artisan crm:test-email caixa-de-teste@dominio-da-empresa` e confirme o recebimento na caixa autorizada.
 
 Após aplicar as migrações e atualizar a configuração do ambiente, rode `php artisan crm:check-production`. Configure o monitor externo para consultar `/up` por HTTPS. A rota verifica que a aplicação responde. A verificação via CLI cobre o banco e os discos de arquivos. Configure o agendador do servidor para executar `php artisan schedule:run` a cada minuto e acompanhar falhas. Os lembretes de documentos rodam às 08h no fuso da aplicação.
 

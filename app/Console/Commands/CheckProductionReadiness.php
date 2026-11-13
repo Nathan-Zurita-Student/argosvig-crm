@@ -23,6 +23,7 @@ class CheckProductionReadiness extends Command
             'APP_KEY configurada' => filled(config('app.key')),
             'APP_URL com HTTPS' => parse_url(config('app.url'), PHP_URL_SCHEME) === 'https' && filled(parse_url(config('app.url'), PHP_URL_HOST)),
             'SESSION_SECURE_COOKIE=true' => config('session.secure') === true,
+            'SMTP exige TLS' => config('mail.mailers.smtp.require_tls') === true,
             'Banco acessível' => $this->databaseAvailable(),
         ];
 
