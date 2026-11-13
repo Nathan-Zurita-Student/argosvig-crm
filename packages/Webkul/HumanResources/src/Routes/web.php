@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Webkul\HumanResources\Http\Controllers\CommercialFollowUpController;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
 use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
 use Webkul\HumanResources\Http\Controllers\EmployeeController;
@@ -11,6 +12,11 @@ use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
 use Webkul\HumanResources\Http\Controllers\TimekeepingController;
 use Webkul\HumanResources\Http\Controllers\VacationController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
+
+Route::middleware(['web', 'user'])->prefix('admin/commercial-follow-up')->group(function () {
+    Route::get('opportunities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'leads')->name('admin.leads.follow_up');
+    Route::get('activities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'activities')->name('admin.activities.follow_up');
+});
 
 Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
     Route::controller(DocumentCenterController::class)->prefix('documents')->name('admin.human_resources.document_center.')->group(function () {

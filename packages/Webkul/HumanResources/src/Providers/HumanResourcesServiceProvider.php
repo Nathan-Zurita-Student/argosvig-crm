@@ -3,7 +3,9 @@
 namespace Webkul\HumanResources\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Core\ViewRenderEventManager;
 use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
 
@@ -15,6 +17,18 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'human_resources');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
+
+        Event::listen('admin.leads.index.header.right.before', function (ViewRenderEventManager $event) {
+            if (bouncer()->hasPermission('leads') && bouncer()->hasPermission('leads.view')) {
+                $event->addTemplate('human_resources::commercial.link');
+            }
+        });
+
+        Event::listen('admin.activities.index.toggle_view.before', function (ViewRenderEventManager $event) {
+            if (bouncer()->hasPermission('activities')) {
+                $event->addTemplate('human_resources::commercial.link');
+            }
+        });
 
         if ($this->app->runningInConsole()) {
             $this->commands([RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);

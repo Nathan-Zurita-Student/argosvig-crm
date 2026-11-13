@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added commercial follow-up for open opportunities without upcoming actions and overdue activities.
+
 * [feature] Added a missing document report by type and payroll month, and scheduled private document expiry reminders.
 
 * [feature] Added a private document center with payroll months, expiration filters, activity history and files linked to companies or contracts.
