@@ -288,14 +288,4 @@ return [
         'icon-class' => 'icon-configuration',
     ],
 
-    /**
-     * Help.
-     */
-    [
-        'key' => 'help',
-        'name' => 'admin::app.layouts.help',
-        'route' => 'admin.help.index',
-        'sort' => 92,
-        'icon-class' => 'icon-help',
-    ],
 ];

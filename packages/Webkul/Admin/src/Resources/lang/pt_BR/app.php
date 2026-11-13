@@ -2,7 +2,6 @@
 
 return [
     'acl' => [
-        'help' => 'Ajuda',
         'leads' => 'Oportunidades',
         'lead' => 'Oportunidade',
         'quotes' => 'Cotações',
@@ -2301,65 +2300,9 @@ return [
             ],
         ],
     ],
-    'help' => [
-        'index' => [
-            'title' => 'Ajuda e recursos',
-            'description' => 'Central de orientação, suporte e recursos do Portal Corporativo Argosvig.',
-            'contact-us' => 'Fale conosco',
-            'view-all' => 'Ver tudo',
-            'still-need-help-title' => 'Ainda precisa de ajuda?',
-            'still-need-help-description' => 'Entre em contato com o suporte interno responsável pelo Portal Argosvig.',
-
-            'services' => [
-                'title' => 'Serviços e recursos',
-                'cloud-hosting' => [
-                    'title' => 'Infraestrutura',
-                    'description' => 'Informações sobre disponibilidade, acesso e operação segura do ambiente corporativo.',
-                ],
-                'support' => [
-                    'title' => 'Suporte e manutenção',
-                    'description' => 'Apoio técnico e manutenção contínua para manter o Portal Argosvig seguro e disponível.',
-                ],
-                'extensions' => [
-                    'title' => 'Módulos corporativos',
-                    'description' => 'Recursos e integrações desenvolvidos para os processos internos da Argosvig.',
-                ],
-            ],
-
-            'resources' => [
-                'title' => 'Documentação',
-                'user-docs' => [
-                    'title' => 'Guia do usuário',
-                    'description' => 'Ajuda especializada para integração de módulos, personalização, migração de dados, atualizações de versão e desenvolvimento sob medida.',
-                ],
-                'dev-docs' => [
-                    'title' => 'Documentação para desenvolvedores e blogs',
-                    'description' => 'Guias para desenvolvedores, tutoriais e os artigos mais recentes para ajudar você a criar, configurar e se manter atualizado.',
-                ],
-                'api-docs' => [
-                    'title' => 'Documentação da API',
-                    'description' => 'Referências das integrações autorizadas para conectar o Portal Argosvig a outros sistemas.',
-                ],
-            ],
-
-            'community' => [
-                'forums' => [
-                    'title' => 'Fóruns da comunidade',
-                    'description' => 'Consulte comunicados e orientações compartilhados pela equipe responsável pelo sistema.',
-                    'link' => 'Participe da comunidade',
-                ],
-                'tutorials' => [
-                    'title' => 'Tutoriais em vídeo',
-                    'description' => 'Assista a guias em vídeo passo a passo sobre como configurar seu CRM, configurar funis e gerenciar usuários.',
-                    'link' => 'Acessar o canal do YouTube',
-                ],
-            ],
-        ],
-    ],
     'layouts' => [
         'app-version' => 'Versão: :version',
         'dashboard' => 'Início',
-        'help' => 'Ajuda e recursos',
         'leads' => 'Oportunidades',
         'quotes' => 'Cotações',
         'quote' => 'Cotação',

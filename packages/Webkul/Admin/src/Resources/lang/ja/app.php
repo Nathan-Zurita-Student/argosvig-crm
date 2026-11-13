@@ -2,7 +2,6 @@
 
 return [
     'acl' => [
-        'help' => 'ヘルプ',
         'leads' => 'リード',
         'lead' => 'リード',
         'quotes' => '見積',
@@ -2303,65 +2302,9 @@ return [
             ],
         ],
     ],
-    'help' => [
-        'index' => [
-            'title' => 'ヘルプとリソース',
-            'description' => 'Krayin管理パネルを最大限に活用するために——ホスティング、サポート、プロフェッショナルサービス、拡張機能、開発者ドキュメントをご案内します。',
-            'contact-us' => 'お問い合わせ',
-            'view-all' => 'すべて見る',
-            'still-need-help-title' => 'まだお困りですか？',
-            'still-need-help-description' => 'ホスティング、カスタム開発、その他何でもKrayinチームにご相談ください。',
-
-            'services' => [
-                'title' => 'サービスとリソース',
-                'cloud-hosting' => [
-                    'title' => 'クラウドホスティング',
-                    'description' => 'コスト効率の高いマネージドクラウドホスティング。最適化されたスケーラブルな環境で、数分でKrayinをクラウドに立ち上げられます。',
-                ],
-                'support' => [
-                    'title' => 'サポートと保守',
-                    'description' => '専任のテクニカルサポートと継続的な保守プランで、CRMを安全に、最新の状態で、安定して稼働させます。',
-                ],
-                'extensions' => [
-                    'title' => '拡張機能',
-                    'description' => '公式・コミュニティのアドオンを探して、新しいコネクタ・チャネル・機能でKrayinを拡張できます。',
-                ],
-            ],
-
-            'resources' => [
-                'title' => 'ドキュメント',
-                'user-docs' => [
-                    'title' => 'ユーザーガイド',
-                    'description' => 'モジュール統合、カスタマイズ、データ移行、バージョンアップ、受託開発の専門的なサポート情報です。',
-                ],
-                'dev-docs' => [
-                    'title' => '開発ドキュメントとブログ',
-                    'description' => '構築・設定・最新情報のキャッチアップに役立つ開発者ガイド、チュートリアル、最新記事です。',
-                ],
-                'api-docs' => [
-                    'title' => 'APIドキュメント',
-                    'description' => 'エンドポイント・認証・サンプルを網羅したREST APIリファレンスで、Krayinをお使いのシステムと連携できます。',
-                ],
-            ],
-
-            'community' => [
-                'forums' => [
-                    'title' => 'コミュニティフォーラム',
-                    'description' => '世界中のKrayinユーザー・開発者とつながり、ヒントの共有や問題解決ができます。',
-                    'link' => 'コミュニティに参加',
-                ],
-                'tutorials' => [
-                    'title' => '動画チュートリアル',
-                    'description' => 'CRMのセットアップ、パイプラインの設定、ユーザー管理の手順を動画で学べます。',
-                    'link' => 'YouTubeチャンネルを見る',
-                ],
-            ],
-        ],
-    ],
     'layouts' => [
         'app-version' => 'バージョン: :version',
         'dashboard' => 'ダッシュボード',
-        'help' => 'ヘルプとリソース',
         'leads' => 'リード',
         'quotes' => '見積',
         'quote' => '見積',

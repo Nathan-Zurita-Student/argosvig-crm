@@ -2,7 +2,6 @@
 
 return [
     'acl' => [
-        'help' => '도움말',
         'leads' => '리드',
         'lead' => '리드',
         'quotes' => '견적서',
@@ -2301,62 +2300,9 @@ return [
             ],
         ],
     ],
-    'help' => [
-        'index' => [
-            'title' => '도움말 및 리소스',
-            'description' => 'Krayin 관리자를 최대한 활용하는 데 필요한 모든 것 — 호스팅, 지원 및 전문 서비스는 물론 확장 기능과 개발자 문서까지 제공합니다.',
-            'contact-us' => '문의하기',
-            'view-all' => '전체 보기',
-            'still-need-help-title' => '더 도움이 필요하신가요?',
-            'still-need-help-description' => '호스팅, 맞춤 개발 등 무엇이든 Krayin 팀에 문의해 보세요.',
-            'services' => [
-                'title' => '서비스 및 리소스',
-                'cloud-hosting' => [
-                    'title' => '클라우드 호스팅',
-                    'description' => '비용 효율적인 관리형 클라우드 호스팅 — 몇 분 만에 완전히 최적화되고 확장 가능한 클라우드 환경에서 Krayin을 체험하고 실행해 보세요.',
-                ],
-                'support' => [
-                    'title' => '지원 및 유지보수',
-                    'description' => 'CRM을 안전하고 최신 상태로 원활하게 운영할 수 있도록 전담 기술 지원과 지속적인 유지보수 플랜을 제공합니다.',
-                ],
-                'extensions' => [
-                    'title' => '확장 기능',
-                    'description' => '새로운 커넥터, 채널, 기능으로 Krayin을 확장할 수 있는 공식 및 커뮤니티 애드온을 살펴보세요.',
-                ],
-            ],
-            'resources' => [
-                'title' => '문서',
-                'user-docs' => [
-                    'title' => '사용자 가이드',
-                    'description' => '모듈 통합, 커스터마이징, 데이터 마이그레이션, 버전 업그레이드 및 맞춤 개발에 대한 전문가의 도움을 받아보세요.',
-                ],
-                'dev-docs' => [
-                    'title' => '개발자 문서 및 블로그',
-                    'description' => '구축, 설정, 최신 정보 확인에 도움이 되는 개발자 가이드, 튜토리얼 및 최신 아티클을 제공합니다.',
-                ],
-                'api-docs' => [
-                    'title' => 'API 문서',
-                    'description' => 'Krayin을 사용 중인 스택과 통합할 수 있도록 엔드포인트, 인증, 예제를 포함한 전체 REST API 레퍼런스를 제공합니다.',
-                ],
-            ],
-            'community' => [
-                'forums' => [
-                    'title' => '커뮤니티 포럼',
-                    'description' => '수천 명의 Krayin 사용자 및 개발자와 소통하며 팁을 공유하고 문제를 해결해 보세요.',
-                    'link' => '커뮤니티 참여하기',
-                ],
-                'tutorials' => [
-                    'title' => '동영상 튜토리얼',
-                    'description' => 'CRM 설정, 파이프라인 구성, 사용자 관리에 대한 단계별 동영상 가이드를 시청해 보세요.',
-                    'link' => 'YouTube 채널 둘러보기',
-                ],
-            ],
-        ],
-    ],
     'layouts' => [
         'app-version' => '버전: :version',
         'dashboard' => '대시보드',
-        'help' => '도움말 및 리소스',
         'leads' => '리드',
         'quotes' => '견적서',
         'quote' => '견적서',

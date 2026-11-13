@@ -1,28 +1,19 @@
 <?php
 
-it('shows the help page to an authenticated admin', function () {
+use Illuminate\Support\Facades\Route;
+
+it('does not expose the placeholder help module', function () {
     $admin = getDefaultAdmin();
 
-    $response = test()->actingAs($admin)
-        ->get(route('admin.help.index'))
-        ->assertOk();
+    expect(Route::has('admin.help.index'))->toBeFalse();
 
-    foreach ([
-        'admin::app.help.index.title',
-        'admin::app.help.index.description',
-        'admin::app.help.index.contact-us',
-        'admin::app.help.index.services.title',
-        'admin::app.help.index.resources.title',
-        'admin::app.help.index.still-need-help-title',
-    ] as $key) {
-        $translation = trans($key);
+    expect(
+        collect(menu()->getItems('admin'))->contains(
+            fn ($item) => $item->getKey() === 'help'
+        )
+    )->toBeFalse();
 
-        expect($translation)->not->toBe($key, "{$key} should be translated");
-
-        $response->assertSee($translation, false);
-    }
-
-    $response
-        ->assertSee('Portal Argosvig', false)
-        ->assertDontSee('krayincrm.com', false);
+    test()->actingAs($admin)
+        ->get('/admin/help')
+        ->assertNotFound();
 });
