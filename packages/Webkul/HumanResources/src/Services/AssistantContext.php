@@ -95,7 +95,8 @@ class AssistantContext
             }
         }
         if ($type === 'quote') {
-            $facts['items'] = $record->items()->orderBy('id')->limit(10)->get(['name', 'quantity', 'total'])->toArray();
+            $facts['items'] = $record->items()->orderBy('id')->limit(10)->get(['name', 'quantity', 'total'])
+                ->map(fn ($item) => $item->only(['name', 'quantity', 'total']))->all();
         }
 
         return [['module' => $type, 'record' => $facts], [['label' => trans('human_resources::ai.open_record'), 'url' => route($route, $record->id)]]];

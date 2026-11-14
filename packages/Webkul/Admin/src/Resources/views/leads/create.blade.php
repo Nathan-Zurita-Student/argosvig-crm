@@ -200,6 +200,8 @@
 
                 data() {
                     return {
+                        person: @js($person),
+
                         activeTab: 'lead-details',
 
                         tabs: [

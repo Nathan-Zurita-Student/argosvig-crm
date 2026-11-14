@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Webkul\Contact\Models\Organization;
+use Webkul\Contact\Models\Person;
 use Webkul\Lead\Models\Lead;
 use Webkul\User\Models\Role;
 use Webkul\User\Models\User;
@@ -87,4 +89,21 @@ it('exports spreadsheets with generated cells stored as literal values', functio
     } finally {
         unlink($file);
     }
+});
+
+it('resolves only unique visible relationships in a native draft', function () {
+    assistantResponse(['answer' => 'Revise.', 'draft' => ['type' => 'lead', 'fields' => ['title' => 'Proposta de teste', 'contact_name' => 'Contato escolhido']]]);
+    $actor = assistantUser(['crm-ai', 'leads', 'leads.create', 'leads.create.quick-create', 'contacts', 'contacts.persons']);
+    $company = Organization::create(['name' => 'Empresa QA', 'user_id' => $actor->id]);
+    $person = Person::create(['name' => 'Contato escolhido', 'organization_id' => $company->id, 'user_id' => $actor->id]);
+    Person::create(['name' => 'Contato escolhido', 'user_id' => getDefaultAdmin()->id]);
+    $this->actingAs($actor, 'user');
+    $url = route('admin.ai.ask');
+    $draft = $this->postJson($url, ['question' => 'Crie a oportunidade Proposta de teste para Contato escolhido.'])->assertOk()->json('draft.token');
+    $this->post(route('admin.ai.draft'), ['token' => $draft])->assertRedirect(route('admin.leads.create'))->assertSessionHasInput('person_id', $person->id);
+    $this->get(route('admin.leads.create'))->assertOk()->assertSee('Contato escolhido');
+
+    Person::create(['name' => 'Contato escolhido', 'user_id' => $actor->id]);
+    $this->post(route('admin.ai.draft'), ['token' => $draft])->assertRedirect(route('admin.leads.create'));
+    expect(session()->getOldInput('person_id'))->toBeNull();
 });

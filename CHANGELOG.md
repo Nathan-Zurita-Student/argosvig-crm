@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Filled assistant draft relationships by exact name, code or employee number when an authorized match is unique.
+
 * [feature] Added a contextual CRM assistant with draft forms and downloadable PDF, text, Markdown, CSV and Excel files.
 
 * [feature] Unified OpenRouter setup for CRM AI and added a connection test with encrypted key storage.

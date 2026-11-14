@@ -3,6 +3,11 @@
 namespace Webkul\HumanResources\Services;
 
 use Illuminate\Support\Facades\Validator;
+use Webkul\Contact\Models\OrganizationProxy;
+use Webkul\Contact\Models\PersonProxy;
+use Webkul\HumanResources\Models\DepartmentProxy;
+use Webkul\HumanResources\Models\EmployeeProxy;
+use Webkul\HumanResources\Models\WorkSiteProxy;
 
 class AssistantDrafts
 {
@@ -14,19 +19,33 @@ class AssistantDrafts
         'quote' => ['quotes.create', 'admin.quotes.create', ['subject' => 'string|max:255', 'description' => 'string|max:3000', 'expired_at' => 'date_format:Y-m-d']],
         'incident' => ['human-resources.incidents.create', 'admin.human_resources.incidents.create', ['title' => 'string|max:255', 'description' => 'string|max:5000', 'location' => 'string|max:255', 'occurred_at' => 'date_format:Y-m-d\TH:i', 'severity' => 'in:low,medium,high,critical']],
         'contract' => ['human-resources.contracts.create', 'admin.human_resources.contracts.create', ['contract_number' => 'string|max:100', 'title' => 'string|max:255', 'starts_at' => 'date_format:Y-m-d', 'ends_at' => 'date_format:Y-m-d', 'monthly_value' => 'numeric|min:0', 'description' => 'string|max:5000']],
-        'employee' => ['human-resources.employees.create', 'admin.human_resources.employees.create', ['employee_number' => 'string|max:100', 'full_name' => 'string|max:255', 'job_title' => 'string|max:255', 'hire_date' => 'date_format:Y-m-d']],
+        'employee' => ['human-resources.employees.create', 'admin.human_resources.employees.create', ['employee_number' => 'string|max:50', 'full_name' => 'string|max:255', 'job_title' => 'string|max:255', 'hire_date' => 'date_format:Y-m-d']],
         'department' => ['human-resources.departments.create', 'admin.human_resources.departments.create', ['code' => 'string|max:50', 'name' => 'string|max:255', 'description' => 'string|max:5000']],
-        'site' => ['human-resources.work-sites.create', 'admin.human_resources.work_sites.create', ['code' => 'string|max:100', 'name' => 'string|max:255', 'city' => 'string|max:255', 'state' => 'string|size:2', 'required_staff' => 'integer|min:1', 'notes' => 'string|max:5000']],
+        'site' => ['human-resources.work-sites.create', 'admin.human_resources.work_sites.create', ['code' => 'string|max:100', 'name' => 'string|max:255', 'city' => 'string|max:100', 'state' => 'string|size:2', 'required_staff' => 'integer|min:1|max:10000', 'notes' => 'string|max:5000']],
         'shift' => ['human-resources.shifts.create', 'admin.human_resources.shifts.create', ['starts_at' => 'date_format:Y-m-d\TH:i', 'ends_at' => 'date_format:Y-m-d\TH:i', 'shift_type' => 'in:day,night,flexible', 'notes' => 'string|max:5000']],
         'vacation' => ['human-resources.vacations.create', 'admin.human_resources.vacations.create', ['starts_at' => 'date_format:Y-m-d', 'ends_at' => 'date_format:Y-m-d', 'type' => 'in:regular,collective,split', 'notes' => 'string|max:5000']],
+    ];
+
+    private const RELATIONS = [
+        'organization_name' => [OrganizationProxy::class, 'name', 'organization_id', 'contacts.organizations'],
+        'contact_name' => [PersonProxy::class, 'name', 'person_id', 'contacts.persons'],
+        'employee_number_ref' => [EmployeeProxy::class, 'employee_number', 'employee_id', 'human-resources.employees'],
+        'site_code' => [WorkSiteProxy::class, 'code', 'work_site_id', 'human-resources.work-sites'],
+        'department_code' => [DepartmentProxy::class, 'code', 'department_id', 'human-resources.departments'],
+    ];
+
+    private const FORM_RELATIONS = [
+        'person' => ['organization_name'], 'lead' => ['contact_name'], 'quote' => ['contact_name'],
+        'contract' => ['organization_name'], 'employee' => ['department_code'], 'vacation' => ['employee_number_ref'],
+        'shift' => ['employee_number_ref', 'site_code'],
     ];
 
     public function available(): array
     {
         $forms = [];
-        foreach (self::FORMS as $type => [, , $fields]) {
+        foreach (array_keys(self::FORMS) as $type) {
             if ($this->permitted($type)) {
-                $forms[$type] = array_keys($fields);
+                $forms[$type] = array_keys($this->rules($type));
             }
         }
 
@@ -40,9 +59,10 @@ class AssistantDrafts
         }
 
         $valid = [];
-        foreach (self::FORMS[$type][2] as $field => $rule) {
+        foreach ($this->rules($type) as $field => $rule) {
             $value = $fields[$field] ?? null;
             if ((is_string($value) || is_int($value) || is_float($value))
+                && ! preg_match('/[<>]|\{\{|\}\}/', (string) $value)
                 && Validator::make([$field => $value], [$field => 'required|'.$rule])->passes()) {
                 $valid[$field] = $value;
             }
@@ -60,6 +80,25 @@ class AssistantDrafts
 
     public function formInput(string $type, array $fields): array
     {
+        foreach (self::FORM_RELATIONS[$type] ?? [] as $relation) {
+            if (! isset($fields[$relation])) {
+                continue;
+            }
+
+            [$model, $key, $target, $permission] = self::RELATIONS[$relation];
+            $name = $fields[$relation];
+            unset($fields[$relation]);
+
+            if (! bouncer()->hasPermission($permission)) {
+                continue;
+            }
+
+            $matches = bouncer()->scopeToAuthorizedUsers($model::query())->where($key, $name)->limit(2)->pluck('id');
+            if ($matches->count() === 1) {
+                $fields[$target] = (int) $matches->first();
+            }
+        }
+
         if ($type === 'person') {
             foreach (['email' => 'emails', 'phone' => 'contact_numbers'] as $input => $target) {
                 if (isset($fields[$input])) {
@@ -72,15 +111,29 @@ class AssistantDrafts
         return $fields;
     }
 
+    private function rules(string $type): array
+    {
+        $rules = self::FORMS[$type][2];
+        foreach (self::FORM_RELATIONS[$type] ?? [] as $relation) {
+            if (bouncer()->hasPermission(self::RELATIONS[$relation][3])) {
+                $rules[$relation] = 'string|max:255';
+            }
+        }
+
+        return $rules;
+    }
+
     private function permitted(string $type): bool
     {
         if (! isset(self::FORMS[$type])) {
             return false;
         }
 
-        $permission = self::FORMS[$type][0];
+        [$permission, $route] = self::FORMS[$type];
+        $roles = acl()->getRoles();
 
         return bouncer()->hasPermission($permission)
+            && bouncer()->hasPermission($roles->get($route, $permission))
             && (! str_starts_with($permission, 'human-resources.') || bouncer()->getAuthorizedUserIds() === null);
     }
 }

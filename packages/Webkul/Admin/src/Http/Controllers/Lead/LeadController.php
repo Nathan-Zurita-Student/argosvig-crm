@@ -166,7 +166,13 @@ class LeadController extends Controller
             ->orderBy('sort_order', 'asc')
             ->get();
 
-        return view('admin::leads.create', compact('attributes'));
+        $personId = old('person.id', old('person_id'));
+        $person = (is_string($personId) || is_int($personId)) && ctype_digit((string) $personId) && bouncer()->hasPermission('contacts.persons')
+            ? bouncer()->scopeToAuthorizedUsers($this->personRepository->getModel()->newQuery())
+                ->with('organization:id,name')->find($personId)?->only(['id', 'name', 'emails', 'contact_numbers', 'organization'])
+            : null;
+
+        return view('admin::leads.create', compact('attributes', 'person'));
     }
 
     /**
