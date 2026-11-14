@@ -20,6 +20,12 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'human_resources');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
 
+        Event::listen('admin.configuration.edit.back_button.before', function (ViewRenderEventManager $event) {
+            if (request()->route('slug') === 'general' && request()->route('slug2') === 'magic_ai' && bouncer()->hasPermission('configuration')) {
+                $event->addTemplate('human_resources::ai.connection-link');
+            }
+        });
+
         Event::listen('admin.layout.header.actions.before', function (ViewRenderEventManager $event) {
             if (OperationsBriefing::allowed()) {
                 $event->addTemplate('human_resources::operations.shortcut');

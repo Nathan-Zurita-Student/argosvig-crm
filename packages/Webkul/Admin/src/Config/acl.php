@@ -602,7 +602,7 @@ return [
     ], [
         'key' => 'configuration',
         'name' => 'admin::app.acl.configuration',
-        'route' => 'admin.configuration.index',
+        'route' => ['admin.configuration.index', 'admin.ai.connection', 'admin.ai.connection.test'],
         'sort' => 9,
     ],
 ];

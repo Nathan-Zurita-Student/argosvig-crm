@@ -4,17 +4,16 @@ namespace Webkul\HumanResources\Services;
 
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
-use Webkul\Lead\Services\MagicAIService;
+use Webkul\Core\Services\OpenRouter;
 
 class OperationsAi
 {
+    public function __construct(private OpenRouter $router) {}
+
     public function available(): bool
     {
-        return config('operations.ai_enabled')
-            && filled(core()->getConfigData('general.magic_ai.settings.api_key'))
-            && filled($this->model());
+        return $this->router->enabled();
     }
 
     public function summarize(string $question, array $facts): string
@@ -27,7 +26,7 @@ class OperationsAi
 
     public function transcriptionAvailable(): bool
     {
-        return $this->available() && filled(config('operations.transcription_model'));
+        return $this->available();
     }
 
     public function transcribe(UploadedFile $audio, string $format): string
@@ -38,35 +37,25 @@ class OperationsAi
             $this->unavailable();
         }
 
-        $transcript = $this->request('https://openrouter.ai/api/v1/audio/transcriptions', [
-            'model' => config('operations.transcription_model'),
-            'language' => 'pt',
-            'input_audio' => ['format' => $format, 'data' => base64_encode($contents)],
-        ], 'text');
+        $transcript = $this->result(fn () => $this->router->transcribe($contents, $format), 'text');
 
         return mb_substr($transcript, 0, 10000);
     }
 
     public function chat(string $instruction, array $data): string
     {
-        $result = $this->request(MagicAIService::OPEN_ROUTER_URL, [
-            'model' => $this->model(),
-            'max_tokens' => 650,
-            'messages' => [
-                ['role' => 'system', 'content' => $instruction],
-                ['role' => 'user', 'content' => json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)],
-            ],
-        ], 'choices.0.message.content');
+        $result = $this->result(fn () => $this->router->chat([
+            ['role' => 'system', 'content' => $instruction],
+            ['role' => 'user', 'content' => json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)],
+        ]), 'choices.0.message.content');
 
         return mb_substr($result, 0, 5000);
     }
 
-    private function request(string $url, array $payload, string $path): string
+    private function result(callable $request, string $path): string
     {
         try {
-            $response = Http::acceptJson()->withToken(core()->getConfigData('general.magic_ai.settings.api_key'))
-                ->connectTimeout(5)->timeout(25)->withoutRedirecting()
-                ->post($url, $payload + ['provider' => ['data_collection' => 'deny', 'zdr' => true]]);
+            $response = $request();
         } catch (ConnectionException) {
             $this->unavailable();
         }
@@ -78,11 +67,6 @@ class OperationsAi
         }
 
         return trim($result);
-    }
-
-    private function model(): ?string
-    {
-        return core()->getConfigData('general.magic_ai.settings.other_model') ?: core()->getConfigData('general.magic_ai.settings.model');
     }
 
     private function unavailable(): never

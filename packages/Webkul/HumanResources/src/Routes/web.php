@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Webkul\HumanResources\Http\Controllers\AiConnectionController;
 use Webkul\HumanResources\Http\Controllers\CommercialFollowUpController;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
 use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
@@ -15,6 +16,11 @@ use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
 use Webkul\HumanResources\Http\Controllers\TimekeepingController;
 use Webkul\HumanResources\Http\Controllers\VacationController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
+
+Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/ai')->name('admin.ai.')->group(function () {
+    Route::get('connection', [AiConnectionController::class, 'index'])->name('connection');
+    Route::post('connection', [AiConnectionController::class, 'test'])->middleware('throttle:4,1')->name('connection.test');
+});
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/operations')->name('admin.operations.')->group(function () {
     Route::get('', [OperationsAssistantController::class, 'index'])->name('index');

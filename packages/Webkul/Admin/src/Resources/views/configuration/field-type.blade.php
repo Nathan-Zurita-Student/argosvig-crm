@@ -1,4 +1,4 @@
-@php($value = old($field->getNameKey()) ??  system_config()->getConfigData($field->getNameKey()))
+@php($value = $field->getNameKey() === \Webkul\Core\Services\OpenRouter::KEY ? null : (old($field->getNameKey()) ?? system_config()->getConfigData($field->getNameKey())))
 
 <input
     type="hidden"

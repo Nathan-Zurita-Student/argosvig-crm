@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Unified OpenRouter setup for CRM AI and added a connection test with encrypted key storage.
+
 * [fixed] Kept the dashboard revenue cards and chart legend within narrow mobile screens.
 
 * [feature] Grouped the sidebar into Human Resources and Operations Management, with the entries of a group opening in a floating panel beside the item.

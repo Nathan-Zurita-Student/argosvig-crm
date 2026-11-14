@@ -4,14 +4,10 @@ namespace Webkul\Lead\Services;
 
 use Exception;
 use Smalot\PdfParser\Parser;
+use Webkul\Core\Services\OpenRouter;
 
 class MagicAIService
 {
-    /**
-     * API endpoint for OpenRouter AI service.
-     */
-    const OPEN_ROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
     /**
      * Maximum token limit for AI prompt.
      */
@@ -104,11 +100,9 @@ class MagicAIService
      */
     private static function processPromptWithAI($prompt)
     {
-        $model = core()->getConfigData('general.magic_ai.settings.other_model') ?: core()->getConfigData('general.magic_ai.settings.model');
+        $router = app(OpenRouter::class);
 
-        $apiKey = core()->getConfigData('general.magic_ai.settings.api_key');
-
-        if (! $apiKey || ! $model) {
+        if (! $router->enabled()) {
             return ['error' => trans('admin::app.leads.file.missing-api-key')];
         }
 
@@ -120,7 +114,7 @@ class MagicAIService
             return ! empty($value);
         });
 
-        return self::ask(array_values($prompt), $model, $apiKey);
+        return self::ask(array_values($prompt), $router);
     }
 
     /**
@@ -142,32 +136,16 @@ class MagicAIService
     /**
      * Send prompt request to AI for processing.
      */
-    private static function ask($prompt, $model, $apiKey)
+    private static function ask(array $prompt, OpenRouter $router)
     {
         try {
-            $response = \Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer '.$apiKey,
-            ])->post(self::OPEN_ROUTER_URL, [
-                'model' => $model,
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => self::getSystemPrompt(),
-                    ], [
-                        'role' => 'user',
-                        'content' => [
-                            [
-                                'type' => 'text',
-                                'text' => $prompt[0],
-                            ],
-                        ],
-                    ],
-                ],
-            ]);
+            $response = $router->chat([
+                ['role' => 'system', 'content' => self::getSystemPrompt()],
+                ['role' => 'user', 'content' => $prompt[0]],
+            ], 1600);
 
             if ($response->failed()) {
-                throw new Exception($response->body());
+                throw new Exception('AI provider unavailable');
             }
 
             $data = $response->json();

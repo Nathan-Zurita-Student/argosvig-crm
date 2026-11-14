@@ -1,5 +1,7 @@
 <?php
 
+use Webkul\Core\Services\OpenRouter;
+
 return [
     /**
      * General.
@@ -260,7 +262,7 @@ return [
                 'title' => 'admin::app.configuration.index.magic-ai.settings.api-key',
                 'type' => 'password',
                 'depends' => 'enable:1',
-                'validation' => 'required_if:enable,1',
+                'validation' => 'nullable|string|max:255',
                 'info' => 'admin::app.configuration.index.magic-ai.settings.api-key-info',
             ], [
                 'name' => 'model',
@@ -270,6 +272,9 @@ return [
                 'depends' => 'enable:1',
                 'options' => [
                     [
+                        'title' => 'human_resources::ai.default_model',
+                        'value' => OpenRouter::MODEL,
+                    ], [
                         'title' => 'admin::app.configuration.index.magic-ai.settings.models.gpt-4o',
                         'value' => 'openai/chatgpt-4o-latest',
                     ], [

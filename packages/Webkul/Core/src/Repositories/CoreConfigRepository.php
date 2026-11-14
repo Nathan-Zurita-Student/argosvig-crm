@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Webkul\Core\Contracts\CoreConfig;
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Core\Services\OpenRouter;
 use Webkul\Core\Traits\Sanitizer;
 
 class CoreConfigRepository extends Repository
@@ -118,7 +119,7 @@ class CoreConfigRepository extends Repository
 
                     if ($coreConfigValues->isNotEmpty()) {
                         foreach ($coreConfigValues as $coreConfig) {
-                            if (! empty($coreConfig['value'])) {
+                            if ($fieldName !== OpenRouter::KEY && ! empty($coreConfig['value'])) {
                                 Storage::delete($coreConfig['value']);
                             }
 

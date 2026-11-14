@@ -5,12 +5,14 @@ namespace Webkul\Admin\Http\Controllers\Configuration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\ConfigurationForm;
 use Webkul\Core\Repositories\CoreConfigRepository as ConfigurationRepository;
+use Webkul\Core\Services\OpenRouter;
 
 class ConfigurationController extends Controller
 {
@@ -43,7 +45,13 @@ class ConfigurationController extends Controller
     {
         Event::dispatch('core.configuration.save.before');
 
-        $this->configurationRepository->create($request->all());
+        $data = $request->all();
+
+        if (blank(data_get($data, OpenRouter::KEY))) {
+            Arr::forget($data, OpenRouter::KEY);
+        }
+
+        $this->configurationRepository->create($data);
 
         Event::dispatch('core.configuration.save.after');
 

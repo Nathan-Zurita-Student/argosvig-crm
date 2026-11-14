@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler
     {
         parent::__construct($container);
 
-        $this->dontFlash(['verification_code']);
+        $this->dontFlash(['verification_code', 'general.magic_ai.settings.api_key', 'question', 'narrative']);
 
         $this->jsonErrorMessages = [
             '404' => trans('admin::app.errors.404.title'),

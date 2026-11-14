@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
+use Webkul\Core\Services\OpenRouter;
 
 class ConfigurationForm extends FormRequest
 {
@@ -57,6 +58,9 @@ class ConfigurationForm extends FormRequest
 
             $rules[$key] = $configField['validation'] ?? 'prohibited';
         }
+
+        $rules[OpenRouter::KEY] = ['nullable', 'string', 'max:255', 'regex:/\A[A-Za-z0-9_-]+\z/'];
+        $rules['general.magic_ai.settings.other_model'] = ['nullable', 'string', 'max:180', 'regex:/\A[\w.-]+\/[\w.:+-]+\z/'];
 
         return $rules;
     }
