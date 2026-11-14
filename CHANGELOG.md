@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [fix] Fixed saving the OpenRouter key from the Magic AI settings form.
+
 * [enhancement] Added quote draft lines using catalog SKUs and current prices.
 
 * [enhancement] Added scoped module totals to CRM assistant requests made from record listings.

@@ -20,6 +20,7 @@ it('encrypts the shared key, does not render it, and keeps it on a blank save', 
     expect(core()->getConfigData(OpenRouter::KEY))->toBe($secret);
 
     $this->get(route('admin.configuration.index', $settings))->assertOk()->assertDontSee($secret, false)->assertSee(route('admin.ai.connection'));
+    expect(core()->getConfigField(OpenRouter::KEY)['validation'])->toBe('max:255');
     $this->post(route('admin.configuration.store', $settings), ['general' => ['magic_ai' => ['settings' => ['api_key' => '', 'enable' => '1']]]])->assertRedirect();
     expect(core()->getConfigData(OpenRouter::KEY))->toBe($secret);
     $this->get(route('admin.ai.connection'))->assertOk()->assertSee(OpenRouter::MODEL)->assertSee(OpenRouter::AUDIO_MODEL)->assertDontSee($secret, false);

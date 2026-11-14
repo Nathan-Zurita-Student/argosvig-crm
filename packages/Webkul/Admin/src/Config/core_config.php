@@ -262,7 +262,7 @@ return [
                 'title' => 'admin::app.configuration.index.magic-ai.settings.api-key',
                 'type' => 'password',
                 'depends' => 'enable:1',
-                'validation' => 'nullable|string|max:255',
+                'validation' => 'max:255',
                 'info' => 'admin::app.configuration.index.magic-ai.settings.api-key-info',
             ], [
                 'name' => 'model',
