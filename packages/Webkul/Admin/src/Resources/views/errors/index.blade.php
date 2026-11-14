@@ -41,18 +41,30 @@
 
                     <a
                         href="{{ route('admin.dashboard.index') }}"
-                        class="hover:underlsine text-sm font-semibold text-blue-600 transition-all"
+                        class="text-sm font-semibold text-blue-600 transition-all hover:underline"
                     >
                         @lang('admin::app.errors.dashboard')
                     </a>
                 </div>
 
+                @php
+                    // The company sender address; a placeholder domain is never shown as a contact.
+                    $supportEmail = config('mail.from.address');
+
+                    $hasSupportEmail = filter_var($supportEmail, FILTER_VALIDATE_EMAIL)
+                        && ! str_ends_with(strtolower($supportEmail), '@example.com');
+                @endphp
+
                 <p class="text-sm text-gray-800 dark:text-white">
-                    @lang('admin::app.errors.support', [
-                        'link' => 'mailto:support@example.com',
-                        'email' => 'support@example.com',
-                        'class' => 'font-semibold text-blue-600 transition-all hover:underline',
-                    ])
+                    @if ($hasSupportEmail)
+                        @lang('admin::app.errors.support', [
+                            'link' => 'mailto:'.e($supportEmail),
+                            'email' => e($supportEmail),
+                            'class' => 'font-semibold text-blue-600 transition-all hover:underline',
+                        ])
+                    @else
+                        @lang('admin::app.errors.support-admin')
+                    @endif
                 </p>
             </div>
 

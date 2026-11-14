@@ -104,9 +104,13 @@
                                     <x-admin::avatar ::name="record.name.name"/>
                                 </template>
 
-                                <div class="text-sm">
+                                <!-- Users are edited in a modal, so the name opens it instead of a page. -->
+                                <a
+                                    class="cursor-pointer text-sm font-medium text-brandColor hover:underline dark:text-blue-300 dark:hover:text-blue-200"
+                                    @click="editModal(record.actions.find(action => action.index === 'edit')?.url)"
+                                >
                                     @{{ record.name.name }}
-                                </div>
+                                </a>
                             </div>
 
                             <!-- Users Email -->
@@ -535,7 +539,7 @@
 
                         url.searchParams.delete('action');
 
-                        window.history.replaceState({}, '', url);
+                        window.history.replaceState(window.history.state, '', url);
                     },
 
                     openModal() {

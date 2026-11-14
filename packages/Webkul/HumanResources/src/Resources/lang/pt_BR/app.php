@@ -2,7 +2,9 @@
 
 return [
     'menu' => [
-        'title' => 'Pessoas',
+        'title' => 'Recursos Humanos',
+        'human_resources' => 'Recursos Humanos',
+        'operations' => 'Gestão Operacional',
         'employees' => 'Colaboradores',
         'vacations' => 'Férias',
         'departments' => 'Departamentos',
@@ -13,7 +15,7 @@ return [
         'shifts' => 'Escalas',
     ],
     'acl' => [
-        'title' => 'Pessoas',
+        'title' => 'Recursos Humanos',
         'employees' => 'Colaboradores',
         'vacations' => 'Férias',
         'departments' => 'Departamentos',
@@ -139,7 +141,7 @@ return [
         ],
         'types' => ['regular' => 'Regular', 'collective' => 'Coletiva', 'split' => 'Fracionada'],
         'statuses' => ['scheduled' => 'Agendada', 'in_progress' => 'Em gozo', 'completed' => 'Concluída', 'cancelled' => 'Cancelada'],
-        'messages' => ['created' => 'Período de férias criado com sucesso.', 'updated' => 'Período de férias atualizado com sucesso.', 'deleted' => 'Período de férias excluído com sucesso.'],
+        'messages' => ['created' => 'Período de férias criado com sucesso.', 'updated' => 'Período de férias atualizado com sucesso.', 'deleted' => 'Período de férias excluído com sucesso.', 'overlap' => 'O colaborador já tem férias registradas que coincidem com esse período.'],
     ],
     'contracts' => [
         'index' => ['title' => 'Clientes e contratos', 'description' => 'Vigência, valores e situação dos contratos de prestação de serviços.', 'create' => 'Novo contrato'],
@@ -171,7 +173,7 @@ return [
         'index' => ['title' => 'Escalas', 'description' => 'Alocação de colaboradores por posto, turno e período.', 'create' => 'Nova escala'], 'create' => ['title' => 'Nova escala'], 'edit' => ['title' => 'Editar escala'],
         'fields' => ['work_site_id' => 'Posto', 'work_site_name' => 'Posto', 'employee_id' => 'Colaborador', 'employee_name' => 'Colaborador', 'starts_at' => 'Início', 'ends_at' => 'Fim', 'shift_type' => 'Turno', 'status' => 'Situação', 'notes' => 'Observações'],
         'shift_type' => ['day' => 'Diurno', 'night' => 'Noturno', 'flexible' => 'Flexível'], 'status' => ['planned' => 'Planejada', 'confirmed' => 'Confirmada', 'completed' => 'Concluída', 'absence' => 'Falta'],
-        'messages' => ['created' => 'Escala criada com sucesso.', 'updated' => 'Escala atualizada com sucesso.', 'deleted' => 'Escala excluída com sucesso.'],
+        'messages' => ['created' => 'Escala criada com sucesso.', 'updated' => 'Escala atualizada com sucesso.', 'deleted' => 'Escala excluída com sucesso.', 'overlap' => 'O colaborador já tem outra escala nesse período.', 'on_vacation' => 'O colaborador está de férias nesse período.'],
     ],
     'documents' => [
         'title' => 'Documentos',

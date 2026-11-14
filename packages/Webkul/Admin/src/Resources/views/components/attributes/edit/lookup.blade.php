@@ -191,6 +191,10 @@
                 window.addEventListener('click', this.handleFocusOut);
             },
 
+            beforeUnmount() {
+                window.removeEventListener('click', this.handleFocusOut);
+            },
+
             watch: {
                 searchTerm(newVal, oldVal) {
                     this.search();

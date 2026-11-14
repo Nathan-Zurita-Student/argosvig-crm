@@ -6,6 +6,36 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 * [fixed] Kept the dashboard revenue cards and chart legend within narrow mobile screens.
 
+* [feature] Grouped the sidebar into Human Resources and Operations Management, with the entries of a group opening in a floating panel beside the item.
+
+* [feature] Moved mail and the two configuration areas to the header, renamed as Administration and System preferences with a short description of each.
+
+* [fixed] Fixed human resources menu entries never appearing for custom roles, since they did not match any permission.
+
+* [fixed] Fixed long sidebar labels being cut off, the collapsed sidebar not naming its icons, the mobile menu hiding its expand arrows and the header overflowing small screens.
+
+* [fixed] Fixed the error pages showing an example support address and untranslated links, and the marketing events and campaigns labels in English.
+
+* [feature] Moving between admin pages now swaps the content without reloading the whole page, keeping the back and forward buttons working.
+
+* [fixed] Fixed form validation messages showing a generic English text instead of Brazilian Portuguese.
+
+* [fixed] Fixed form fields being almost invisible in the dark theme.
+
+* [fixed] Fixed breadcrumb links with low contrast in the dark theme and the theme switch updating only one of the logos.
+
+* [fixed] Fixed the monthly contract value overflowing its dashboard card.
+
+* [fixed] Fixed the user name in the users list not opening the user, which now opens the edit modal.
+
+* [fixed] Fixed schedules accepting an employee already scheduled at the same time or on vacation, and vacation periods overlapping each other.
+
+* [fixed] Fixed a CPF typed without the mask skipping the duplicate employee check.
+
+* [fixed] Fixed human resources and commercial follow-up pages ignoring the configured admin path and the admin language.
+
+* [fixed] Added the missing Brazilian Portuguese texts in web forms, email templates and the lookup search.
+
 * [feature] Added a contract operations PDF for review before sharing with customers.
 
 * [feature] Added shift preparation from replacement suggestions with an availability check before saving.

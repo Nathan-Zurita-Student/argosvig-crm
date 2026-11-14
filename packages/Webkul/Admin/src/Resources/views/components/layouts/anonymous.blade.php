@@ -32,6 +32,12 @@
         {{-- content="{{ core()->getCurrentCurrencyCode() }}" --}}
     >
 
+    {{-- Sign-in pages always load as full documents, never swapped by Turbo. --}}
+    <meta
+        name="turbo-visit-control"
+        content="reload"
+    >
+
     @stack('meta')
 
     {{
@@ -81,7 +87,7 @@
     {!! view_render_event('admin.layout.head') !!}
 </head>
 
-<body>
+<body data-turbo="false">
     {!! view_render_event('admin.layout.body.before') !!}
 
     <div id="app">
@@ -110,7 +116,7 @@
          * called in the last.
          */
         window.addEventListener("load", function(event) {
-            app.mount("#app");
+            window.mountAdminApp();
         });
     </script>
 

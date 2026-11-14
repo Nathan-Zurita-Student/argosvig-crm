@@ -2,7 +2,9 @@
 
 return [
     'menu' => [
-        'title' => 'People',
+        'title' => 'Human resources',
+        'human_resources' => 'Human resources',
+        'operations' => 'Operations management',
         'employees' => 'Employees',
         'vacations' => 'Vacations',
         'departments' => 'Departments',
@@ -13,7 +15,7 @@ return [
         'shifts' => 'Schedules',
     ],
     'acl' => [
-        'title' => 'People',
+        'title' => 'Human resources',
         'employees' => 'Employees',
         'vacations' => 'Vacations',
         'departments' => 'Departments',
@@ -139,7 +141,7 @@ return [
         ],
         'types' => ['regular' => 'Regular', 'collective' => 'Collective', 'split' => 'Split'],
         'statuses' => ['scheduled' => 'Scheduled', 'in_progress' => 'In progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'],
-        'messages' => ['created' => 'Vacation period created successfully.', 'updated' => 'Vacation period updated successfully.', 'deleted' => 'Vacation period deleted successfully.'],
+        'messages' => ['created' => 'Vacation period created successfully.', 'updated' => 'Vacation period updated successfully.', 'deleted' => 'Vacation period deleted successfully.', 'overlap' => 'The employee already has a vacation period overlapping these dates.'],
     ],
     'contracts' => [
         'index' => ['title' => 'Customers and contracts', 'description' => 'Service contract terms, values and lifecycle.', 'create' => 'New contract'],
@@ -171,7 +173,7 @@ return [
         'index' => ['title' => 'Schedules', 'description' => 'Employee assignment by site, shift and period.', 'create' => 'New schedule'], 'create' => ['title' => 'New schedule'], 'edit' => ['title' => 'Edit schedule'],
         'fields' => ['work_site_id' => 'Site', 'work_site_name' => 'Site', 'employee_id' => 'Employee', 'employee_name' => 'Employee', 'starts_at' => 'Start', 'ends_at' => 'End', 'shift_type' => 'Shift', 'status' => 'Status', 'notes' => 'Notes'],
         'shift_type' => ['day' => 'Day', 'night' => 'Night', 'flexible' => 'Flexible'], 'status' => ['planned' => 'Planned', 'confirmed' => 'Confirmed', 'completed' => 'Completed', 'absence' => 'Absence'],
-        'messages' => ['created' => 'Schedule created successfully.', 'updated' => 'Schedule updated successfully.', 'deleted' => 'Schedule deleted successfully.'],
+        'messages' => ['created' => 'Schedule created successfully.', 'updated' => 'Schedule updated successfully.', 'deleted' => 'Schedule deleted successfully.', 'overlap' => 'The employee already has another schedule in this period.', 'on_vacation' => 'The employee is on vacation in this period.'],
     ],
     'documents' => [
         'title' => 'Documents',

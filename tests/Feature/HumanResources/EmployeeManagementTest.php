@@ -2,26 +2,84 @@
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Webkul\HumanResources\Models\Department;
 use Webkul\HumanResources\Models\Employee;
+use Webkul\User\Models\Role;
+use Webkul\User\Models\User;
 
 uses(DatabaseTransactions::class);
 
-it('keeps operational navigation in priority order before administrative areas', function () {
-    $rootKeys = collect(config('menu.admin'))
-        ->filter(fn (array $item) => ! str_contains($item['key'], '.'))
-        ->sortBy('sort')
-        ->pluck('key')
-        ->values();
+it('groups the human resources and operations areas before administration', function () {
+    test()->actingAs(getDefaultAdmin(), 'user');
 
-    expect($rootKeys->search('workforce'))->toBeLessThan($rootKeys->search('work-sites'))
-        ->and($rootKeys->search('workforce'))->toBeLessThan($rootKeys->search('vacations'))
-        ->and($rootKeys->search('vacations'))->toBeLessThan($rootKeys->search('work-sites'))
-        ->and($rootKeys->search('work-sites'))->toBeLessThan($rootKeys->search('incidents'))
-        ->and($rootKeys->search('incidents'))->toBeLessThan($rootKeys->search('service-contracts'))
-        ->and($rootKeys->search('service-contracts'))->toBeLessThan($rootKeys->search('departments'))
-        ->and($rootKeys->search('departments'))->toBeLessThan($rootKeys->search('settings'));
+    $menu = menu()->getItems('admin')->keyBy(fn ($item) => $item->getKey());
+    $rootKeys = $menu->keys()->values();
+
+    expect($rootKeys->search('human-resources'))->toBeLessThan($rootKeys->search('operations'))
+        ->and($rootKeys->search('operations'))->toBeLessThan($rootKeys->search('settings'))
+        ->and($rootKeys)->not->toContain('workforce', 'vacations', 'work-sites', 'incidents', 'service-contracts', 'departments', 'document-center', 'timekeeping');
+
+    expect($menu['human-resources']->getChildren()->map->getUrl()->values()->all())->toBe([
+        route('admin.human_resources.employees.index'),
+        route('admin.human_resources.vacations.index'),
+        route('admin.human_resources.departments.index'),
+        route('admin.human_resources.document_center.index'),
+        route('admin.human_resources.timekeeping.index'),
+    ]);
+
+    expect($menu['operations']->getChildren()->map->getUrl()->values()->all())->toBe([
+        route('admin.human_resources.work_sites.index'),
+        route('admin.human_resources.shifts.index'),
+        route('admin.human_resources.incidents.index'),
+        route('admin.human_resources.contracts.index'),
+    ]);
+});
+
+it('shows a custom role only the menu entries its permissions grant', function () {
+    $role = Role::create([
+        'name' => 'menu-'.uniqid(),
+        'description' => 'test',
+        'permission_type' => 'custom',
+        'permissions' => ['dashboard', 'human-resources.vacations', 'human-resources.incidents'],
+    ]);
+
+    $user = User::create([
+        'name' => 'Menu User',
+        'email' => uniqid().'@example.com',
+        'password' => bcrypt('password'),
+        'status' => 1,
+        'view_permission' => 'global',
+        'role_id' => $role->id,
+    ]);
+
+    test()->actingAs($user, 'user');
+
+    $menu = menu()->getItems('admin')->keyBy(fn ($item) => $item->getKey());
+
+    expect($menu->keys()->all())->toContain('human-resources', 'operations')
+        ->and($menu['human-resources']->getChildren()->map->getUrl()->values()->all())->toBe([route('admin.human_resources.vacations.index')])
+        ->and($menu['operations']->getChildren()->map->getUrl()->values()->all())->toBe([route('admin.human_resources.incidents.index')]);
+
+    $role->update(['permissions' => ['dashboard']]);
+    $user->unsetRelation('role');
+
+    expect(menu()->getItems('admin')->map->getKey()->all())->not->toContain('human-resources', 'operations');
+});
+
+it('moves mail and both configuration areas to the header with distinct names', function () {
+    $response = test()->actingAs(getDefaultAdmin(), 'user')->get(route('admin.dashboard.index'))->assertSuccessful();
+
+    $response->assertSee(route('admin.mail.index', ['route' => 'inbox']), false)
+        ->assertSee(trans('admin::app.layouts.settings-info'))
+        ->assertSee(trans('admin::app.layouts.configuration-info'));
+
+    expect(trans('admin::app.layouts.settings', [], 'pt_BR'))->not->toBe(trans('admin::app.layouts.configuration', [], 'pt_BR'));
+
+    $sidebar = File::get(base_path('packages/Webkul/Admin/src/Resources/views/components/layouts/sidebar/desktop/index.blade.php'));
+
+    expect($sidebar)->toContain("\$headerMenuKeys = ['mail', 'settings', 'configuration'];");
 });
 
 it('shows the employee and department areas to an administrator', function () {
@@ -116,6 +174,35 @@ it('requires unique employee and Alterdata identifiers', function () {
         ->post(route('admin.human_resources.employees.store'), $payload)
         ->assertRedirect(route('admin.human_resources.employees.create'))
         ->assertSessionHasErrors(['employee_number', 'alterdata_employee_id']);
+});
+
+it('stores the CPF with the mask and rejects the same digits typed without it', function () {
+    $admin = getDefaultAdmin();
+    $suffix = fake()->unique()->numerify('####');
+    $digits = '98'.fake()->unique()->numerify('#########');
+
+    test()->actingAs($admin)
+        ->post(route('admin.human_resources.employees.store'), [
+            'employee_number' => "CPF{$suffix}",
+            'full_name' => "Employee {$suffix}",
+            'status' => 'active',
+            'cpf' => $digits,
+        ])
+        ->assertRedirect();
+
+    $masked = vsprintf('%s%s%s.%s%s%s.%s%s%s-%s%s', str_split($digits));
+
+    $this->assertDatabaseHas('hr_employees', ['employee_number' => "CPF{$suffix}", 'cpf' => $masked]);
+
+    test()->actingAs($admin)
+        ->from(route('admin.human_resources.employees.create'))
+        ->post(route('admin.human_resources.employees.store'), [
+            'employee_number' => "CPF{$suffix}B",
+            'full_name' => "Employee {$suffix} B",
+            'status' => 'active',
+            'cpf' => $masked,
+        ])
+        ->assertSessionHasErrors('cpf');
 });
 
 it('stores employee documents privately and protects document ownership', function () {

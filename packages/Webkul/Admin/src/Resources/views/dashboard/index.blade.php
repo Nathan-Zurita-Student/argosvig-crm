@@ -22,7 +22,7 @@
 
         <v-dashboard-filters>
             <!-- Shimmer -->
-            <div class="flex gap-1.5">
+            <div class="flex flex-wrap gap-1.5">
                 @if ($pipelines->count() > 1)
                     <div class="light-shimmer-bg dark:shimmer h-[39px] w-[160px] rounded-md"></div>
                 @endif
@@ -69,9 +69,10 @@
                     'open_incidents' => ['open_incidents', trans('human_resources::app.dashboard.requires_attention'), 'text-red-600'],
                 };
             @endphp
-            <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div class="min-w-0 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@lang('human_resources::app.dashboard.'.$label)</p>
-                <p class="mt-2 text-3xl font-bold {{ $color }}">{{ $metric === 'monthly_contract_value' ? core()->formatBasePrice($operationalStats[$metric]) : $operationalStats[$metric] }}</p>
+                {{-- Currency values are longer than counters and overflowed the five-column row. --}}
+                <p class="mt-2 break-words font-bold {{ $metric === 'monthly_contract_value' ? 'text-2xl xl:text-xl 2xl:text-2xl' : 'text-3xl' }} {{ $color }}">{{ $metric === 'monthly_contract_value' ? core()->formatBasePrice($operationalStats[$metric]) : $operationalStats[$metric] }}</p>
                 @if ($detail)
                     <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ $detail }}</p>
                 @endif
@@ -149,7 +150,7 @@
         >
             {!! view_render_event('admin.dashboard.index.date_filters.before') !!}
 
-            <div class="flex gap-1.5">
+            <div class="flex flex-wrap gap-1.5">
                 @if ($pipelines->count() > 1)
                     <!-- Pipeline Selector -->
                     <select

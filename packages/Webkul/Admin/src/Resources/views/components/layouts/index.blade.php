@@ -57,6 +57,26 @@
         {{ vite()->set(['src/Resources/assets/js/echo.js']) }}
     @endif
 
+    {{--
+        Turbo Drive: pages are swapped without a reload. The snapshot cache stays off
+        because Vue replaces the in-DOM templates once mounted, and links are not
+        prefetched on hover. A new asset build changes the tracked meta and forces a
+        full reload on the next visit.
+    --}}
+    <meta
+        name="turbo-cache-control"
+        content="no-cache"
+    >
+    <meta
+        name="turbo-prefetch"
+        content="false"
+    >
+    <meta
+        name="admin-assets"
+        content="{{ is_file($adminManifest = public_path('admin/build/manifest.json')) ? filemtime($adminManifest) : 'dev' }}"
+        data-turbo-track="reload"
+    >
+
     @stack('meta')
 
     {{
@@ -101,7 +121,11 @@
     {!! view_render_event('admin.layout.head.after') !!}
 </head>
 
-<body class="h-full font-inter dark:bg-gray-950">
+<body
+    class="h-full font-inter dark:bg-gray-950"
+    data-locale="{{ app()->getLocale() }}"
+    data-dir="{{ in_array(app()->getLocale(), ['fa', 'ar']) ? 'rtl' : 'ltr' }}"
+>
     {!! view_render_event('admin.layout.body.before') !!}
 
     <div
@@ -128,7 +152,7 @@
 
             <div class="flex min-h-[calc(100vh-62px)] max-w-full flex-1 flex-col bg-gray-100 pt-3 transition-all duration-300 dark:bg-gray-950">
                 <!-- Page Content Blade Component -->
-                <div class="px-4 pb-4 transition-all duration-300 lg:ltr:pl-[215px] lg:group-[.sidebar-collapsed]/container:ltr:pl-[85px] lg:rtl:pr-[215px] lg:group-[.sidebar-collapsed]/container:rtl:pr-[85px]">
+                <div class="px-4 pb-4 transition-all duration-300 lg:ltr:pl-[235px] lg:group-[.sidebar-collapsed]/container:ltr:pl-[85px] lg:rtl:pr-[235px] lg:group-[.sidebar-collapsed]/container:rtl:pr-[85px]">
                     {{ $slot }}
                 </div>
             </div>
@@ -143,16 +167,13 @@
 
     {!! view_render_event('admin.layout.vue-app-mount.before') !!}
 
-    <script>
-        /**
-         * Load event, the purpose of using the event is to mount the application
-         * after all of our `Vue` components which is present in blade file have
-         * been registered in the app. No matter what `app.mount()` should be
-         * called in the last.
-         */
-        window.addEventListener("load", function(event) {
-            app.mount("#app");
-        });
+    {{--
+        Module scripts run in document order, both on a full load and when Turbo
+        inserts a new body, so this one runs after every component the page
+        registered above.
+    --}}
+    <script type="module">
+        window.mountAdminApp();
     </script>
 
     {!! view_render_event('admin.layout.vue-app-mount.after') !!}

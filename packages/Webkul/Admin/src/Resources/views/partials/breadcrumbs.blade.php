@@ -6,7 +6,7 @@
                     $breadcrumb->url 
                     && ! $loop->last
                 )
-                    <li class="flex items-center gap-x-1 text-sm font-normal text-brandColor dark:text-brandColor">
+                    <li class="flex items-center gap-x-1 text-sm font-normal text-brandColor dark:text-blue-300">
                         <a href="{{ $breadcrumb->url }}">
                             {{ $breadcrumb->title }}
                         </a>

@@ -339,7 +339,7 @@
 
                     switch (method) {
                         case 'get':
-                            window.location.href = action.url;
+                            window.visitAdmin(action.url);
 
                             break;
 

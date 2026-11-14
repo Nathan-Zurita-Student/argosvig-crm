@@ -572,7 +572,7 @@
                     // Update URL query parameter to persist tab selection
                     const url = new window['URL'](window.location);
                     url.searchParams.set('tab', tabName);
-                    window.history.replaceState({}, '', url.toString());
+                    window.history.replaceState(window.history.state, '', url.toString());
 
                     // Reload the timeline from the first page for the new type.
                     if (! this.extraTypes.find(type => type.name == tabName)) {

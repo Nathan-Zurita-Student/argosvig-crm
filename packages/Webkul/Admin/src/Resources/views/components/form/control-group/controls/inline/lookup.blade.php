@@ -259,6 +259,12 @@
                 this.$emitter.on('show-pop', this.handleShowPop);
             },
 
+            beforeUnmount() {
+                window.removeEventListener("resize", this.setDropdownPosition);
+
+                this.$emitter.off('show-pop', this.handleShowPop);
+            },
+
             computed: {
                 src() {
                     return `{{ route('admin.settings.attributes.lookup') }}/${this.attribute.lookup_type}`;

@@ -1,58 +1,84 @@
 <?php
 
+/**
+ * Two groups keep the sidebar short: people management and the field operation.
+ * Each entry names the ACL permission that grants it; a group lists the permissions
+ * of its entries and shows up while any of them is allowed.
+ */
 return [
     [
-        'key' => 'document-center',
-        'name' => 'human_resources::workforce.documents',
-        'route' => 'admin.human_resources.document_center.index',
-        'sort' => 14,
-        'icon-class' => 'icon-quote',
-    ], [
-        'key' => 'timekeeping',
-        'name' => 'human_resources::workforce.timekeeping',
-        'route' => 'admin.human_resources.timekeeping.index',
-        'sort' => 15,
-        'icon-class' => 'icon-activity',
-    ],
-    [
-        'key' => 'workforce',
-        'name' => 'human_resources::app.menu.employees',
+        'key' => 'human-resources',
+        'name' => 'human_resources::app.menu.human_resources',
         'route' => 'admin.human_resources.employees.index',
         'sort' => 8,
         'icon-class' => 'icon-user',
+        'permission' => ['human-resources.employees', 'human-resources.vacations', 'human-resources.departments', 'document-center', 'timekeeping'],
     ], [
-        'key' => 'vacations',
+        'key' => 'human-resources.employees',
+        'name' => 'human_resources::app.menu.employees',
+        'route' => 'admin.human_resources.employees.index',
+        'sort' => 1,
+        'icon-class' => '',
+    ], [
+        'key' => 'human-resources.vacations',
         'name' => 'human_resources::app.menu.vacations',
         'route' => 'admin.human_resources.vacations.index',
-        'sort' => 9,
-        'icon-class' => 'icon-activity',
+        'sort' => 2,
+        'icon-class' => '',
     ], [
-        'key' => 'service-contracts',
-        'name' => 'human_resources::app.menu.contracts',
-        'route' => 'admin.human_resources.contracts.index',
-        'sort' => 12,
-        'icon-class' => 'icon-quote',
-    ], [
-        'key' => 'incidents',
-        'name' => 'human_resources::app.menu.incidents',
-        'route' => 'admin.human_resources.incidents.index',
-        'sort' => 11,
-        'icon-class' => 'icon-activity',
-    ], [
-        'key' => 'work-sites',
-        'name' => 'human_resources::app.menu.work_sites',
-        'route' => 'admin.human_resources.work_sites.index',
-        'sort' => 10,
-        'icon-class' => 'icon-product',
-    ], [
-        'key' => 'work-sites.sites', 'name' => 'human_resources::app.menu.sites', 'route' => 'admin.human_resources.work_sites.index', 'sort' => 1, 'icon-class' => '',
-    ], [
-        'key' => 'work-sites.shifts', 'name' => 'human_resources::app.menu.shifts', 'route' => 'admin.human_resources.shifts.index', 'sort' => 2, 'icon-class' => '',
-    ], [
-        'key' => 'departments',
+        'key' => 'human-resources.departments',
         'name' => 'human_resources::app.menu.departments',
         'route' => 'admin.human_resources.departments.index',
-        'sort' => 13,
-        'icon-class' => 'icon-contact',
+        'sort' => 3,
+        'icon-class' => '',
+    ], [
+        'key' => 'human-resources.document-center',
+        'name' => 'human_resources::workforce.documents',
+        'route' => 'admin.human_resources.document_center.index',
+        'sort' => 4,
+        'icon-class' => '',
+        'permission' => 'document-center',
+    ], [
+        'key' => 'human-resources.timekeeping',
+        'name' => 'human_resources::workforce.timekeeping',
+        'route' => 'admin.human_resources.timekeeping.index',
+        'sort' => 5,
+        'icon-class' => '',
+        'permission' => 'timekeeping',
+    ], [
+        'key' => 'operations',
+        'name' => 'human_resources::app.menu.operations',
+        'route' => 'admin.human_resources.work_sites.index',
+        'sort' => 9,
+        'icon-class' => 'icon-location',
+        'permission' => ['human-resources.work-sites', 'human-resources.shifts', 'human-resources.incidents', 'human-resources.contracts'],
+    ], [
+        'key' => 'operations.work-sites',
+        'name' => 'human_resources::app.menu.sites',
+        'route' => 'admin.human_resources.work_sites.index',
+        'sort' => 1,
+        'icon-class' => '',
+        'permission' => 'human-resources.work-sites',
+    ], [
+        'key' => 'operations.shifts',
+        'name' => 'human_resources::app.menu.shifts',
+        'route' => 'admin.human_resources.shifts.index',
+        'sort' => 2,
+        'icon-class' => '',
+        'permission' => 'human-resources.shifts',
+    ], [
+        'key' => 'operations.incidents',
+        'name' => 'human_resources::app.menu.incidents',
+        'route' => 'admin.human_resources.incidents.index',
+        'sort' => 3,
+        'icon-class' => '',
+        'permission' => 'human-resources.incidents',
+    ], [
+        'key' => 'operations.contracts',
+        'name' => 'human_resources::app.menu.contracts',
+        'route' => 'admin.human_resources.contracts.index',
+        'sort' => 4,
+        'icon-class' => '',
+        'permission' => 'human-resources.contracts',
     ],
 ];

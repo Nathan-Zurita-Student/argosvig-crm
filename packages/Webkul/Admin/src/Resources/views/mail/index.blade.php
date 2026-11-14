@@ -679,7 +679,7 @@
                         }
 
                         if (row.index !== 'edit') {
-                            window.location.href = row.url;
+                            window.visitAdmin(row.url);
 
                             return;
                         }
@@ -689,7 +689,7 @@
                                 const draft = response.data?.data;
 
                                 if (! draft?.id) {
-                                    window.location.href = row.url;
+                                    window.visitAdmin(row.url);
 
                                     return;
                                 }

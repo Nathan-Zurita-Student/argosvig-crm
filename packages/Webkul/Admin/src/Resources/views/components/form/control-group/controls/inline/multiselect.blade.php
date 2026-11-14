@@ -248,6 +248,10 @@
                 window.addEventListener("resize", this.setDropdownPosition);
             },
 
+            beforeUnmount() {
+                window.removeEventListener("resize", this.setDropdownPosition);
+            },
+
             computed: {
                 /**
                  * Get the selected value.

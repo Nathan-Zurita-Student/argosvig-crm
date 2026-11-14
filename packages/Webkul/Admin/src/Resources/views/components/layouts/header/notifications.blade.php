@@ -315,6 +315,9 @@
                     if (this.timer) {
                         clearInterval(this.timer);
                     }
+
+                    // The bell mounts again on every page Turbo renders; leaving avoids duplicate toasts.
+                    window.Echo?.leave(`notifications.${this.userId}`);
                 },
 
                 methods: {
@@ -434,7 +437,7 @@
                         }
 
                         if (toast.route) {
-                            window.location.href = toast.route;
+                            window.visitAdmin(toast.route);
                         }
                     },
 

@@ -36,7 +36,11 @@ export default {
         app.component("VField", Field);
         app.component("VErrorMessage", ErrorMessage);
 
-        window.addEventListener("load", () => setLocale(document.documentElement.attributes.lang.value));
+        /**
+         * The document language is known when the module runs, both on a full load and
+         * when Turbo builds the application for the next page.
+         */
+        setLocale(document.documentElement.lang || "en");
 
         /**
          * Registration of all global validators.
@@ -184,6 +188,33 @@ export default {
                         after: "{field} gelecekte veya bugün olmalıdır.",
                     },
                 },
+
+                /**
+                 * Brazilian Portuguese was imported but never registered, so every message
+                 * fell back to the generic "{field} is not valid".
+                 */
+                pt_BR: {
+                    ...pt_BR,
+                    messages: {
+                        ...pt_BR.messages,
+                        phone: "O campo {field} deve ser um número de telefone válido.",
+                        after: "O campo {field} deve ser uma data futura ou a data de hoje.",
+                    },
+                },
+
+                bn,
+                de,
+                fr,
+                he,
+                hi_IN,
+                it,
+                ja,
+                nl,
+                pl,
+                ru,
+                sin,
+                uk,
+                zh_CN,
             }),
 
             validateOnBlur: true,

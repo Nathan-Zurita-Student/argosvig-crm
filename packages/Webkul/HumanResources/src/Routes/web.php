@@ -25,7 +25,7 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:4,1')->name('incident_draft.store');
 });
 
-Route::middleware(['web', 'user'])->prefix('admin/commercial-follow-up')->group(function () {
+Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/commercial-follow-up')->group(function () {
     Route::get('opportunities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'leads')->name('admin.leads.follow_up');
     Route::get('activities', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'activities')->name('admin.activities.follow_up');
     Route::get('quotes', [CommercialFollowUpController::class, 'index'])->defaults('tab', 'quotes')->name('admin.quotes.follow_up');
@@ -33,7 +33,7 @@ Route::middleware(['web', 'user'])->prefix('admin/commercial-follow-up')->group(
     Route::post('quotes/{id}', [QuoteVersionController::class, 'store'])->whereNumber('id')->name('admin.quotes.follow_up.store');
 });
 
-Route::middleware(['web', 'user'])->prefix('admin/human-resources')->group(function () {
+Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/human-resources')->group(function () {
     Route::controller(DocumentCenterController::class)->prefix('documents')->name('admin.human_resources.document_center.')->group(function () {
         Route::get('', 'index')->name('index');
         Route::get('missing', 'missing')->name('missing');

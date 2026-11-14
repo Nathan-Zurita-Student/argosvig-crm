@@ -1,10 +1,13 @@
 <header class="sticky top-0 z-[10001] flex items-center justify-between gap-1 border-b border-blue-100 bg-white px-4 py-2.5 shadow-sm transition-all dark:border-blue-950 dark:bg-[#061A42]">
     <!-- logo -->
-    <div class="flex items-center gap-1.5">
+    <div class="flex shrink-0 items-center gap-1.5">
         <!-- Sidebar Menu -->
         <x-admin::layouts.sidebar.mobile />
-        
-        <a href="{{ route('admin.dashboard.index') }}">
+
+        <a
+            href="{{ route('admin.dashboard.index') }}"
+            class="shrink-0"
+        >
             @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
                 <img
                     class="h-10"
@@ -16,13 +19,18 @@
                     class="h-10 max-sm:hidden"
                     src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
                     id="logo-image"
+                    data-theme-logo
+                    data-light-src="{{ vite()->asset('images/logo.svg') }}"
+                    data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
                     alt="{{ config('app.name') }}"
                 />
 
                 <img
                     class="h-10 sm:hidden"
                     src="{{ request()->cookie('dark_mode') ? vite()->asset('images/mobile-dark-logo.svg') : vite()->asset('images/mobile-light-logo.svg') }}"
-                    id="logo-image"
+                    data-theme-logo
+                    data-light-src="{{ vite()->asset('images/mobile-light-logo.svg') }}"
+                    data-dark-src="{{ vite()->asset('images/mobile-dark-logo.svg') }}"
                     alt="{{ config('app.name') }}"
                 />
             @endif
@@ -52,8 +60,14 @@
             @include('admin::components.layouts.header.mobile.mega-search')
         </div>
         
+        <!-- Mail folders -->
+        @include('admin::components.layouts.header.mail-menu')
+
         <!-- Notifications -->
         @include('admin::components.layouts.header.notifications')
+
+        <!-- Administration and system preferences -->
+        @include('admin::components.layouts.header.settings-menu')
 
         <!-- Dark mode -->
         <v-dark>
@@ -101,7 +115,9 @@
                     @else
                         <img
                             src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                            id="logo-image"
+                            data-theme-logo
+                            data-light-src="{{ vite()->asset('images/logo.svg') }}"
+                            data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
                             alt="{{ config('app.name') }}"
                             width="24"
                             height="24"
@@ -180,15 +196,12 @@
 
                     document.documentElement.classList.toggle('dark', this.isDarkMode === 1);
 
-                    if (this.isDarkMode) {
-                        this.$emitter.emit('change-theme', 'dark');
+                    this.$emitter.emit('change-theme', this.isDarkMode ? 'dark' : 'light');
 
-                        document.getElementById('logo-image').src = this.dark_logo;
-                    } else {
-                        this.$emitter.emit('change-theme', 'light');
-
-                        document.getElementById('logo-image').src = this.logo;
-                    }
+                    // Every theme-aware logo (desktop, mobile and the sidebar drawer) follows the theme.
+                    document.querySelectorAll('[data-theme-logo]').forEach((image) => {
+                        image.src = this.isDarkMode ? image.dataset.darkSrc : image.dataset.lightSrc;
+                    });
                 },
 
                 isDarkModeCookie() {

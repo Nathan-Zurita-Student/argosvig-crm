@@ -27,7 +27,9 @@
                     <img
                         class="h-10"
                         src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                        id="logo-image"
+                        data-theme-logo
+                        data-light-src="{{ vite()->asset('images/logo.svg') }}"
+                        data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
                         alt="{{ config('app.name') }}"
                     />
                 @endif
@@ -63,10 +65,10 @@
                                         <p class="whitespace-nowrap font-semibold">{{ $menuItem->getName() }}</p>
                                     </div>
 
-                                    @if ($menuItem->haveChildren())
+                                    @if ($menuItem->haveChildren() && ! in_array($menuKey, ['settings', 'configuration']))
                                         <span
                                             class="transform text-lg transition-transform duration-300"
-                                            :class="{ 'icon-arrow-up': activeMenu === '{{ $menuKey }}', 'icon-arrow-down': activeMenu !== '{{ $menuKey }}' }"
+                                            :class="{ 'icon-up-arrow': activeMenu === '{{ $menuKey }}', 'icon-down-arrow': activeMenu !== '{{ $menuKey }}' }"
                                         ></span>
                                     @endif
                                 </a>
@@ -80,7 +82,7 @@
                                             <a
                                                 href="{{ $subMenuItem->getUrl() }}"
                                                 class="submenu-link block whitespace-nowrap p-2 pl-10 text-sm transition-colors duration-200"
-                                                :class="{ 'text-brandColor font-medium bg-gray-100 dark:bg-gray-800': '{{ $subMenuItem->isActive() }}' === '1', 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800': '{{ $subMenuItem->isActive() }}' !== '1' }">
+                                                :class="{ 'text-brandColor font-medium bg-gray-100 dark:bg-gray-800 dark:text-blue-300': '{{ $subMenuItem->isActive() }}' === '1', 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800': '{{ $subMenuItem->isActive() }}' !== '1' }">
                                                 {{ $subMenuItem->getName() }}
                                             </a>
                                         @endforeach

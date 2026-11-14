@@ -522,7 +522,8 @@
 
                         currentUrl.searchParams.set('view-type', type);
 
-                        window.history.pushState({}, '', currentUrl);
+                        // Keeps Turbo's history state so the back button still restores pages.
+                        window.history.replaceState(window.history.state, '', currentUrl);
                     },
                 },
             });
@@ -954,7 +955,7 @@
                         }
 
                         if (event.id) {
-                            window.location.href = `{{ route('admin.activities.edit', ':id') }}`.replace(':id', event.id);
+                            window.visitAdmin(`{{ route('admin.activities.edit', ':id') }}`.replace(':id', event.id));
                         }
                     },
                 },
@@ -968,7 +969,8 @@
              * @param {Event} {target}
              * @return {void}
              */
-            const updateStatus = ({ target }, url) => {
+            // Assigned on window: a top-level const would fail when Turbo runs this script again.
+            window.updateStatus = ({ target }, url) => {
                 axios
                     .post(url, {
                         _method: 'put',

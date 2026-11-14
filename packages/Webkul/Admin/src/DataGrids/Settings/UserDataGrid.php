@@ -79,7 +79,6 @@ class UserDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.users.edit', $row->id)),
             'label' => trans('admin::app.settings.users.index.datagrid.name'),
             'type' => 'string',
             'sortable' => true,

@@ -673,3 +673,18 @@
 .tox.tox-silver-sink.tox-tinymce-aux {
     z-index: 99999;
 }
+/* Turbo Drive progress bar, shown while the next page loads. */
+.turbo-progress-bar {
+    height: 3px;
+    background-color: var(--brand-color, #244a96);
+}
+
+/*
+ * Dark theme: form controls sit on cards with the same gray-900 background, so the
+ * default gray-800 border left them almost invisible. Hover and focus keep their
+ * own lighter border because those selectors are more specific.
+ */
+:is(.dark) :is(input, select, textarea).dark\:border-gray-800,
+:is(.dark) .dark\:border-gray-800:has(> input, > select, > textarea) {
+    border-color: rgb(75 85 99);
+}

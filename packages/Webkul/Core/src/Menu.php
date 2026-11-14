@@ -77,7 +77,7 @@ class Menu
         switch ($area) {
             case self::ADMIN:
                 $this->configMenu = $configMenu
-                    ->filter(fn ($item) => bouncer()->hasPermission($item['key']))
+                    ->filter(fn ($item) => $this->isPermitted($item))
                     ->toArray();
                 break;
 
@@ -99,6 +99,22 @@ class Menu
         $this->prepareMenuItems();
 
         return collect($this->items)->sortBy(fn ($item) => $item->getPosition());
+    }
+
+    /**
+     * An item is shown when the user holds its ACL permission. The menu key is the
+     * permission unless the item names one in `permission`; a list there means any of
+     * them, which lets a group appear while at least one of its entries is allowed.
+     */
+    private function isPermitted(array $item): bool
+    {
+        foreach ((array) ($item['permission'] ?? $item['key']) as $permission) {
+            if (bouncer()->hasPermission($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -161,7 +177,8 @@ class Menu
                 $this->currentKey = $item['key'];
             }
 
-            $menuWithDotNotation[$item['key']] = $item;
+            // Array values become sub menus below, so the permission list must not reach them.
+            $menuWithDotNotation[$item['key']] = Arr::except($item, ['permission']);
         }
 
         $menu = Arr::undot(Arr::dot($menuWithDotNotation));

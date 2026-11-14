@@ -49,6 +49,16 @@ class EmployeeRequest extends FormRequest
 
         $values['employee_number'] = strtoupper(trim((string) $this->input('employee_number')));
 
+        /**
+         * A CPF typed with digits only is stored with the mask, so the uniqueness rule
+         * compares it with the records saved as 000.000.000-00.
+         */
+        $cpf = preg_replace('/\D/', '', (string) $values['cpf']);
+
+        if (strlen($cpf) === 11) {
+            $values['cpf'] = vsprintf('%s%s%s.%s%s%s.%s%s%s-%s%s', str_split($cpf));
+        }
+
         $this->merge($values);
     }
 }
