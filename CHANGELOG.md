@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Rebranded the installer, console commands, and project documentation for Argosvig.
+
 * [security] Removed external installation reporting and the public remote logo endpoint.
 
 * [fix] Allowed enough output tokens to test reasoning models in the OpenRouter connection check.

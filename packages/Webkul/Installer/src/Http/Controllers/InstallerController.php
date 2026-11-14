@@ -163,7 +163,7 @@ class InstallerController extends Controller
     {
         $filePath = storage_path('installed');
 
-        File::put($filePath, 'Your Krayin App is Successfully Installed');
+        File::put($filePath, 'Argosvig CRM was installed successfully');
 
         /**
          * Recorded in the database as well as on disk, so losing the marker file cannot reopen the

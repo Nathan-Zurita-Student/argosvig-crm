@@ -1,12 +1,6 @@
 {
-    "name": "krayin/laravel-core",
+    "name": "argosvig/laravel-core",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Jitendra Singh",
-            "email": "jitendra@webkul.com"
-        }
-    ],
     "require": {
     },
     "autoload": {

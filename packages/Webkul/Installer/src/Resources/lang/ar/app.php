@@ -130,7 +130,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'مدير',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'confirm-password' => 'تأكيد كلمة المرور',
                 'email' => 'البريد الإلكتروني',
                 'email-address' => 'admin@example.com',
@@ -145,7 +145,7 @@ return [
                 'application-name' => 'اسم التطبيق',
                 'argentine-peso' => 'البيزو الأرجنتيني (ARS)',
                 'australian-dollar' => 'الدولار الأسترالي (AUD)',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'bangladeshi-taka' => 'التاكا البنغلاديشي (BDT)',
                 'brazilian-real' => 'الريال البرازيلي (BRL)',
                 'british-pound-sterling' => 'الجنيه الإسترليني البريطاني (GBP)',
@@ -229,24 +229,22 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin' => 'تثبيت Krayin',
-                'krayin-info' => 'إنشاء جداول قاعدة البيانات، وقد يستغرق ذلك بضع دقائق',
+                'progress' => 'تثبيت Argosvig',
+                'progress-info' => 'إنشاء جداول قاعدة البيانات، وقد يستغرق ذلك بضع دقائق',
                 'title' => 'التثبيت',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'لوحة المشرف',
-                'krayin-forums' => 'منتديات Krayin',
                 'customer-panel' => 'لوحة العميل',
-                'explore-krayin-extensions' => 'استكشاف امتدادات Krayin',
                 'title' => 'اكتمال التثبيت',
-                'title-info' => 'تم تثبيت Krayin بنجاح على نظامك.',
+                'title-info' => 'تم تثبيت Argosvig بنجاح على نظامك.',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table' => 'إنشاء جدول قاعدة البيانات',
                 'install' => 'التثبيت',
-                'install-info' => 'Krayin للتثبيت',
+                'install-info' => 'Argosvig للتثبيت',
                 'install-info-button' => 'انقر على الزر أدناه ل',
                 'populate-database-table' => 'ملء جداول قاعدة البيانات',
                 'start-installation' => 'بدء التثبيت',
@@ -257,8 +255,8 @@ return [
                 'locale' => 'اللغة',
                 'main' => 'بداية',
                 'select-locale' => 'اختر اللغة',
-                'title' => 'تثبيت Krayin الخاص بك',
-                'welcome-title' => 'مرحبًا بك في Krayin',
+                'title' => 'تثبيت Argosvig الخاص بك',
+                'welcome-title' => 'مرحبًا بك في Argosvig',
             ],
 
             'server-requirements' => [
@@ -285,16 +283,12 @@ return [
             ],
 
             'back' => 'رجوع',
-            'krayin' => 'Krayin',
-            'krayin-info' => 'مشروع مجتمعي من قبل',
-            'krayin-logo' => 'شعار Krayin',
             'continue' => 'متابعة',
-            'installation-description' => 'عادة ما تتضمن عملية تثبيت Krayin عدة خطوات. إليك نظرة عامة عامة على عملية التثبيت krayin',
+            'installation-description' => 'تعرّف على خطوات تثبيت Argosvig.',
             'installation-info' => 'نحن سعداء برؤيتك هنا!',
             'installation-title' => 'مرحبًا بك في التثبيت',
             'installation-wizard' => 'لغة معالج التثبيت',
-            'title' => 'مثبت Krayin',
-            'webkul' => 'Webkul',
+            'title' => 'مثبت Argosvig',
         ],
     ],
 ];

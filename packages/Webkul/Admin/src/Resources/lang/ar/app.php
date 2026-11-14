@@ -336,7 +336,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => 'مدعوم من :krayin، وهو مشروع مفتوح المصدر من :webkul.',
+                'description' => 'Argosvig CRM',
             ],
             'header' => [
                 'mega-search' => [

@@ -130,7 +130,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => '管理者',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'confirm-password' => 'パスワード（確認）',
                 'email' => 'メールアドレス',
                 'email-address' => 'admin@example.com',
@@ -145,7 +145,7 @@ return [
                 'application-name' => 'アプリケーション名',
                 'argentine-peso' => 'アルゼンチン・ペソ (ARS)',
                 'australian-dollar' => 'オーストラリア・ドル (AUD)',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'bangladeshi-taka' => 'バングラデシュ・タカ (BDT)',
                 'brazilian-real' => 'ブラジル・レアル (BRL)',
                 'british-pound-sterling' => '英ポンド (GBP)',
@@ -229,24 +229,22 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin' => 'Krayinのインストール',
-                'krayin-info' => 'データベーステーブルを作成しています。しばらくお待ちください',
+                'progress' => 'Argosvigのインストール',
+                'progress-info' => 'データベーステーブルを作成しています。しばらくお待ちください',
                 'title' => 'インストール',
             ],
 
             'installation-completed' => [
                 'admin-panel' => '管理パネル',
-                'krayin-forums' => 'Krayinフォーラム',
                 'customer-panel' => '顧客パネル',
-                'explore-krayin-extensions' => 'Krayin拡張機能を探す',
                 'title' => 'インストール完了',
-                'title-info' => 'Krayinのインストールが正常に完了しました。',
+                'title-info' => 'Argosvigのインストールが正常に完了しました。',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table' => 'データベーステーブルの作成',
                 'install' => 'インストール',
-                'install-info' => 'Krayinのインストール',
+                'install-info' => 'Argosvigのインストール',
                 'install-info-button' => '下のボタンをクリックして',
                 'populate-database-table' => 'データベーステーブルへの初期データ投入',
                 'start-installation' => 'インストールを開始',
@@ -257,8 +255,8 @@ return [
                 'locale' => '言語',
                 'main' => '開始',
                 'select-locale' => '言語を選択',
-                'title' => 'Krayinのインストール',
-                'welcome-title' => 'Krayinへようこそ',
+                'title' => 'Argosvigのインストール',
+                'welcome-title' => 'Argosvigへようこそ',
             ],
 
             'server-requirements' => [
@@ -285,16 +283,12 @@ return [
             ],
 
             'back' => '戻る',
-            'krayin' => 'Krayin',
-            'krayin-info' => 'コミュニティプロジェクト by',
-            'krayin-logo' => 'Krayinロゴ',
             'continue' => '続行',
-            'installation-description' => 'Krayinのインストールは通常いくつかのステップで行います。以下はKrayinのインストール手順の概要です',
+            'installation-description' => 'Argosvigのインストールは通常いくつかのステップで行います。以下はArgosvigのインストール手順の概要です',
             'installation-info' => 'ようこそ！お会いできてうれしいです。',
             'installation-title' => 'インストールへようこそ',
             'installation-wizard' => 'インストールウィザードの言語',
-            'title' => 'Krayinインストーラー',
-            'webkul' => 'Webkul',
+            'title' => 'Argosvigインストーラー',
         ],
     ],
 ];

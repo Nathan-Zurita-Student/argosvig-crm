@@ -2,12 +2,6 @@
     "name": "webkul/human-resources",
     "description": "Human resources management for the Argosvig CRM.",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Webkul",
-            "email": "example@webkul.com"
-        }
-    ],
     "require": {
     },
     "autoload": {

@@ -336,7 +336,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => '由 :krayin 提供支持，这是 :webkul 的开源项目。',
+                'description' => 'Argosvig CRM',
             ],
             'header' => [
                 'mega-search' => [

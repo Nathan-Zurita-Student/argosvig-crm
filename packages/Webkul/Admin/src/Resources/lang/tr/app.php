@@ -336,7 +336,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => ':webkul tarafından geliştirilen açık kaynaklı bir proje olan :krayin tarafından desteklenmektedir.',
+                'description' => 'Argosvig CRM',
             ],
             'header' => [
                 'mega-search' => [

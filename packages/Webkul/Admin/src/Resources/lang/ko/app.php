@@ -336,7 +336,7 @@ return [
         ],
         'layouts' => [
             'powered-by' => [
-                'description' => ':krayin이(가) 제공하는 :webkul의 오픈소스 프로젝트입니다.',
+                'description' => 'Argosvig CRM',
             ],
             'header' => [
                 'mega-search' => [

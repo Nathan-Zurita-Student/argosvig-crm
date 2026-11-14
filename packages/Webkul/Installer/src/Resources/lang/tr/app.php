@@ -130,7 +130,7 @@ return [
         'index' => [
             'create-administrator' => [
                 'admin' => 'Yönetici',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'confirm-password' => 'Şifreyi Onayla',
                 'email' => 'E-posta',
                 'email-address' => 'admin@ornek.com',
@@ -145,7 +145,7 @@ return [
                 'application-name' => 'Uygulama Adı',
                 'argentine-peso' => 'Arjantin Pezosu (ARS)',
                 'australian-dollar' => 'Avustralya Doları (AUD)',
-                'krayin' => 'Krayin',
+                'product-name' => 'Argosvig',
                 'bangladeshi-taka' => 'Bangladeş Takası (BDT)',
                 'brazilian-real' => 'Brezilya Reali (BRL)',
                 'british-pound-sterling' => 'İngiliz Sterlini (GBP)',
@@ -229,24 +229,22 @@ return [
             ],
 
             'installation-processing' => [
-                'krayin' => 'Krayin Kurulumu',
-                'krayin-info' => 'Veritabanı tabloları oluşturuluyor, bu birkaç dakika sürebilir',
+                'progress' => 'Argosvig Kurulumu',
+                'progress-info' => 'Veritabanı tabloları oluşturuluyor, bu birkaç dakika sürebilir',
                 'title' => 'Kurulum',
             ],
 
             'installation-completed' => [
                 'admin-panel' => 'Yönetici Paneli',
-                'krayin-forums' => 'Krayin Forumu',
                 'customer-panel' => 'Müşteri Paneli',
-                'explore-krayin-extensions' => 'Krayin Uzantılarını Keşfedin',
                 'title' => 'Kurulum Tamamlandı',
-                'title-info' => 'Krayin sisteminize başarıyla kuruldu.',
+                'title-info' => 'Argosvig sisteminize başarıyla kuruldu.',
             ],
 
             'ready-for-installation' => [
                 'create-databsae-table' => 'Veritabanı tablosu oluştur',
                 'install' => 'Yükleme',
-                'install-info' => 'Kurulum için Krayin',
+                'install-info' => 'Kurulum için Argosvig',
                 'install-info-button' => 'Aşağıdaki düğmeye tıklayın',
                 'populate-database-table' => 'Veritabanı tablolarını doldur',
                 'start-installation' => 'Kurulumu Başlat',
@@ -257,8 +255,8 @@ return [
                 'locale' => 'Yerel',
                 'main' => 'Başlangıç',
                 'select-locale' => 'Yerel Seçin',
-                'title' => 'Krayin kurulumunuz',
-                'welcome-title' => 'Krayin\'ya hoş geldiniz',
+                'title' => 'Argosvig kurulumunuz',
+                'welcome-title' => 'Argosvig\'ya hoş geldiniz',
             ],
 
             'server-requirements' => [
@@ -285,16 +283,12 @@ return [
             ],
 
             'back' => 'Geri',
-            'krayin' => 'Krayin',
-            'krayin-info' => 'Webkul tarafından geliştirilen bir Topluluk Projesi',
-            'krayin-logo' => 'Krayin Logosu',
             'continue' => 'Devam Et',
-            'installation-description' => 'Krayin kurulumu genellikle birkaç adım içerir. İşte Krayin\'nun kurulum sürecine genel bir bakış',
+            'installation-description' => 'Argosvig kurulumu genellikle birkaç adım içerir. İşte Argosvig\'nun kurulum sürecine genel bir bakış',
             'installation-info' => 'Sizi burada görmekten mutluluk duyuyoruz!',
             'installation-title' => 'Kurulum\'a Hoş Geldiniz',
             'installation-wizard' => 'Kurulum Sihirbazı dili',
-            'title' => 'Krayin Kurulum Sihirbazı',
-            'webkul' => 'Webkul',
+            'title' => 'Argosvig Kurulum Sihirbazı',
         ],
     ],
 ];

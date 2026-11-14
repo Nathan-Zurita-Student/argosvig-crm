@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Webkul\Core\Providers\CoreServiceProvider;
-use Webkul\Installer\Database\Seeders\DatabaseSeeder as KrayinDatabaseSeeder;
-use Webkul\Installer\Events\ComposerEvents;
+use Webkul\Installer\Database\Seeders\DatabaseSeeder as InstallerDatabaseSeeder;
 use Webkul\Installer\Helpers\DatabaseManager;
 
 use function Laravel\Prompts\password;
@@ -21,7 +20,7 @@ class Installer extends Command
      *
      * @var string
      */
-    protected $signature = 'krayin-crm:install
+    protected $signature = 'argosvig:install
         { --skip-env-check : Skip env check. }
         { --skip-admin-creation : Skip admin creation. }';
 
@@ -30,7 +29,7 @@ class Installer extends Command
      *
      * @var string
      */
-    protected $description = 'krayin installer.';
+    protected $description = 'Install Argosvig CRM.';
 
     /**
      * Locales list.
@@ -120,11 +119,10 @@ class Installer extends Command
     ];
 
     /**
-     * Install and configure krayin.
+     * Install and configure Argosvig.
      */
     public function handle()
     {
-        $this->output->writeln(ComposerEvents::cloudHostingBox());
 
         $applicationDetails = ! $this->option('skip-env-check')
             ? $this->checkForEnvFile()
@@ -138,8 +136,8 @@ class Installer extends Command
         $this->warn('Step: Migrating all tables...');
         $this->call('migrate:fresh');
 
-        $this->warn('Step: Seeding basic data for Krayin kickstart...');
-        $this->info(app(KrayinDatabaseSeeder::class)->run([
+        $this->warn('Step: Seeding basic data for Argosvig kickstart...');
+        $this->info(app(InstallerDatabaseSeeder::class)->run([
             'locale' => $applicationDetails['locale'] ?? 'en',
             'currency' => $applicationDetails['currency'] ?? 'USD',
         ]));
@@ -160,7 +158,6 @@ class Installer extends Command
             $this->createAdminCredentials();
         }
 
-        ComposerEvents::postCreateProject();
     }
 
     /**
@@ -210,7 +207,7 @@ class Installer extends Command
         $this->updateEnvVariable(
             'APP_NAME',
             'Please enter the application name',
-            env('APP_NAME', 'Krayin CRM')
+            env('APP_NAME', 'Argosvig CRM')
         );
 
         $this->updateEnvVariable(
@@ -375,7 +372,7 @@ class Installer extends Command
 
             $filePath = storage_path('installed');
 
-            File::put($filePath, 'Krayin is successfully installed');
+            File::put($filePath, 'Argosvig is successfully installed');
 
             /**
              * Recorded in the database as well as on disk, so losing the marker file cannot reopen
@@ -387,7 +384,7 @@ class Installer extends Command
 
             $this->info('-----------------------------');
             $this->info('Congratulations!');
-            $this->info('The installation has been finished and you can now use Krayin.');
+            $this->info('The installation has been finished and you can now use Argosvig.');
             $this->info('Go to '.env('APP_URL').'/admin/dashboard'.' and authenticate with:');
             $this->info('Email: '.$adminEmail);
             $this->info('Password: the one you just set.');

@@ -1,22 +1,16 @@
 {
-    "name": "krayin/laravel-admin",
+    "name": "argosvig/laravel-admin",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Jitendra Singh",
-            "email": "jitendra@webkul.com"
-        }
-    ],
     "require": {
-        "krayin/laravel-attribute": "^1.0",
-        "krayin/laravel-contact": "^1.0",
-        "krayin/laravel-core": "^1.0",
-        "krayin/laravel-email": "^1.0",
-        "krayin/laravel-lead": "^1.0",
-        "krayin/laravel-product": "^1.0",
-        "krayin/laravel-tag": "^1.0",
-        "krayin/laravel-ui": "^1.0",
-        "krayin/laravel-user": "^1.0"
+        "argosvig/laravel-attribute": "^1.0",
+        "argosvig/laravel-contact": "^1.0",
+        "argosvig/laravel-core": "^1.0",
+        "argosvig/laravel-email": "^1.0",
+        "argosvig/laravel-lead": "^1.0",
+        "argosvig/laravel-product": "^1.0",
+        "argosvig/laravel-tag": "^1.0",
+        "argosvig/laravel-ui": "^1.0",
+        "argosvig/laravel-user": "^1.0"
     },
     "autoload": {
         "psr-4": {

@@ -1,13 +1,13 @@
 ---
 name: crm-package-development
-description: Use when creating a new Krayin CRM package or module, extending CRM functionality via a package, or adding custom business logic without modifying core files. Also use for any translation work — adding or moving lang files, adding a locale, or deciding whether a package gets its own Resources/lang directory — and whenever a fix or feature needs a CHANGELOG.md entry. Covers Laravel package structure, service providers, migrations, models, repositories, routes, controllers, views, localization, changelog entries, config, ACL, and menus.
+description: Use when creating a new Argosvig CRM package or module, extending CRM functionality via a package, or adding custom business logic without modifying core files. Also use for any translation work — adding or moving lang files, adding a locale, or deciding whether a package gets its own Resources/lang directory — and whenever a fix or feature needs a CHANGELOG.md entry. Covers Laravel package structure, service providers, migrations, models, repositories, routes, controllers, views, localization, changelog entries, config, ACL, and menus.
 ---
 
-# Skill: CRM Package Development (Krayin CRM)
+# Skill: CRM Package Development (Argosvig CRM)
 
 ## Purpose
 This skill guides the AI agent to design and develop a new CRM package
-(module) for Krayin CRM in a clean, upgrade-safe, and maintainable way.
+(module) for Argosvig CRM in a clean, upgrade-safe, and maintainable way.
 
 ---
 
@@ -23,15 +23,15 @@ Activate this skill when the user wants to:
 
 ## Project Context
 - Framework: Laravel
-- Product: Krayin CRM
-- Krayin CRM is already installed and running
+- Product: Argosvig CRM
+- Argosvig CRM is already installed and running
 - The package must integrate seamlessly with existing CRM modules
 
 ---
 
 ## Development Rules
-- Follow Krayin CRM architecture and conventions
-- Do NOT modify core Krayin files unless explicitly required
+- Follow Argosvig CRM architecture and conventions
+- Do NOT modify core Argosvig files unless explicitly required
 - Use Laravel package-based structure
 - All database changes must be done using migrations
 - Ensure backward compatibility and safe upgrades
@@ -218,5 +218,5 @@ released headings show the expected style: `## **v2.2.4 (20th of July 2026)** *R
   the `#NNNN` prefix and leave the tag, then fill the number in once it is
   opened.
 - **Do not bump the version constant as part of a feature or fix.**
-  `KRAYIN_VERSION` in `packages/Webkul/Core/src/Core.php` is incremented in the
+  `VERSION` in `packages/Webkul/Core/src/Core.php` is incremented in the
   release commit, together with dating the changelog heading — not per change.
