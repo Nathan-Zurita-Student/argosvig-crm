@@ -688,3 +688,12 @@
 :is(.dark) .dark\:border-gray-800:has(> input, > select, > textarea) {
     border-color: rgb(75 85 99);
 }
+.crm-assistant-dialog {
+    width: min(36rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+}
+
+.crm-assistant-dialog::backdrop {
+    background: rgb(2 11 34 / 65%);
+}

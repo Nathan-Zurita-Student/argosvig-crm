@@ -1,0 +1,168 @@
+<?php
+
+namespace Webkul\HumanResources\Services;
+
+use Illuminate\Database\Eloquent\Builder;
+use Webkul\Activity\Models\ActivityProxy;
+use Webkul\Admin\Traits\ScopesMailAccess;
+use Webkul\Contact\Models\OrganizationProxy;
+use Webkul\Contact\Models\PersonProxy;
+use Webkul\Email\Models\EmailProxy;
+use Webkul\HumanResources\Models\EmployeeDocumentProxy;
+use Webkul\HumanResources\Models\EmployeeProxy;
+use Webkul\HumanResources\Models\IncidentProxy;
+use Webkul\HumanResources\Models\ServiceContractProxy;
+use Webkul\HumanResources\Models\ShiftAssignmentProxy;
+use Webkul\HumanResources\Models\VacationProxy;
+use Webkul\HumanResources\Models\WorkSiteProxy;
+use Webkul\Lead\Models\LeadProxy;
+use Webkul\Product\Models\ProductProxy;
+use Webkul\Quote\Models\QuoteProxy;
+
+class AssistantContext
+{
+    use ScopesMailAccess;
+
+    private const RECORDS = [
+        'lead' => [LeadProxy::class, ['leads', 'leads.view'], 'admin.leads.view', ['title', 'lead_value', 'expected_close_date', 'closed_at']],
+        'quote' => [QuoteProxy::class, ['quotes', 'quotes.edit'], 'admin.quotes.edit', ['subject', 'grand_total', 'expired_at']],
+        'person' => [PersonProxy::class, ['contacts.persons', 'contacts.persons.view'], 'admin.contacts.persons.view', []],
+        'organization' => [OrganizationProxy::class, ['contacts.organizations', 'contacts.organizations.edit'], 'admin.contacts.organizations.edit', ['name']],
+        'product' => [ProductProxy::class, ['products', 'products.view'], 'admin.products.view', ['name', 'sku', 'price']],
+        'activity' => [ActivityProxy::class, ['activities', 'activities.edit'], 'admin.activities.edit', ['title', 'type', 'schedule_from', 'schedule_to', 'is_done']],
+        'employee' => [EmployeeProxy::class, ['human-resources.employees', 'human-resources.employees.view'], 'admin.human_resources.employees.show', ['status']],
+        'vacation' => [VacationProxy::class, ['human-resources.vacations', 'human-resources.vacations.edit'], 'admin.human_resources.vacations.edit', ['starts_at', 'ends_at', 'status']],
+        'incident' => [IncidentProxy::class, ['human-resources.incidents', 'human-resources.incidents.view'], 'admin.human_resources.incidents.show', ['code', 'severity', 'status', 'occurred_at']],
+        'contract' => [ServiceContractProxy::class, ['human-resources.contracts', 'human-resources.contracts.edit'], 'admin.human_resources.contracts.edit', ['contract_number', 'status', 'starts_at', 'ends_at']],
+        'site' => [WorkSiteProxy::class, ['human-resources.work-sites', 'human-resources.work-sites.edit'], 'admin.human_resources.work_sites.edit', ['code', 'name', 'status', 'required_staff']],
+        'shift' => [ShiftAssignmentProxy::class, ['human-resources.shifts', 'human-resources.shifts.edit'], 'admin.human_resources.shifts.edit', ['status', 'shift_type', 'starts_at', 'ends_at']],
+    ];
+
+    public function fromRequest(): array
+    {
+        $route = request()->route()?->getName();
+        $id = (int) request()->route('id');
+
+        foreach (self::RECORDS as $type => [, , $recordRoute]) {
+            if ($route === $recordRoute && $id) {
+                return ['type' => $type, 'id' => $id];
+            }
+        }
+
+        if ($route === 'admin.mail.view' && $id) {
+            return ['type' => 'email', 'id' => $id, 'folder' => request()->route('route')];
+        }
+
+        return match (true) {
+            $route === 'admin.operations.index' => ['type' => 'operations'],
+            request()->routeIs('admin.human_resources.document_center.*') => ['type' => 'documents'],
+            request()->routeIs('admin.human_resources.timekeeping.*') => ['type' => 'timekeeping'],
+            default => [],
+        };
+    }
+
+    public function facts(array $context): array
+    {
+        $type = $context['type'] ?? 'overview';
+
+        if (in_array($type, ['overview', 'operations', 'documents', 'timekeeping'], true)) {
+            return $this->overview($type);
+        }
+
+        if ($type === 'email') {
+            return $this->email($context);
+        }
+
+        abort_unless(isset(self::RECORDS[$type]), 404);
+        [$model, $permissions, $route, $fields] = self::RECORDS[$type];
+        abort_unless($this->permitted($permissions), 401);
+        $query = $model::query();
+
+        if (in_array($type, ['lead', 'quote', 'person', 'organization'], true)) {
+            $query = bouncer()->scopeToAuthorizedUsers($query);
+        } elseif ($type === 'activity') {
+            $query = $this->visibleActivities($query);
+        } elseif ($type !== 'product') {
+            abort_unless(bouncer()->getAuthorizedUserIds() === null, 401);
+        }
+
+        $record = $query->findOrFail($context['id']);
+        $facts = $record->only($fields);
+        if ($type === 'lead') {
+            $facts['stage'] = $record->stage?->name;
+            if ($this->permitted(['activities'])) {
+                $facts['pending_activities'] = $this->visibleActivities($record->activities()->getQuery())->where('is_done', false)->count();
+            }
+        }
+        if ($type === 'quote') {
+            $facts['items'] = $record->items()->orderBy('id')->limit(10)->get(['name', 'quantity', 'total'])->toArray();
+        }
+
+        return [['module' => $type, 'record' => $facts], [['label' => trans('human_resources::ai.open_record'), 'url' => route($route, $record->id)]]];
+    }
+
+    private function email(array $context): array
+    {
+        $folder = $context['folder'] ?? 'inbox';
+        abort_unless($this->permitted(['mail', 'mail.view', 'mail.'.$folder]), 401);
+        $email = EmailProxy::query()->findOrFail($context['id']);
+        $this->preventUnauthorizedMailAccess($email);
+        abort_unless(in_array($folder, $email->folders ?? [], true), 404);
+
+        return [['module' => 'email', 'record' => ['subject' => $email->subject]], [
+            ['label' => trans('human_resources::ai.open_record'), 'url' => route('admin.mail.view', ['route' => $folder, 'id' => $email->id])],
+        ]];
+    }
+
+    private function overview(string $type): array
+    {
+        $facts = ['module' => $type, 'date' => now()->toDateTimeString()];
+        $links = [];
+        if ($type === 'overview' && $this->permitted(['leads', 'leads.view'])) {
+            $facts['open_opportunities'] = bouncer()->scopeToAuthorizedUsers(LeadProxy::query())
+                ->whereNull('closed_at')->whereDoesntHave('stage', fn ($stage) => $stage->whereIn('code', ['won', 'lost']))->count();
+            $links[] = ['label' => trans('human_resources::commercial.tabs.leads'), 'url' => route('admin.leads.follow_up')];
+        }
+        if ($type === 'overview' && $this->permitted(['activities'])) {
+            $facts['overdue_activities'] = $this->visibleActivities(ActivityProxy::query())->where('is_done', false)->where('schedule_to', '<', now())->count();
+            $links[] = ['label' => trans('human_resources::commercial.tabs.activities'), 'url' => route('admin.activities.follow_up')];
+        }
+        if (OperationsBriefing::allowed()) {
+            $links[] = ['label' => trans('human_resources::operations.title'), 'url' => route('admin.operations.index')];
+            if ($this->permitted(['human-resources.incidents', 'human-resources.incidents.view'])) {
+                $facts['open_incidents'] = IncidentProxy::query()->whereIn('status', ['open', 'investigating'])->count();
+            }
+            if ($this->permitted(['human-resources.contracts'])) {
+                $facts['expiring_contracts_30_days'] = ServiceContractProxy::query()->expiring()->count();
+            }
+        }
+        if (bouncer()->getAuthorizedUserIds() === null && bouncer()->hasPermission('document-center')) {
+            $private = bouncer()->hasPermission('human-resources.document-center');
+            $shared = bouncer()->hasPermission('human-resources.shared-documents');
+            if ($private || $shared) {
+                $facts['expiring_documents_30_days'] = EmployeeDocumentProxy::query()->whereBetween('expires_at', [today(), today()->addDays(30)])
+                    ->when(! $private, fn ($query) => $query->whereNull('employee_id'))
+                    ->when(! $shared, fn ($query) => $query->whereNotNull('employee_id'))->count();
+                $links[] = ['label' => trans('human_resources::workforce.documents'), 'url' => route('admin.human_resources.document_center.index', ['expiry' => 'soon'])];
+            }
+        }
+        if (bouncer()->getAuthorizedUserIds() === null && bouncer()->hasPermission('timekeeping')) {
+            $links[] = ['label' => trans('human_resources::workforce.timekeeping'), 'url' => route('admin.human_resources.timekeeping.index')];
+        }
+
+        return [$facts, $links];
+    }
+
+    private function visibleActivities(Builder $query): Builder
+    {
+        $ids = bouncer()->getAuthorizedUserIds();
+
+        return $ids === null ? $query : $query->where(fn ($visible) => $visible->whereIn('activities.user_id', $ids)
+            ->orWhereHas('participants', fn ($participant) => $participant->whereIn('user_id', $ids)));
+    }
+
+    private function permitted(array $permissions): bool
+    {
+        return collect($permissions)->every(fn ($permission) => bouncer()->hasPermission($permission));
+    }
+}

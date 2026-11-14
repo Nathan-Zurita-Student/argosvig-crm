@@ -2,13 +2,17 @@
 
 namespace Webkul\HumanResources\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Core\ViewRenderEventManager;
 use Webkul\HumanResources\Console\NotifyOperationsHandover;
 use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
+use Webkul\HumanResources\Services\OperationsAi;
 use Webkul\HumanResources\Services\OperationsBriefing;
 
 class HumanResourcesServiceProvider extends ServiceProvider
@@ -20,6 +24,17 @@ class HumanResourcesServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'human_resources');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'human_resources');
 
+        RateLimiter::for('crm-ai', function (Request $request) {
+            $route = $request->route()->getName();
+            $limit = match ($route) {
+                'admin.ai.connection.test' => 4,
+                'admin.ai.download' => 15,
+                default => 12,
+            };
+
+            return Limit::perMinute($limit)->by($route.'|'.($request->user('user')?->id ?? $request->ip()));
+        });
+
         Event::listen('admin.configuration.edit.back_button.before', function (ViewRenderEventManager $event) {
             if (request()->route('slug') === 'general' && request()->route('slug2') === 'magic_ai' && bouncer()->hasPermission('configuration')) {
                 $event->addTemplate('human_resources::ai.connection-link');
@@ -29,6 +44,10 @@ class HumanResourcesServiceProvider extends ServiceProvider
         Event::listen('admin.layout.header.actions.before', function (ViewRenderEventManager $event) {
             if (OperationsBriefing::allowed()) {
                 $event->addTemplate('human_resources::operations.shortcut');
+            }
+
+            if (bouncer()->hasPermission('crm-ai') && app(OperationsAi::class)->available()) {
+                $event->addTemplate('human_resources::ai.assistant');
             }
         });
 

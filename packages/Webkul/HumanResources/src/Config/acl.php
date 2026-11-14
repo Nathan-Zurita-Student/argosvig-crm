@@ -2,6 +2,12 @@
 
 return [
     [
+        'key' => 'crm-ai',
+        'name' => 'human_resources::ai.assistant',
+        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download'],
+        'sort' => 16,
+    ],
+    [
         'key' => 'operations-assistant',
         'name' => 'human_resources::operations.title',
         'route' => ['admin.operations.index', 'admin.operations.coverage', 'admin.operations.contract_report'],

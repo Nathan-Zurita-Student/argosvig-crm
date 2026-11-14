@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a contextual CRM assistant with draft forms and downloadable PDF, text, Markdown, CSV and Excel files.
+
 * [feature] Unified OpenRouter setup for CRM AI and added a connection test with encrypted key storage.
 
 * [fixed] Kept the dashboard revenue cards and chart legend within narrow mobile screens.
