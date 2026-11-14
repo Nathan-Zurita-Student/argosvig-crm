@@ -36,7 +36,7 @@ class AiConnectionController extends Controller
                 };
 
                 if ($message === 'key_ok' && $router->enabled()) {
-                    $test = $router->chat([['role' => 'user', 'content' => 'Respond with OK.']], 24);
+                    $test = $router->chat([['role' => 'user', 'content' => 'Respond with OK.']], 256);
                     $message = $test->successful() && filled($test->json('choices.0.message.content'))
                         ? 'connected'
                         : match ($test->status()) {

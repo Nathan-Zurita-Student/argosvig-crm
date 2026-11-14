@@ -12,9 +12,12 @@ uses(DatabaseTransactions::class);
 it('encrypts the shared key, does not render it, and keeps it on a blank save', function () {
     $secret = 'synthetic-test-key';
     $settings = ['slug' => 'general', 'slug2' => 'magic_ai'];
+    $model = 'test/model:free';
 
     $this->actingAs(getDefaultAdmin(), 'user')
-        ->post(route('admin.configuration.store', $settings), ['general' => ['magic_ai' => ['settings' => ['api_key' => $secret, 'enable' => '1']]]])
+        ->post(route('admin.configuration.store', $settings), ['general' => ['magic_ai' => ['settings' => [
+            'api_key' => $secret, 'enable' => '1', 'other_model' => $model,
+        ]]]])
         ->assertRedirect();
     expect(DB::table('core_config')->where('code', OpenRouter::KEY)->value('value'))->toStartWith('encrypted:')->not->toContain($secret);
     expect(core()->getConfigData(OpenRouter::KEY))->toBe($secret);
@@ -23,7 +26,7 @@ it('encrypts the shared key, does not render it, and keeps it on a blank save', 
     expect(core()->getConfigField(OpenRouter::KEY)['validation'])->toBe('max:255');
     $this->post(route('admin.configuration.store', $settings), ['general' => ['magic_ai' => ['settings' => ['api_key' => '', 'enable' => '1']]]])->assertRedirect();
     expect(core()->getConfigData(OpenRouter::KEY))->toBe($secret);
-    $this->get(route('admin.ai.connection'))->assertOk()->assertSee(OpenRouter::MODEL)->assertSee(OpenRouter::AUDIO_MODEL)->assertDontSee($secret, false);
+    $this->get(route('admin.ai.connection'))->assertOk()->assertSee($model)->assertSee(OpenRouter::AUDIO_MODEL)->assertDontSee($secret, false);
 });
 
 it('checks the configured provider with synthetic data only and requires configuration permission', function () {
@@ -45,5 +48,6 @@ it('checks the configured provider with synthetic data only and requires configu
     Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer test-environment-key')
         && str_ends_with($request->url(), '/chat/completions')
         && $request['messages'][0]['content'] === 'Respond with OK.'
+        && $request['max_tokens'] === 256
         && $request['provider']['zdr'] === true);
 });

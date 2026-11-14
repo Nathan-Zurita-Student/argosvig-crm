@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [fix] Allowed enough output tokens to test reasoning models in the OpenRouter connection check.
+
 * [fix] Fixed saving the OpenRouter key from the Magic AI settings form.
 
 * [enhancement] Added quote draft lines using catalog SKUs and current prices.
