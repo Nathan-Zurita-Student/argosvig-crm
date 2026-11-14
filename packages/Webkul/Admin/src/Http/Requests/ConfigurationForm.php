@@ -4,7 +4,7 @@ namespace Webkul\Admin\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
-use Webkul\Core\Services\OpenRouter;
+use Webkul\Core\Services\CrmAi;
 
 class ConfigurationForm extends FormRequest
 {
@@ -59,8 +59,21 @@ class ConfigurationForm extends FormRequest
             $rules[$key] = $configField['validation'] ?? 'prohibited';
         }
 
-        $rules[OpenRouter::KEY] = ['nullable', 'string', 'max:255', 'regex:/\A[A-Za-z0-9_-]+\z/'];
-        $rules['general.magic_ai.settings.other_model'] = ['nullable', 'string', 'max:180', 'regex:/\A[\w.-]+\/[\w.:+-]+\z/'];
+        foreach (CrmAi::keyFields() as $field) {
+            $rules[$field] = ['nullable', 'string', 'max:255', 'regex:/\A[A-Za-z0-9._-]+\z/'];
+        }
+
+        $rules[CrmAi::SETTINGS.'provider'] = ['sometimes', 'required', 'in:'.implode(',', array_keys(CrmAi::MODELS))];
+        $rules[CrmAi::SETTINGS.'audio_provider'] = ['nullable', 'in:'.implode(',', array_keys(CrmAi::AUDIO_MODELS))];
+
+        foreach (array_keys(CrmAi::MODELS) as $provider) {
+            $modelPattern = $provider === 'openrouter' ? '[\w.-]+\/[\w.:+-]+' : '[\w.-]+';
+            $rules[CrmAi::SETTINGS.$provider.'_model'] = ['nullable', 'string', 'max:180', 'regex:/\A'.$modelPattern.'\z/'];
+
+            if (isset(CrmAi::AUDIO_MODELS[$provider])) {
+                $rules[CrmAi::SETTINGS.$provider.'_audio_model'] = $rules[CrmAi::SETTINGS.$provider.'_model'];
+            }
+        }
 
         return $rules;
     }

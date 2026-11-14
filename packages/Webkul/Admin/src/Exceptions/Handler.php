@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use PDOException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
+use Webkul\Core\Services\CrmAi;
 
 class Handler extends ExceptionHandler
 {
@@ -31,7 +32,7 @@ class Handler extends ExceptionHandler
     {
         parent::__construct($container);
 
-        $this->dontFlash(['verification_code', 'general.magic_ai.settings.api_key', 'question', 'narrative']);
+        $this->dontFlash(['verification_code', ...CrmAi::keyFields(), 'general.magic_ai.settings.api_key', 'question', 'narrative']);
 
         $this->jsonErrorMessages = [
             '404' => trans('admin::app.errors.404.title'),

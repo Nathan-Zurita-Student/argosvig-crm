@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => 'افزودن تصویر',
-                'ai-add-image-btn' => 'هوش مصنوعی جادویی',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => 'فقط فایل‌های تصویری (.jpeg, .jpg, .png, ..) مجاز هستند.',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => 'اعتبارسنجی گواهی SSL',
                         'username' => 'نام کاربری IMAP',
                         'password' => 'رمز عبور IMAP',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'هوش مصنوعی جادویی',
-                'info' => 'پیکربندی هوش مصنوعی جادویی برای برنامه.',
-                'settings' => [
-                    'api-key' => 'کلید API',
-                    'api-key-info' => 'به یاد داشته باشید که برای هر مدل از کلید API OpenRouter استفاده کنید. این یک گام ساده برای افزایش امنیت و عملکرد است.',
-                    'enable' => 'فعال کردن',
-                    'info' => 'تجربه هوش مصنوعی جادویی خود را با کلید API OpenRouter خود بهبود بخشید. اکنون آن را یکپارچه کنید تا یک ماجراجویی هوش مصنوعی شخصی‌سازی شده و بدون درز برای شما فراهم شود! به راحتی تنظیمات را سفارشی کنید و کنترل سفر هوش مصنوعی خود را به دست بگیرید.',
-                    'other' => 'مدل دیگر',
-                    'other-model' => 'برای مدل‌های دیگر، از شناسه مدل از OpenRouter استفاده کنید.',
-                    'doc-generation' => 'تولید DOC',
-                    'doc-generation-info' => 'ویژگی تولید DOC را فعال کنید تا به‌صورت خودکار داده‌ها را از فایل‌های DOC استخراج و به فرمت متنی تبدیل کند. با فعال‌سازی این ویژگی، بهره‌وری و کارایی خود را افزایش دهید و فرآیند کاری را ساده‌تر کنید.',
-                    'title' => 'تنظیمات عمومی',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => 'مدل‌ها',
                     ],
                 ],
             ],

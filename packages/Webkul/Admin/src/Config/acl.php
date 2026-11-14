@@ -14,7 +14,7 @@ return [
     ], [
         'key' => 'leads.create',
         'name' => 'admin::app.acl.create',
-        'route' => ['admin.leads.create', 'admin.leads.store'],
+        'route' => ['admin.leads.create', 'admin.leads.store', 'admin.leads.create_by_ai'],
         'sort' => 1,
     ], [
         'key' => 'leads.create.quick-create',

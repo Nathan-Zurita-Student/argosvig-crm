@@ -47,8 +47,8 @@ it('includes unresolved older incidents and links them without opening access to
 function enableOperationsAiForTest(): void
 {
     config(['operations.ai_enabled' => true]);
-    foreach (['api_key' => 'synthetic-key', 'other_model' => 'test/model'] as $name => $value) {
-        CoreConfig::updateOrCreate(['code' => 'general.magic_ai.settings.'.$name], ['value' => $value]);
+    foreach (['openrouter_key' => 'synthetic-key', 'openrouter_model' => 'test/model'] as $name => $value) {
+        CoreConfig::updateOrCreate(['code' => 'general.crm_ai.settings.'.$name], ['value' => $value]);
     }
 }
 

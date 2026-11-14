@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Webkul\Admin\Http\Requests\LeadForm;
 
-class MagicAI
+class LeadDocumentData
 {
     /**
      * Const Variable of LEAD_ENTITY.
@@ -27,7 +27,7 @@ class MagicAI
             return self::errorHandler($aiData['error']);
         }
 
-        $content = strip_tags($aiData['choices'][0]['message']['content']);
+        $content = strip_tags($aiData['text'] ?? '');
 
         if (empty($content)) {
             return self::errorHandler(trans('admin::app.leads.file.data-not-found'));

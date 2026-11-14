@@ -12,7 +12,7 @@ use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Admin\Http\Requests\ConfigurationForm;
 use Webkul\Core\Repositories\CoreConfigRepository as ConfigurationRepository;
-use Webkul\Core\Services\OpenRouter;
+use Webkul\Core\Services\CrmAi;
 
 class ConfigurationController extends Controller
 {
@@ -26,8 +26,12 @@ class ConfigurationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
+        if (request()->route('slug') === 'general' && request()->route('slug2') === 'magic_ai') {
+            return redirect()->route('admin.configuration.index', ['slug' => 'general', 'slug2' => 'crm_ai']);
+        }
+
         if (
             request()->route('slug')
             && request()->route('slug2')
@@ -46,9 +50,12 @@ class ConfigurationController extends Controller
         Event::dispatch('core.configuration.save.before');
 
         $data = $request->all();
+        unset($data['general']['magic_ai']);
 
-        if (blank(data_get($data, OpenRouter::KEY))) {
-            Arr::forget($data, OpenRouter::KEY);
+        foreach (CrmAi::keyFields() as $field) {
+            if (blank(data_get($data, $field))) {
+                Arr::forget($data, $field);
+            }
         }
 
         $this->configurationRepository->create($data);

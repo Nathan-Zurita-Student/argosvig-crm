@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => 'إضافة صورة',
-                'ai-add-image-btn' => 'الذكاء الاصطناعي السحري',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => 'فقط ملفات الصور (.jpeg, .jpg, .png) مسموح بها.',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => 'التحقق من شهادة SSL',
                         'username' => 'اسم مستخدم IMAP',
                         'password' => 'كلمة مرور IMAP',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'الذكاء الاصطناعي السحري',
-                'info' => 'تكوين الذكاء الاصطناعي السحري للتطبيق.',
-                'settings' => [
-                    'api-key' => 'مفتاح API',
-                    'api-key-info' => 'تذكر استخدام مفتاح API من OpenRouter لكل نموذج. إنها خطوة بسيطة لتعزيز الأمان والأداء.',
-                    'enable' => 'تمكين',
-                    'info' => 'عزز تجربتك مع الذكاء الاصطناعي السحري باستخدام مفتاح API من OpenRouter. قم بدمجه الآن لتجربة ذكاء اصطناعي سلسة ومخصصة لك! قم بتخصيص الإعدادات بسهولة وتحكم في رحلتك مع الذكاء الاصطناعي.',
-                    'other' => 'نموذج آخر',
-                    'other-model' => 'بالنسبة للنماذج الأخرى، استخدم معرف النموذج من OpenRouter.',
-                    'doc-generation' => 'توليد DOC',
-                    'doc-generation-info' => 'قم بتمكين ميزة توليد DOC لاستخراج البيانات تلقائيًا من ملفات DOC وتحويلها إلى تنسيق نصي. عزز إنتاجيتك وكفاءتك من خلال تفعيل هذه الميزة لتبسيط سير عملك.',
-                    'title' => 'الإعدادات العامة',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => 'النماذج',
                     ],
                 ],
             ],

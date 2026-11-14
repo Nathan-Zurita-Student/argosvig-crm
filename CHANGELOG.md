@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added Argosvig AI settings with direct OpenAI, Claude and Gemini connections and optional OpenRouter support.
+
 * [enhancement] Rebranded the installer, console commands, and project documentation for Argosvig.
 
 * [security] Removed external installation reporting and the public remote logo endpoint.

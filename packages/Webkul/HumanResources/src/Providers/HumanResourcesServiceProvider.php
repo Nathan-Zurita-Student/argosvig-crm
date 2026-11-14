@@ -36,7 +36,7 @@ class HumanResourcesServiceProvider extends ServiceProvider
         });
 
         Event::listen('admin.configuration.edit.back_button.before', function (ViewRenderEventManager $event) {
-            if (request()->route('slug') === 'general' && request()->route('slug2') === 'magic_ai' && bouncer()->hasPermission('configuration')) {
+            if (request()->route('slug') === 'general' && request()->route('slug2') === 'crm_ai' && bouncer()->hasPermission('configuration')) {
                 $event->addTemplate('human_resources::ai.connection-link');
             }
         });

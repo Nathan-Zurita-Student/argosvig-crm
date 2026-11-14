@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => 'Resim Ekle',
-                'ai-add-image-btn' => 'Sihirli AI',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => 'Sadece resim dosyalarına (.jpeg, .jpg, .png, vb.) izin verilmektedir.',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => 'SSL Sertifikasını Doğrula',
                         'username' => 'IMAP Kullanıcı Adı',
                         'password' => 'IMAP Şifresi',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'Sihirli AI',
-                'info' => 'Uygulama için Sihirli AI yapılandırması.',
-                'settings' => [
-                    'api-key' => 'API Anahtarı',
-                    'api-key-info' => 'Her model için bir OpenRouter API anahtarı kullanmayı unutmayın. Bu, güvenliği ve performansı artırmak için basit bir adımdır.',
-                    'enable' => 'Etkinleştir',
-                    'info' => 'OpenRouter API Anahtarınız ile Magic AI deneyiminizi geliştirin. Şimdi entegre edin ve size özel, sorunsuz bir AI macerası yaşayın! Ayarları kolayca özelleştirin ve AI yolculuğunuzun kontrolünü elinize alın.',
-                    'other' => 'Diğer Model',
-                    'other-model' => 'Diğer modeller için OpenRouter\'dan Model ID kullanın.',
-                    'doc-generation' => 'DOC Oluşturma',
-                    'doc-generation-info' => 'DOC dosyalarından verileri otomatik olarak çıkartıp metin formatına dönüştürmek için DOC Oluşturma özelliğini etkinleştirin. Bu özelliği etkinleştirerek iş akışınızı kolaylaştırın ve verimliliğinizi artırın.',
-                    'title' => 'Genel Ayarlar',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => 'Modeller',
                     ],
                 ],
             ],

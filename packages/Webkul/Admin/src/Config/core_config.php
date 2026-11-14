@@ -1,6 +1,6 @@
 <?php
 
-use Webkul\Core\Services\OpenRouter;
+use Webkul\Core\Services\CrmAi;
 
 return [
     /**
@@ -241,77 +241,79 @@ return [
             ],
         ],
     ], [
-        'key' => 'general.magic_ai',
-        'name' => 'admin::app.configuration.index.magic-ai.title',
-        'info' => 'admin::app.configuration.index.magic-ai.info',
+        'key' => 'general.crm_ai',
+        'name' => 'human_resources::ai.settings_title',
+        'info' => 'human_resources::ai.settings_intro',
         'icon' => 'icon-setting',
         'sort' => 3,
     ], [
-        'key' => 'general.magic_ai.settings',
-        'name' => 'admin::app.configuration.index.magic-ai.settings.title',
-        'info' => 'admin::app.configuration.index.magic-ai.settings.info',
+        'key' => 'general.crm_ai.settings',
+        'name' => 'human_resources::ai.settings_title',
+        'info' => 'human_resources::ai.settings_intro',
         'sort' => 1,
         'fields' => [
             [
                 'name' => 'enable',
-                'title' => 'admin::app.configuration.index.magic-ai.settings.enable',
+                'title' => 'human_resources::ai.enabled',
                 'type' => 'boolean',
-                'channel_based' => true,
             ], [
-                'name' => 'api_key',
-                'title' => 'admin::app.configuration.index.magic-ai.settings.api-key',
-                'type' => 'password',
-                'depends' => 'enable:1',
-                'validation' => 'max:255',
-                'info' => 'admin::app.configuration.index.magic-ai.settings.api-key-info',
-            ], [
-                'name' => 'model',
-                'title' => 'admin::app.configuration.index.magic-ai.settings.models.title',
+                'name' => 'provider',
+                'title' => 'human_resources::ai.provider',
                 'type' => 'select',
-                'channel_based' => true,
-                'depends' => 'enable:1',
-                'options' => [
-                    [
-                        'title' => 'human_resources::ai.default_model',
-                        'value' => OpenRouter::MODEL,
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.gpt-4o',
-                        'value' => 'openai/chatgpt-4o-latest',
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.gpt-4o-mini',
-                        'value' => 'openai/gpt-4o-mini',
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.gemini-2-0-flash-001',
-                        'value' => 'google/gemini-2.0-flash-001',
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.deepseek-r1',
-                        'value' => 'deepseek/deepseek-r1-distill-llama-8b',
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.llama-3-2-3b-instruct',
-                        'value' => 'meta-llama/llama-3.2-3b-instruct',
-                    ], [
-                        'title' => 'admin::app.configuration.index.magic-ai.settings.models.grok-2-1212',
-                        'value' => 'x-ai/grok-2-1212',
-                    ],
-                ],
+                'default' => 'openrouter',
+                'options' => array_map(
+                    fn ($provider) => ['title' => 'human_resources::ai.providers.'.$provider, 'value' => $provider],
+                    array_keys(CrmAi::MODELS),
+                ),
             ], [
-                'name' => 'other_model',
-                'title' => 'admin::app.configuration.index.magic-ai.settings.other',
-                'type' => 'text',
-                'info' => 'admin::app.configuration.index.magic-ai.settings.other-model',
-                'default' => null,
-                'depends' => 'enable:1',
+                'name' => 'audio_provider',
+                'title' => 'human_resources::ai.audio_provider',
+                'info' => 'human_resources::ai.audio_provider_help',
+                'type' => 'select',
+                'options' => [
+                    ['title' => 'human_resources::ai.same_provider', 'value' => ''],
+                    ...array_map(
+                        fn ($provider) => ['title' => 'human_resources::ai.providers.'.$provider, 'value' => $provider],
+                        array_keys(CrmAi::AUDIO_MODELS),
+                    ),
+                ],
             ],
+            ...array_merge(...array_map(
+                fn ($provider, $model) => [
+                    [
+                        'name' => $provider.'_key',
+                        'title' => 'human_resources::ai.credentials.'.$provider,
+                        'type' => 'password',
+                        'validation' => 'max:255',
+                        'info' => 'human_resources::ai.keep_key',
+                    ], [
+                        'name' => $provider.'_model',
+                        'title' => 'human_resources::ai.models.'.$provider,
+                        'type' => 'text',
+                        'default' => $provider === 'openrouter' ? null : $model,
+                    ],
+                    ...isset(CrmAi::AUDIO_MODELS[$provider]) ? [[
+                        'name' => $provider.'_audio_model',
+                        'title' => 'human_resources::ai.audio_models.'.$provider,
+                        'type' => 'text',
+                        'default' => $provider === 'openrouter'
+                            ? config('operations.transcription_model') ?: CrmAi::AUDIO_MODELS[$provider]
+                            : CrmAi::AUDIO_MODELS[$provider],
+                    ]] : [],
+                ],
+                array_keys(CrmAi::MODELS),
+                array_values(CrmAi::MODELS),
+            )),
         ],
     ], [
-        'key' => 'general.magic_ai.doc_generation',
-        'name' => 'admin::app.configuration.index.magic-ai.settings.doc-generation',
-        'info' => 'admin::app.configuration.index.magic-ai.settings.doc-generation-info',
+        'key' => 'general.crm_ai.documents',
+        'name' => 'human_resources::ai.document_import',
+        'info' => 'human_resources::ai.document_import_help',
         'sort' => 2,
         'fields' => [
             [
                 'name' => 'enabled',
-                'title' => 'admin::app.configuration.index.magic-ai.settings.enable',
+                'title' => 'human_resources::ai.enabled',
                 'type' => 'boolean',
             ],
         ],

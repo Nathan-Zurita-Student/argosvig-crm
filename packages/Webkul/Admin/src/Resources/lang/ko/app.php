@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => '이미지 추가',
-                'ai-add-image-btn' => 'Magic AI',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => '이미지 파일(.jpeg, .jpg, .png 등)만 허용됩니다.',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => 'SSL 인증서 유효성 검사',
                         'username' => 'IMAP 사용자 이름',
                         'password' => 'IMAP 비밀번호',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'Magic AI',
-                'info' => '애플리케이션의 Magic AI 설정입니다.',
-                'settings' => [
-                    'api-key' => 'API 키',
-                    'api-key-info' => '각 모델마다 OpenRouter API 키를 사용해야 함을 유의하세요. 보안과 성능을 높이는 간단한 방법입니다.',
-                    'enable' => '사용',
-                    'info' => 'OpenRouter API 키로 Magic AI 경험을 향상하세요. 지금 연동하여 나만을 위한 원활하고 맞춤화된 AI 경험을 시작해 보세요! 손쉽게 설정을 조정하고 AI 사용을 직접 관리할 수 있습니다.',
-                    'other' => '기타 모델',
-                    'other-model' => '다른 모델을 사용하려면 OpenRouter의 모델 ID를 입력하세요.',
-                    'doc-generation' => 'DOC 생성',
-                    'doc-generation-info' => 'DOC 생성 기능을 사용하면 DOC 파일에서 데이터를 자동으로 추출하여 텍스트 형식으로 변환할 수 있습니다. 이 기능을 사용하여 업무 효율성과 생산성을 높이세요.',
-                    'title' => '일반 설정',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => '모델',
                     ],
                 ],
             ],

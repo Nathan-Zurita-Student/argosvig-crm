@@ -21,16 +21,17 @@ use Webkul\Admin\Http\Resources\LeadResource;
 use Webkul\Admin\Http\Resources\StageResource;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Contact\Repositories\PersonRepository;
+use Webkul\Core\Services\CrmAi;
 use Webkul\DataGrid\ColumnTypes\Date as DateColumn;
 use Webkul\DataGrid\Enums\DateRangeOptionEnum;
-use Webkul\Lead\Helpers\MagicAI;
+use Webkul\Lead\Helpers\LeadDocumentData;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\Lead\Repositories\PipelineRepository;
 use Webkul\Lead\Repositories\ProductRepository;
 use Webkul\Lead\Repositories\SourceRepository;
 use Webkul\Lead\Repositories\StageRepository;
 use Webkul\Lead\Repositories\TypeRepository;
-use Webkul\Lead\Services\MagicAIService;
+use Webkul\Lead\Services\LeadDocumentAi;
 use Webkul\Quote\Repositories\QuoteItemRepository;
 use Webkul\Quote\Repositories\QuoteRepository;
 use Webkul\Tag\Repositories\TagRepository;
@@ -766,6 +767,11 @@ class LeadController extends Controller
      */
     public function createByAI()
     {
+        abort_unless(bouncer()->hasPermission('leads.create')
+            && core()->getConfigData('general.crm_ai.documents.enabled') && app(CrmAi::class)->enabled(), 403);
+
+        request()->validate(['files' => ['required', 'array', 'max:5'], 'files.*' => ['required', 'file', 'max:8192']]);
+
         $leadData = [];
 
         $errorMessages = [];
@@ -784,18 +790,18 @@ class LeadController extends Controller
         }
 
         if (isset($errorMessages[0]['code'])) {
-            return response()->json(MagicAI::errorHandler($errorMessages[0]['message']));
+            return response()->json(LeadDocumentData::errorHandler($errorMessages[0]['message']));
         }
 
         if (
             empty($leadData)
             && ! empty($errorMessages)
         ) {
-            return response()->json(MagicAI::errorHandler(implode(', ', $errorMessages)), 400);
+            return response()->json(LeadDocumentData::errorHandler(implode(', ', $errorMessages)), 400);
         }
 
         if (empty($leadData)) {
-            return response()->json(MagicAI::errorHandler(trans('admin::app.leads.no-valid-files')), 400);
+            return response()->json(LeadDocumentData::errorHandler(trans('admin::app.leads.no-valid-files')), 400);
         }
 
         return response()->json([
@@ -817,14 +823,14 @@ class LeadController extends Controller
         );
 
         if ($validator->fails()) {
-            return MagicAI::errorHandler($validator->errors()->first());
+            return LeadDocumentData::errorHandler($validator->errors()->first());
         }
 
         $base64Pdf = base64_encode(file_get_contents($file->getRealPath()));
 
-        $extractedData = MagicAIService::extractDataFromFile($base64Pdf);
+        $extractedData = LeadDocumentAi::extractDataFromFile($base64Pdf);
 
-        $lead = MagicAI::mapAIDataToLead($extractedData);
+        $lead = LeadDocumentData::mapAIDataToLead($extractedData);
 
         return $lead;
     }
@@ -840,7 +846,7 @@ class LeadController extends Controller
             Event::dispatch('lead.create.before');
 
             foreach ($rawLead['person']['emails'] as $email) {
-                $person = $this->personRepository
+                $person = bouncer()->scopeToAuthorizedUsers($this->personRepository->getModel()->newQuery())
                     ->whereJsonContains('emails', [['value' => $email['value']]])
                     ->first();
 

@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => 'Agregar imagen',
-                'ai-add-image-btn' => 'Inteligencia artificial mágica',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => 'Solo se aceptan archivos de imagen (.jpeg, .jpg, .png, ..)',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => 'Validar Certificado SSL',
                         'username' => 'Nombre de Usuario IMAP',
                         'password' => 'Contraseña IMAP',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'Magic AI',
-                'info' => 'Configuración de Magic AI para la aplicación.',
-                'settings' => [
-                    'api-key' => 'Clave API',
-                    'api-key-info' => 'Recuerda usar una clave API de OpenRouter para cada modelo. Es un paso simple para mejorar la seguridad y el rendimiento.',
-                    'enable' => 'Habilitar',
-                    'info' => 'Mejora tu experiencia con Magic AI con tu clave API de OpenRouter. ¡Intégrala ahora para una aventura de IA personalizada y sin problemas, hecha a tu medida! Personaliza la configuración sin esfuerzo y toma el control de tu viaje de IA.',
-                    'other' => 'Otro Modelo',
-                    'other-model' => 'Para otros modelos, usa el ID del Modelo de OpenRouter.',
-                    'doc-generation' => 'Generación de DOC',
-                    'doc-generation-info' => 'Habilita la función de generación de DOC para extraer automáticamente datos de archivos DOC y convertirlos a formato de texto. Mejora tu productividad y eficiencia habilitando esta función para agilizar tu flujo de trabajo.',
-                    'title' => 'Configuraciones Generales',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => 'Modelos',
                     ],
                 ],
             ],

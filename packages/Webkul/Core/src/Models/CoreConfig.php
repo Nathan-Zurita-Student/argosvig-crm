@@ -5,7 +5,7 @@ namespace Webkul\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
 use Webkul\Core\Contracts\CoreConfig as CoreConfigContract;
-use Webkul\Core\Services\OpenRouter;
+use Webkul\Core\Services\CrmAi;
 
 class CoreConfig extends Model implements CoreConfigContract
 {
@@ -26,7 +26,7 @@ class CoreConfig extends Model implements CoreConfigContract
 
     public function getValueAttribute(?string $value): ?string
     {
-        if ($this->code === OpenRouter::KEY && str_starts_with($value ?? '', 'encrypted:')) {
+        if (in_array($this->code, CrmAi::keyFields(), true) && str_starts_with($value ?? '', 'encrypted:')) {
             return Crypt::decryptString(substr($value, strlen('encrypted:')));
         }
 
@@ -35,7 +35,7 @@ class CoreConfig extends Model implements CoreConfigContract
 
     public function setValueAttribute(mixed $value): void
     {
-        $this->attributes['value'] = $this->code === OpenRouter::KEY && filled($value)
+        $this->attributes['value'] = in_array($this->code, CrmAi::keyFields(), true) && filled($value)
             ? 'encrypted:'.Crypt::encryptString((string) $value)
             : $value;
     }
@@ -43,7 +43,7 @@ class CoreConfig extends Model implements CoreConfigContract
     protected function getArrayableAttributes()
     {
         $attributes = parent::getArrayableAttributes();
-        if ($this->code === OpenRouter::KEY) {
+        if (in_array($this->code, CrmAi::keyFields(), true)) {
             unset($attributes['value']);
         }
 

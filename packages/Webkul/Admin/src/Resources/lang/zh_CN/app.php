@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => '添加图片',
-                'ai-add-image-btn' => 'Magic AI',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => '仅允许上传图片文件（.jpeg、.jpg、.png 等）。',
                 'placeholders' => [
@@ -2182,30 +2182,6 @@ return [
                         'validate-cert' => '验证 SSL 证书',
                         'username' => 'IMAP 用户名',
                         'password' => 'IMAP 密码',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'Magic AI',
-                'info' => '应用的 Magic AI 配置。',
-                'settings' => [
-                    'api-key' => 'API 密钥',
-                    'api-key-info' => '请记得为每个模型使用 OpenRouter API 密钥。这是提升安全性和性能的简单一步。',
-                    'enable' => '启用',
-                    'info' => '使用您的 OpenRouter API 密钥来增强 Magic AI 体验。立即接入，开启为您量身定制的流畅个性化 AI 之旅！轻松自定义设置，全面掌控您的 AI 使用体验。',
-                    'other' => '其他模型',
-                    'other-model' => '对于其他模型，请使用 OpenRouter 提供的模型 ID。',
-                    'doc-generation' => 'DOC 生成',
-                    'doc-generation-info' => '启用 DOC 生成功能，可自动从 DOC 文件中提取数据并转换为文本格式。启用该功能可简化工作流程，提升您的生产力和效率。',
-                    'title' => '常规设置',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => '模型',
                     ],
                 ],
             ],

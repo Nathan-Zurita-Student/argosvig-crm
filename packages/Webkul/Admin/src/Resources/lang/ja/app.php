@@ -216,7 +216,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn' => '画像を追加',
-                'ai-add-image-btn' => 'Magic AI',
+                'ai-add-image-btn' => 'Import with AI',
                 'allowed-types' => 'png, jpeg, jpg',
                 'not-allowed-error' => '画像ファイル（.jpeg、.jpg、.png など）のみ利用できます。',
                 'placeholders' => [
@@ -2184,30 +2184,6 @@ return [
                         'validate-cert' => 'SSL証明書を検証',
                         'username' => 'IMAPユーザー名',
                         'password' => 'IMAPパスワード',
-                    ],
-                ],
-            ],
-            'magic-ai' => [
-                'title' => 'Magic AI',
-                'info' => 'アプリケーションのMagic AI設定です。',
-                'settings' => [
-                    'api-key' => 'APIキー',
-                    'api-key-info' => '各モデルにはOpenRouterのAPIキーを使用してください。セキュリティとパフォーマンスを高めるためのシンプルな一手間です。',
-                    'enable' => '有効化',
-                    'info' => 'OpenRouterのAPIキーでMagic AI体験を強化しましょう。設定を簡単にカスタマイズして、あなたに合ったAI活用を始められます。',
-                    'other' => 'その他のモデル',
-                    'other-model' => 'その他のモデルは、OpenRouterのモデルIDを使用してください。',
-                    'doc-generation' => 'DOC生成',
-                    'doc-generation-info' => 'DOC生成機能を有効にすると、DOCファイルからデータを自動抽出してテキスト形式に変換できます。ワークフローの効率化に役立ちます。',
-                    'title' => '一般設定',
-                    'models' => [
-                        'deepseek-r1' => 'Deepseek R1 Distill-llama-8b',
-                        'gemini-2-0-flash-001' => 'Gemini 2.0 flash-001',
-                        'gpt-4o' => 'GPT-4.0',
-                        'gpt-4o-mini' => 'GPT-4.0 mini',
-                        'grok-2-1212' => 'Grok 2.12',
-                        'llama-3-2-3b-instruct' => 'Llama 3.2 3b Instruct',
-                        'title' => 'モデル',
                     ],
                 ],
             ],

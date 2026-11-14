@@ -5,15 +5,15 @@ namespace Webkul\HumanResources\Services;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
-use Webkul\Core\Services\OpenRouter;
+use Webkul\Core\Services\CrmAi;
 
 class OperationsAi
 {
-    public function __construct(private OpenRouter $router) {}
+    public function __construct(private CrmAi $ai) {}
 
     public function available(): bool
     {
-        return $this->router->enabled();
+        return $this->ai->enabled();
     }
 
     public function summarize(string $question, array $facts): string
@@ -26,7 +26,7 @@ class OperationsAi
 
     public function transcriptionAvailable(): bool
     {
-        return $this->available();
+        return $this->ai->canTranscribe();
     }
 
     public function transcribe(UploadedFile $audio, string $format): string
@@ -37,30 +37,29 @@ class OperationsAi
             $this->unavailable();
         }
 
-        $transcript = $this->result(fn () => $this->router->transcribe($contents, $format), 'text');
+        $transcript = $this->result(fn () => $this->ai->transcribe($contents, $format));
 
         return mb_substr($transcript, 0, 10000);
     }
 
     public function chat(string $instruction, array $data, int $maxTokens = 650): string
     {
-        $result = $this->result(fn () => $this->router->chat([
-            ['role' => 'system', 'content' => $instruction],
-            ['role' => 'user', 'content' => json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)],
-        ], $maxTokens), 'choices.0.message.content');
+        $result = $this->result(function () use ($instruction, $data, $maxTokens) {
+            $response = $this->ai->chat($instruction, json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), $maxTokens);
+
+            return $response->successful() ? $this->ai->text($response) : null;
+        });
 
         return mb_substr($result, 0, 22000);
     }
 
-    private function result(callable $request, string $path): string
+    private function result(callable $request): string
     {
         try {
-            $response = $request();
+            $result = $request();
         } catch (ConnectionException) {
             $this->unavailable();
         }
-
-        $result = $response->successful() ? $response->json($path) : null;
 
         if (! is_string($result) || blank($result)) {
             $this->unavailable();
