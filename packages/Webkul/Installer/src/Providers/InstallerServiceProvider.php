@@ -3,7 +3,6 @@
 namespace Webkul\Installer\Providers;
 
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Installer\Console\Commands\Installer as InstallerCommand;
 use Webkul\Installer\Http\Middleware\CanInstall;
@@ -29,23 +28,10 @@ class InstallerServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'installer');
-
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'installer');
 
         $router->aliasMiddleware('installer_locale', Locale::class);
 
-        Event::listen('krayin.installed', 'Webkul\Installer\Listeners\Installer@installed');
-
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'installer');
-
-        /**
-         * Route to access template applied image file
-         */
-        $this->app['router']->get('cache/{filename}', [
-            'uses' => 'Webkul\Installer\Http\Controllers\ImageCacheController@getImage',
-            'as' => 'image_cache',
-        ])->where(['filename' => '[ \w\\.\\/\\-\\@\(\)\=]+']);
     }
 
     /**

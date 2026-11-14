@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Webkul\Installer\Helpers\DatabaseManager;
 use Webkul\Installer\Http\Middleware\CanInstall;
 
@@ -201,4 +202,16 @@ it('backfills the database flag when it infers completion from the database', fu
     $database->isInstallationComplete();
 
     expect($database->backfilled)->toBeTrue();
+});
+
+it('keeps legacy installation recovery local and removes the public logo proxy', function () {
+    ($this->fakeDatabase)(completed: false, populated: true);
+
+    expect((new CanInstall)->isAlreadyInstalled())->toBeTrue()
+        ->and(app(DatabaseManager::class)->backfilled)->toBeTrue()
+        ->and(file_exists(storage_path('installed')))->toBeTrue()
+        ->and(Route::has('image_cache'))->toBeFalse()
+        ->and(app('events')->getRawListeners())->not->toHaveKey('krayin.installed');
+
+    $this->get('/cache/logo.png')->assertNotFound();
 });

@@ -4,7 +4,6 @@ namespace Webkul\Installer\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Webkul\Core\Providers\CoreServiceProvider;
 use Webkul\Installer\Database\Seeders\DatabaseSeeder as KrayinDatabaseSeeder;
@@ -394,7 +393,6 @@ class Installer extends Command
             $this->info('Password: the one you just set.');
             $this->info('Cheers!');
 
-            Event::dispatch('krayin.installed');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }

@@ -4,7 +4,6 @@ namespace Webkul\Installer\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Webkul\Installer\Helpers\DatabaseManager;
 
@@ -68,8 +67,6 @@ class CanInstall
              * installer closed on every later deploy that arrives without `storage/`.
              */
             $databaseManager->markInstallationCompleted();
-
-            Event::dispatch('krayin.installed');
 
             return true;
         }

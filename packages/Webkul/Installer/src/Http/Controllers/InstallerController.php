@@ -5,7 +5,6 @@ namespace Webkul\Installer\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Webkul\Installer\Helpers\DatabaseManager;
 use Webkul\Installer\Helpers\EnvironmentManager;
@@ -173,8 +172,6 @@ class InstallerController extends Controller
         $this->databaseManager->markInstallationCompleted();
 
         $this->databaseManager->clearInstallationInProgress();
-
-        Event::dispatch('krayin.installed');
 
         return $filePath;
     }
