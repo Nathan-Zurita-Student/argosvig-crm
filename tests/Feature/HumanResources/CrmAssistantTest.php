@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Webkul\Contact\Models\Organization;
 use Webkul\Contact\Models\Person;
 use Webkul\Lead\Models\Lead;
+use Webkul\Product\Models\Product;
 use Webkul\User\Models\Role;
 use Webkul\User\Models\User;
 
@@ -141,6 +142,30 @@ it('opens a native activity form and saves only after the user submits it', func
     $this->postJson(route('admin.activities.store'), ['schedule_to' => '2027-01-04 08:00:00'] + $activity)->assertUnprocessable();
     $this->post(route('admin.activities.store'), $activity)->assertRedirect();
     $this->assertDatabaseHas('activities', ['title' => 'Ligação de QA', 'type' => 'call', 'user_id' => $actor->id]);
+});
+
+it('uses catalog products and prices when preparing a quote', function () {
+    $sku = 'ASSISTANT-'.fake()->unique()->numerify('######');
+    Product::create(['name' => 'Produto catálogo QA', 'sku' => $sku, 'price' => 45.5, 'quantity' => 10]);
+    assistantResponse(['answer' => 'Confira a cotação.', 'draft' => ['type' => 'quote', 'fields' => [
+        'subject' => 'Cotação QA',
+        'items' => [
+            ['product_sku' => $sku, 'quantity' => 3, 'price' => 0.1, 'product_id' => 999],
+            ['product_sku' => 'UNKNOWN-SKU-QA', 'quantity' => 1],
+        ],
+    ]]]);
+    $this->actingAs(getDefaultAdmin(), 'user');
+    $url = route('admin.ai.ask');
+    $response = $this->postJson($url, ['question' => 'Prepare a cotação com 3 unidades do SKU '.$sku])->assertOk()
+        ->assertJsonMissingPath('draft.fields.items.0.price')->assertJsonMissingPath('draft.fields.items.0.product_id');
+    $this->post(route('admin.ai.draft'), ['token' => $response->json('draft.token')])->assertRedirect(route('admin.quotes.create'));
+    $this->get(route('admin.quotes.create'))->assertOk()->assertSee('Produto cat', false)
+        ->assertSee('45.5', false)->assertSee('136.5', false)->assertDontSee('UNKNOWN-SKU-QA');
+    $this->assertDatabaseMissing('quotes', ['subject' => 'Cotação QA']);
+
+    $actor = assistantUser(['crm-ai', 'quotes', 'quotes.create', 'quotes.create.quick-create']);
+    $this->actingAs($actor, 'user')->postJson($url, ['question' => 'Prepare a cotação.'])->assertOk()
+        ->assertJsonPath('draft.fields.subject', 'Cotação QA')->assertJsonMissingPath('draft.fields.items');
 });
 
 it('resolves only unique visible relationships in a native draft', function () {

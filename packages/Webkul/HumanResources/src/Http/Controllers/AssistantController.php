@@ -53,7 +53,7 @@ class AssistantController extends Controller
         $file = is_array($result['file'] ?? null) ? $result['file'] : [];
         $file = is_string($file['content'] ?? null) ? [
             'title' => is_string($file['title'] ?? null) ? mb_substr($file['title'], 0, 120) : trans('human_resources::ai.file_title'),
-            'content' => mb_substr($file['content'], 0, 5000),
+            'content' => mb_substr($file['content'], 0, 12000),
             'format' => in_array($file['format'] ?? null, self::FORMATS, true) ? $file['format'] : 'pdf',
         ] : null;
         $token = $fields ? Crypt::encrypt([

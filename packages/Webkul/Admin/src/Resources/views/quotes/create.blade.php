@@ -657,7 +657,7 @@
                     return {
                         adjustmentAmount: '0.0000',
 
-                        products: @json($leadProducts ?? []),
+                        products: @js($leadProducts ?? []),
 
                         rowKeySequence: 0,
                     }

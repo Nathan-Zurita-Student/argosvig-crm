@@ -7,6 +7,7 @@ use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\Contact\Models\PersonProxy;
 use Webkul\HumanResources\Models\DepartmentProxy;
 use Webkul\HumanResources\Models\EmployeeProxy;
+use Webkul\HumanResources\Models\ServiceContractProxy;
 use Webkul\HumanResources\Models\WorkSiteProxy;
 
 class AssistantDrafts
@@ -33,12 +34,14 @@ class AssistantDrafts
         'employee_number_ref' => [EmployeeProxy::class, 'employee_number', 'employee_id', 'human-resources.employees'],
         'site_code' => [WorkSiteProxy::class, 'code', 'work_site_id', 'human-resources.work-sites'],
         'department_code' => [DepartmentProxy::class, 'code', 'department_id', 'human-resources.departments'],
+        'contract_number_ref' => [ServiceContractProxy::class, 'contract_number', 'service_contract_id', 'human-resources.contracts'],
     ];
 
     private const FORM_RELATIONS = [
         'person' => ['organization_name'], 'lead' => ['contact_name'], 'quote' => ['contact_name'],
         'contract' => ['organization_name'], 'employee' => ['department_code'], 'vacation' => ['employee_number_ref'],
         'shift' => ['employee_number_ref', 'site_code'],
+        'incident' => ['employee_number_ref', 'contract_number_ref'], 'site' => ['contract_number_ref'],
     ];
 
     public function available(): array
@@ -48,6 +51,9 @@ class AssistantDrafts
             if ($this->permitted($type)) {
                 $forms[$type] = array_keys($this->rules($type));
             }
+        }
+        if (isset($forms['quote']) && bouncer()->hasPermission('products')) {
+            $forms['quote'][] = 'items (lista de objetos com product_sku e quantity)';
         }
 
         return $forms;
@@ -66,6 +72,18 @@ class AssistantDrafts
                 && ! preg_match('/[<>]|\{\{|\}\}/', (string) $value)
                 && Validator::make([$field => $value], [$field => 'required|'.$rule])->passes()) {
                 $valid[$field] = $value;
+            }
+        }
+        if ($type === 'quote' && bouncer()->hasPermission('products') && is_array($fields['items'] ?? null)) {
+            $items = array_slice(array_values($fields['items']), 0, 12);
+            foreach ($items as $item) {
+                if (! is_array($item)) {
+                    continue;
+                }
+                $item = array_intersect_key($item, array_flip(['product_sku', 'quantity']));
+                if (Validator::make($item, ['product_sku' => 'required|string|max:100', 'quantity' => 'required|integer|min:1|max:100000'])->passes()) {
+                    $valid['items'][] = $item;
+                }
             }
         }
 
@@ -115,6 +133,11 @@ class AssistantDrafts
                     $fields[$field] = str_replace('T', ' ', $fields[$field]).':00';
                 }
             }
+        }
+
+        if ($type === 'quote' && isset($fields['items'])) {
+            $fields['draft_items'] = $fields['items'];
+            unset($fields['items']);
         }
 
         return $fields;

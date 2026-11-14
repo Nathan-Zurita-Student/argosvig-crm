@@ -21,6 +21,7 @@ use Webkul\Contact\Repositories\PersonRepository;
 use Webkul\Core\Traits\PDFHandler;
 use Webkul\Lead\Contracts\Lead;
 use Webkul\Lead\Repositories\LeadRepository;
+use Webkul\Product\Models\ProductProxy;
 use Webkul\Quote\Repositories\QuoteRepository;
 
 class QuoteController extends Controller
@@ -81,6 +82,9 @@ class QuoteController extends Controller
         }
 
         $leadProducts = $this->getLeadProductsForQuote($lead);
+        if (! $lead && bouncer()->hasPermission('products') && is_array(old('draft_items'))) {
+            $leadProducts = $this->getCatalogItemsForQuote(old('draft_items'));
+        }
 
         $lookUpEntityData = $this->attributeRepository->getLookUpEntity('leads', $leadId)?->only(['id', 'name']);
 
@@ -432,5 +436,31 @@ class QuoteController extends Controller
             })
             ->values()
             ->toArray();
+    }
+
+    private function getCatalogItemsForQuote(array $items): array
+    {
+        $products = [];
+        foreach (array_slice($items, 0, 12) as $item) {
+            if (! is_array($item) || ! is_string($item['product_sku'] ?? null)
+                || ! filter_var($item['quantity'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 100000]])) {
+                continue;
+            }
+
+            $product = ProductProxy::query()->where('sku', $item['product_sku'])->first(['id', 'sku', 'name', 'price']);
+            if (! $product || strcasecmp($product->sku, $item['product_sku']) !== 0) {
+                continue;
+            }
+
+            $quantity = (int) $item['quantity'];
+            $price = (float) $product->price;
+            $products[] = [
+                'id' => null, 'product_id' => $product->id, 'name' => $product->name,
+                'quantity' => $quantity, 'total' => $price * $quantity, 'price' => $price,
+                'discount_amount' => 0, 'tax_amount' => 0,
+            ];
+        }
+
+        return $products;
     }
 }
