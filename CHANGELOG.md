@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Added scoped module totals to CRM assistant requests made from record listings.
+
 * [enhancement] Opened editable activity drafts for calls, meetings and notes through the CRM assistant.
 
 * [enhancement] Refined CRM assistant requests with short in-page conversations.

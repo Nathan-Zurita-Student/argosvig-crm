@@ -63,6 +63,25 @@ it('keeps scoped opportunity details out of requests for another user', function
     Http::assertSent(fn ($request) => str_contains($request->body(), 'Lead confidencial') && ! str_contains($request->body(), 'Dados que não devem ir ao provedor'));
 });
 
+it('summarizes a module using only totals visible to the acting user', function () {
+    assistantResponse(['answer' => 'Resumo do módulo.']);
+    $actor = assistantUser(['crm-ai', 'contacts', 'contacts.persons']);
+    Person::create(['name' => 'Contato particular', 'user_id' => $actor->id]);
+    Person::create(['name' => 'Contato de terceiro', 'user_id' => getDefaultAdmin()->id]);
+    $this->actingAs($actor, 'user');
+    $this->get(route('admin.contacts.persons.index'))->assertOk()->assertSee('admin.contacts.persons.index');
+    $url = route('admin.ai.ask');
+    $this->postJson($url, ['type' => 'listing', 'section' => 'admin.human_resources.employees.index', 'question' => 'Resuma'])->assertUnauthorized();
+    Http::assertNothingSent();
+    $this->postJson($url, ['type' => 'listing', 'section' => 'admin.contacts.persons.index', 'question' => 'Resuma'])->assertOk()
+        ->assertJsonPath('links.0.url', route('admin.contacts.persons.index'));
+    Http::assertSent(function ($request) {
+        $facts = json_decode($request['messages'][1]['content'], true)['contexto'];
+
+        return $facts['module'] === 'person' && $facts['total'] === 1 && ! str_contains($request->body(), 'Contato particular');
+    });
+});
+
 it('creates a PDF and plain text from reviewed content and rejects unsupported formats', function () {
     assistantResponse(['answer' => 'Confira o documento.', 'file' => ['title' => 'Relatório QA', 'content' => 'Conteúdo sintético', 'format' => 'pdf']]);
     $this->actingAs(getDefaultAdmin(), 'user');

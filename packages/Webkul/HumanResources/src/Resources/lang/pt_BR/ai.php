@@ -18,6 +18,7 @@ return [
     'working' => 'Preparando resposta…',
     'review_draft' => 'Abrir cadastro preenchido',
     'open_record' => 'Abrir registro de origem',
+    'open_module' => 'Abrir módulo de origem',
     'file_title' => 'Título do documento',
     'file_content' => 'Conteúdo para revisão',
     'file_format' => 'Formato do arquivo',

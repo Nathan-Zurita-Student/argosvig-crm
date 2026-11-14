@@ -3,11 +3,13 @@
 namespace Webkul\HumanResources\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Admin\Traits\ScopesMailAccess;
 use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\Contact\Models\PersonProxy;
 use Webkul\Email\Models\EmailProxy;
+use Webkul\HumanResources\Models\DepartmentProxy;
 use Webkul\HumanResources\Models\EmployeeDocumentProxy;
 use Webkul\HumanResources\Models\EmployeeProxy;
 use Webkul\HumanResources\Models\IncidentProxy;
@@ -36,7 +38,29 @@ class AssistantContext
         'contract' => [ServiceContractProxy::class, ['human-resources.contracts', 'human-resources.contracts.edit'], 'admin.human_resources.contracts.edit', ['contract_number', 'status', 'starts_at', 'ends_at']],
         'site' => [WorkSiteProxy::class, ['human-resources.work-sites', 'human-resources.work-sites.edit'], 'admin.human_resources.work_sites.edit', ['code', 'name', 'status', 'required_staff']],
         'shift' => [ShiftAssignmentProxy::class, ['human-resources.shifts', 'human-resources.shifts.edit'], 'admin.human_resources.shifts.edit', ['status', 'shift_type', 'starts_at', 'ends_at']],
+        'department' => [DepartmentProxy::class, ['human-resources.departments', 'human-resources.departments.edit'], 'admin.human_resources.departments.edit', ['code', 'name', 'is_active']],
     ];
+
+    private const LISTS = [
+        'admin.leads.index' => [LeadProxy::class, 'leads', 'lead'],
+        'admin.quotes.index' => [QuoteProxy::class, 'quotes', 'quote'],
+        'admin.contacts.persons.index' => [PersonProxy::class, 'contacts.persons', 'person'],
+        'admin.contacts.organizations.index' => [OrganizationProxy::class, 'contacts.organizations', 'organization'],
+        'admin.products.index' => [ProductProxy::class, 'products', 'product'],
+        'admin.activities.index' => [ActivityProxy::class, 'activities', 'activity'],
+        'admin.human_resources.employees.index' => [EmployeeProxy::class, 'human-resources.employees', 'employee'],
+        'admin.human_resources.vacations.index' => [VacationProxy::class, 'human-resources.vacations', 'vacation'],
+        'admin.human_resources.incidents.index' => [IncidentProxy::class, 'human-resources.incidents', 'incident'],
+        'admin.human_resources.contracts.index' => [ServiceContractProxy::class, 'human-resources.contracts', 'contract'],
+        'admin.human_resources.work_sites.index' => [WorkSiteProxy::class, 'human-resources.work-sites', 'site'],
+        'admin.human_resources.shifts.index' => [ShiftAssignmentProxy::class, 'human-resources.shifts', 'shift'],
+        'admin.human_resources.departments.index' => [DepartmentProxy::class, 'human-resources.departments', 'department'],
+    ];
+
+    public function listRoutes(): array
+    {
+        return array_keys(self::LISTS);
+    }
 
     public function fromRequest(): array
     {
@@ -51,6 +75,10 @@ class AssistantContext
 
         if ($route === 'admin.mail.view' && $id) {
             return ['type' => 'email', 'id' => $id, 'folder' => request()->route('route')];
+        }
+
+        if (isset(self::LISTS[$route])) {
+            return ['type' => 'listing', 'section' => $route];
         }
 
         return match (true) {
@@ -71,6 +99,10 @@ class AssistantContext
 
         if ($type === 'email') {
             return $this->email($context);
+        }
+
+        if ($type === 'listing') {
+            return $this->listing($context['section']);
         }
 
         abort_unless(isset(self::RECORDS[$type]), 404);
@@ -100,6 +132,35 @@ class AssistantContext
         }
 
         return [['module' => $type, 'record' => $facts], [['label' => trans('human_resources::ai.open_record'), 'url' => route($route, $record->id)]]];
+    }
+
+    private function listing(string $route): array
+    {
+        [$model, $permission, $type] = self::LISTS[$route];
+        abort_unless(bouncer()->hasPermission($permission), 401);
+        if (str_starts_with($permission, 'human-resources.')) {
+            abort_unless(bouncer()->getAuthorizedUserIds() === null, 401);
+        }
+
+        $query = $model::query();
+        if (in_array($type, ['lead', 'quote', 'person', 'organization'], true)) {
+            $query = bouncer()->scopeToAuthorizedUsers($query);
+        } elseif ($type === 'activity') {
+            $query = $this->visibleActivities($query);
+        }
+
+        $facts = ['module' => $type, 'scope' => 'Total de registros acessíveis no módulo, sem os filtros da tela.', 'total' => (clone $query)->count()];
+        $column = match ($type) {
+            'employee', 'incident', 'contract', 'site', 'shift', 'vacation' => 'status',
+            'activity' => 'type',
+            'department' => 'is_active',
+            default => null,
+        };
+        if ($column) {
+            $facts['counts_by_'.$column] = $query->selectRaw($column.', count(*) as total')->groupBy($column)->pluck('total', $column)->all();
+        }
+
+        return [$facts, [['label' => trans('human_resources::ai.open_module'), 'url' => route($route)]]];
     }
 
     private function email(array $context): array
@@ -149,6 +210,13 @@ class AssistantContext
         }
         if (bouncer()->getAuthorizedUserIds() === null && bouncer()->hasPermission('timekeeping')) {
             $links[] = ['label' => trans('human_resources::workforce.timekeeping'), 'url' => route('admin.human_resources.timekeeping.index')];
+            if ($type === 'timekeeping') {
+                $start = today()->startOfMonth();
+                $facts['month'] = $start->format('Y-m');
+                $facts['punches_in_month'] = DB::table('hr_timekeeping_entries')
+                    ->where('occurred_at', '>=', $start->copy()->utc())
+                    ->where('occurred_at', '<', $start->copy()->addMonth()->utc())->count();
+            }
         }
 
         return [$facts, $links];

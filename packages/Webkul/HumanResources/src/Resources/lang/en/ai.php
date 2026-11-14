@@ -18,6 +18,7 @@ return [
     'working' => 'Preparing the response…',
     'review_draft' => 'Open prefilled form',
     'open_record' => 'Open source record',
+    'open_module' => 'Open source module',
     'file_title' => 'Document title',
     'file_content' => 'Content to review',
     'file_format' => 'File format',

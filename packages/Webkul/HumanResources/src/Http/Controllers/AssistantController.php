@@ -31,8 +31,9 @@ class AssistantController extends Controller
             'question' => ['required', 'string', 'max:2500'],
             'earlier_questions' => ['sometimes', 'array', 'list', 'max:3'],
             'earlier_questions.*' => ['required', 'string', 'max:2500'],
-            'type' => ['nullable', Rule::in(['overview', 'operations', 'documents', 'timekeeping', 'lead', 'quote', 'person', 'organization', 'product', 'activity', 'employee', 'vacation', 'incident', 'contract', 'site', 'shift', 'email'])],
-            'id' => ['nullable', 'integer', 'min:1', Rule::requiredIf(fn () => filled($request->input('type')) && ! in_array($request->input('type'), ['overview', 'operations', 'documents', 'timekeeping'], true))],
+            'type' => ['nullable', Rule::in(['overview', 'operations', 'documents', 'timekeeping', 'listing', 'lead', 'quote', 'person', 'organization', 'product', 'activity', 'employee', 'vacation', 'incident', 'contract', 'site', 'shift', 'department', 'email'])],
+            'id' => ['nullable', 'integer', 'min:1', Rule::requiredIf(fn () => filled($request->input('type')) && ! in_array($request->input('type'), ['overview', 'operations', 'documents', 'timekeeping', 'listing'], true))],
+            'section' => ['required_if:type,listing', Rule::in($context->listRoutes())],
             'folder' => ['nullable', Rule::in(['inbox', 'draft', 'outbox', 'sent', 'trash'])],
         ]);
         [$facts, $links] = $context->facts($data);
