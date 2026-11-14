@@ -108,6 +108,22 @@ it('accepts a bounded conversation to refine a draft from the same page', functi
     $this->postJson($url, ['question' => 'Cadastre um contato', 'earlier_questions' => ['1', '2', '3', '4']])->assertUnprocessable();
 });
 
+it('opens a native activity form and saves only after the user submits it', function () {
+    assistantResponse(['answer' => 'Confira a atividade.', 'draft' => ['type' => 'activity', 'fields' => [
+        'title' => 'Ligação de QA', 'type' => 'call', 'schedule_from' => '2027-01-04T09:00', 'schedule_to' => '2027-01-04T09:30',
+    ]]]);
+    $actor = assistantUser(['crm-ai', 'activities', 'activities.create']);
+    $this->actingAs($actor, 'user');
+    $token = $this->postJson(route('admin.ai.ask'), ['question' => 'Agende uma ligação.'])->assertOk()->json('draft.token');
+    $this->post(route('admin.ai.draft'), ['token' => $token])->assertRedirect(route('admin.activities.create'))->assertSessionHasInput('schedule_from', '2027-01-04 09:00:00');
+    $activity = session()->getOldInput();
+    $this->get(route('admin.activities.create'))->assertOk()->assertSee('Ligação de QA');
+    $this->assertDatabaseMissing('activities', ['title' => 'Ligação de QA']);
+    $this->postJson(route('admin.activities.store'), ['schedule_to' => '2027-01-04 08:00:00'] + $activity)->assertUnprocessable();
+    $this->post(route('admin.activities.store'), $activity)->assertRedirect();
+    $this->assertDatabaseHas('activities', ['title' => 'Ligação de QA', 'type' => 'call', 'user_id' => $actor->id]);
+});
+
 it('resolves only unique visible relationships in a native draft', function () {
     assistantResponse(['answer' => 'Revise.', 'draft' => ['type' => 'lead', 'fields' => ['title' => 'Proposta de teste', 'contact_name' => 'Contato escolhido']]]);
     $actor = assistantUser(['crm-ai', 'leads', 'leads.create', 'leads.create.quick-create', 'contacts', 'contacts.persons']);

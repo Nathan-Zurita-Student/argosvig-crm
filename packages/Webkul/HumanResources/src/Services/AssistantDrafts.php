@@ -17,6 +17,7 @@ class AssistantDrafts
         'organization' => ['contacts.organizations.create', 'admin.contacts.organizations.create', ['name' => 'string|max:255']],
         'product' => ['products.create', 'admin.products.create', ['name' => 'string|max:255', 'sku' => 'string|max:100', 'description' => 'string|max:5000', 'price' => 'numeric|min:0', 'quantity' => 'integer|min:0']],
         'quote' => ['quotes.create', 'admin.quotes.create', ['subject' => 'string|max:255', 'description' => 'string|max:3000', 'expired_at' => 'date_format:Y-m-d']],
+        'activity' => ['activities.create', 'admin.activities.create', ['title' => 'string|max:80', 'type' => 'in:call,meeting,lunch,note', 'comment' => 'string|max:500', 'location' => 'string|max:255', 'schedule_from' => 'date_format:Y-m-d\TH:i', 'schedule_to' => 'date_format:Y-m-d\TH:i']],
         'incident' => ['human-resources.incidents.create', 'admin.human_resources.incidents.create', ['title' => 'string|max:255', 'description' => 'string|max:5000', 'location' => 'string|max:255', 'occurred_at' => 'date_format:Y-m-d\TH:i', 'severity' => 'in:low,medium,high,critical']],
         'contract' => ['human-resources.contracts.create', 'admin.human_resources.contracts.create', ['contract_number' => 'string|max:100', 'title' => 'string|max:255', 'starts_at' => 'date_format:Y-m-d', 'ends_at' => 'date_format:Y-m-d', 'monthly_value' => 'numeric|min:0', 'description' => 'string|max:5000']],
         'employee' => ['human-resources.employees.create', 'admin.human_resources.employees.create', ['employee_number' => 'string|max:50', 'full_name' => 'string|max:255', 'job_title' => 'string|max:255', 'hire_date' => 'date_format:Y-m-d']],
@@ -104,6 +105,14 @@ class AssistantDrafts
                 if (isset($fields[$input])) {
                     $fields[$target] = [['label' => 'work', 'value' => $fields[$input]]];
                     unset($fields[$input]);
+                }
+            }
+        }
+
+        if ($type === 'activity') {
+            foreach (['schedule_from', 'schedule_to'] as $field) {
+                if (isset($fields[$field])) {
+                    $fields[$field] = str_replace('T', ' ', $fields[$field]).':00';
                 }
             }
         }

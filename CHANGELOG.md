@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Opened editable activity drafts for calls, meetings and notes through the CRM assistant.
+
 * [enhancement] Refined CRM assistant requests with short in-page conversations.
 
 * [enhancement] Filled assistant draft relationships by exact name, code or employee number when an authorized match is unique.

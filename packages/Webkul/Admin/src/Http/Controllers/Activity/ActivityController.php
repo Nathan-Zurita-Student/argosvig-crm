@@ -50,6 +50,11 @@ class ActivityController extends Controller
         return view('admin::activities.index');
     }
 
+    public function create(): View
+    {
+        return view('admin::activities.create');
+    }
+
     /**
      * Returns a listing of the resource.
      */
@@ -82,8 +87,8 @@ class ActivityController extends Controller
         $this->validate(request(), [
             'type' => 'required',
             'comment' => 'required_if:type,note',
-            'schedule_from' => 'required_unless:type,note,file',
-            'schedule_to' => 'required_unless:type,note,file',
+            'schedule_from' => 'required_unless:type,note,file|nullable|date',
+            'schedule_to' => 'required_unless:type,note,file|nullable|date|after_or_equal:schedule_from',
             'file' => 'required_if:type,file',
         ]);
 
@@ -105,9 +110,9 @@ class ActivityController extends Controller
                     ], 400);
                 }
 
-                session()->flash('success', trans('admin::app.activities.overlapping-error'));
-
-                return redirect()->back();
+                return redirect()->back()
+                    ->withErrors(['schedule_from' => trans('admin::app.activities.overlapping-error')])
+                    ->withInput();
             }
         }
 
