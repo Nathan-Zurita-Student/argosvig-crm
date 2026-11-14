@@ -5,6 +5,8 @@ return [
     'assistant_short' => 'AI',
     'close' => 'Close',
     'question' => 'What would you like to do?',
+    'previous_requests' => 'Requests in this conversation',
+    'new_request' => 'New conversation',
     'input_note' => 'Include only the details needed for the task. Avoid passwords, identification numbers, medical details and payslips.',
     'summary_prompt' => 'Summarize the available information and tell me what needs attention.',
     'summary_prompt_button' => 'Summarize this page',

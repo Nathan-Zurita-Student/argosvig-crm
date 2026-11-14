@@ -2190,7 +2190,7 @@ return [
                 'info' => 'Configuração do Magic AI para a aplicação.',
                 'settings' => [
                     'api-key' => 'Chave API',
-                    'api-key-info' => 'Lembre-se de usar uma chave API do OpenRouter para cada modelo. É um passo simples para melhorar a segurança e o desempenho.',
+                    'api-key-info' => 'Use uma chave do OpenRouter para os recursos de IA. Deixe o campo vazio para manter a chave já salva.',
                     'enable' => 'Habilitar',
                     'info' => 'Melhore sua experiência com o Magic AI com sua chave API do OpenRouter. Integre-a agora para uma aventura de IA personalizada e perfeita, feita sob medida para você! Personalize as configurações com facilidade e assuma o controle da sua jornada de IA.',
                     'other' => 'Outro Modelo',

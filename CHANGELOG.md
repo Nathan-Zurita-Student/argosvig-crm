@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Refined CRM assistant requests with short in-page conversations.
+
 * [enhancement] Filled assistant draft relationships by exact name, code or employee number when an authorized match is unique.
 
 * [feature] Added a contextual CRM assistant with draft forms and downloadable PDF, text, Markdown, CSV and Excel files.

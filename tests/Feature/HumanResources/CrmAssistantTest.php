@@ -91,6 +91,23 @@ it('exports spreadsheets with generated cells stored as literal values', functio
     }
 });
 
+it('accepts a bounded conversation to refine a draft from the same page', function () {
+    assistantResponse(['answer' => 'Revise.', 'draft' => ['type' => 'person', 'fields' => ['name' => 'Contato de QA', 'job_title' => 'Supervisão']]]);
+    $this->actingAs(getDefaultAdmin(), 'user');
+    $url = route('admin.ai.ask');
+    $this->postJson($url, [
+        'question' => 'Acrescente Supervisão como cargo.',
+        'earlier_questions' => ['Cadastre Contato de QA.'],
+    ])->assertOk()->assertJsonPath('draft.fields.name', 'Contato de QA')->assertJsonPath('draft.fields.job_title', 'Supervisão');
+    Http::assertSent(function ($request) {
+        $context = json_decode($request['messages'][1]['content'], true);
+
+        return $context['pedidos_anteriores'] === ['Cadastre Contato de QA.']
+            && $context['pergunta'] === 'Acrescente Supervisão como cargo.';
+    });
+    $this->postJson($url, ['question' => 'Cadastre um contato', 'earlier_questions' => ['1', '2', '3', '4']])->assertUnprocessable();
+});
+
 it('resolves only unique visible relationships in a native draft', function () {
     assistantResponse(['answer' => 'Revise.', 'draft' => ['type' => 'lead', 'fields' => ['title' => 'Proposta de teste', 'contact_name' => 'Contato escolhido']]]);
     $actor = assistantUser(['crm-ai', 'leads', 'leads.create', 'leads.create.quick-create', 'contacts', 'contacts.persons']);

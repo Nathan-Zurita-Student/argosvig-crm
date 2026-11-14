@@ -5,6 +5,8 @@ return [
     'assistant_short' => 'IA',
     'close' => 'Fechar',
     'question' => 'O que você quer fazer?',
+    'previous_requests' => 'Pedidos nesta conversa',
+    'new_request' => 'Nova conversa',
     'input_note' => 'Use os dados necessários para a tarefa. Evite incluir senhas, CPF, dados médicos ou contracheques no pedido.',
     'summary_prompt' => 'Resuma os dados disponíveis e diga o que precisa de atenção.',
     'summary_prompt_button' => 'Resumir esta tela',

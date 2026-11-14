@@ -2192,7 +2192,7 @@ return [
                 'info' => 'Magic AI configuration for the application.',
                 'settings' => [
                     'api-key' => 'API Key',
-                    'api-key-info' => 'Remember to use a OpenRouter API key for each model. It\'s a simple step to enhance security and performance.',
+                    'api-key-info' => 'Use one OpenRouter key for the AI features. Leave this field blank to keep the saved key.',
                     'enable' => 'Enable',
                     'info' => 'Enhance your Magic AI experience with your OpenRouter API Key. Integrate it now for a seamless, personalized AI adventure tailored just for you! Effortlessly customize settings and take control of your AI journey.',
                     'other' => 'Other Model',
