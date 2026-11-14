@@ -15,6 +15,8 @@ return [
     'question' => 'Ask about the selected period',
     'default_question' => 'Prepare a shift handover with pending items in order of urgency.',
     'contract_question' => 'Prepare a renewal meeting summary for this contract, including incidents, shift coverage and relevant deadlines.',
+    'export_contract' => 'Download PDF report',
+    'contract_report' => 'Contract operations report',
     'ask' => 'Ask AI',
     'answer' => 'Summary for review',
     'ai_unavailable' => 'The AI provider is unavailable for this request. The records remain available below.',

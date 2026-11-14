@@ -3,10 +3,14 @@
 namespace Webkul\HumanResources\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Core\Traits\PDFHandler;
+use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Repositories\ServiceContractRepository;
 use Webkul\HumanResources\Services\OperationsAi;
 use Webkul\HumanResources\Services\OperationsBriefing;
@@ -15,6 +19,8 @@ use Webkul\HumanResources\Services\WorkforceReview;
 
 class OperationsAssistantController extends Controller
 {
+    use PDFHandler;
+
     public function index(Request $request, OperationsBriefing $briefing, OperationsAi $ai): View
     {
         abort_unless(OperationsBriefing::allowed(), 401);
@@ -92,25 +98,30 @@ class OperationsAssistantController extends Controller
         ]);
     }
 
+    public function exportContract(Request $request, OperationsBriefing $briefing): Response|StreamedResponse
+    {
+        abort_unless(OperationsBriefing::allowed() && bouncer()->hasPermission('human-resources.contracts'), 401);
+        $request->validate(['contract' => ['required', 'integer', 'min:1']]);
+        [$filters, $from, $to] = $this->filters($request);
+        $contract = $this->contract((int) $filters['contract']);
+        $data = $briefing->report(null, $from, $to->copy()->addDay(), $contract->id) + [
+            'contextContract' => $contract, 'from' => $from, 'to' => $to,
+        ];
+
+        $response = $this->downloadPDF(view('human_resources::operations.contract-report', $data)->render(), 'relatorio-operacional');
+        $response->headers->set('Cache-Control', 'private, no-store');
+
+        return $response;
+    }
+
     private function data(Request $request, OperationsBriefing $briefing, OperationsAi $ai): array
     {
-        $filters = $request->validate([
-            'site' => ['nullable', 'integer', 'min:1'],
-            'contract' => ['nullable', 'integer', 'min:1', 'prohibits:site'],
-            'from' => ['nullable', 'date_format:Y-m-d'],
-            'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
-        ]);
-
-        $from = isset($filters['from']) ? Carbon::parse($filters['from']) : today();
-        $to = isset($filters['to']) ? Carbon::parse($filters['to']) : $from->copy()->addDays(2);
-        if ($to->lt($from) || $from->diffInDays($to) > 30) {
-            throw ValidationException::withMessages(['to' => trans('human_resources::operations.period_limit')]);
-        }
+        [$filters, $from, $to] = $this->filters($request);
 
         $end = $to->copy()->addDay();
         $contractId = isset($filters['contract']) ? (int) $filters['contract'] : null;
         $report = $briefing->report(isset($filters['site']) ? (int) $filters['site'] : null, $from, $end, $contractId);
-        $contextContract = $contractId ? app(ServiceContractRepository::class)->getModel()->newQuery()->select('id', 'contract_number', 'title')->findOrFail($contractId) : null;
+        $contextContract = $contractId ? $this->contract($contractId) : null;
         $sites = $briefing->sites();
         if ($contextContract) {
             $sites = $sites->where('service_contract_id', $contextContract->id);
@@ -133,5 +144,29 @@ class OperationsAssistantController extends Controller
             'to' => $to->toDateString(),
             'canAsk' => bouncer()->hasPermission('operations-assistant.ai') && $ai->available(),
         ];
+    }
+
+    private function filters(Request $request): array
+    {
+        $filters = $request->validate([
+            'site' => ['nullable', 'integer', 'min:1'],
+            'contract' => ['nullable', 'integer', 'min:1', 'prohibits:site'],
+            'from' => ['nullable', 'date_format:Y-m-d'],
+            'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
+        ]);
+
+        $from = isset($filters['from']) ? Carbon::parse($filters['from']) : today();
+        $to = isset($filters['to']) ? Carbon::parse($filters['to']) : $from->copy()->addDays(2);
+
+        if ($to->lt($from) || $from->diffInDays($to) > 30) {
+            throw ValidationException::withMessages(['to' => trans('human_resources::operations.period_limit')]);
+        }
+
+        return [$filters, $from, $to];
+    }
+
+    private function contract(int $id): ServiceContract
+    {
+        return app(ServiceContractRepository::class)->getModel()->newQuery()->select('id', 'contract_number', 'title')->findOrFail($id);
     }
 }

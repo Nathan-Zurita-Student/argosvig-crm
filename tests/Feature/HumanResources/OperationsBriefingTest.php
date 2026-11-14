@@ -154,8 +154,11 @@ it('opens a contract handover from the contract and limits context to its own re
     $this->actingAs(getDefaultAdmin(), 'user')->get($url)->assertOk()
         ->assertSee('Target contract incident')->assertDontSee('Other contract incident');
     $this->get(route('admin.human_resources.contracts.edit', $contract->id))->assertOk()->assertSee($url, false);
+    $export = route('admin.operations.contract_report', ['contract' => $contract->id]);
+    $this->get($export)->assertOk()->assertDownload('relatorio-operacional.pdf')->assertHeader('Content-Type', 'application/pdf');
     $this->actingAs(operationsUser(['operations-assistant', 'human-resources.incidents', 'human-resources.incidents.view']), 'user')
         ->get($url)->assertNotFound();
+    $this->get($export)->assertUnauthorized();
 });
 
 it('notifies permitted staff once when there are shifts remaining today', function () {

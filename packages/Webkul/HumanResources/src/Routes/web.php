@@ -20,6 +20,7 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::get('', [OperationsAssistantController::class, 'index'])->name('index');
     Route::post('ask', [OperationsAssistantController::class, 'ask'])->middleware('throttle:8,1')->name('ask');
     Route::get('coverage/{site}', [OperationsAssistantController::class, 'coverage'])->whereNumber('site')->name('coverage');
+    Route::get('contract-report', [OperationsAssistantController::class, 'exportContract'])->name('contract_report');
     Route::get('incident-draft', [IncidentDraftController::class, 'create'])->name('incident_draft');
     Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:4,1')->name('incident_draft.store');
 });

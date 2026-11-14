@@ -28,6 +28,9 @@
                     </label>
                 @endforeach
                 <button class="primary-button" type="submit">@lang('human_resources::workforce.filter')</button>
+                @if ($contextContract)
+                    <button class="secondary-button" type="submit" formaction="{{ route('admin.operations.contract_report') }}">@lang('human_resources::operations.export_contract')</button>
+                @endif
             </form>
             @include('human_resources::workforce.errors')
         </section>

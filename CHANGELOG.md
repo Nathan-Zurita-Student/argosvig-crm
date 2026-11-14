@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a contract operations PDF for review before sharing with customers.
+
 * [feature] Added shift preparation from replacement suggestions with an availability check before saving.
 
 * [feature] Added daily shift handover notifications for authorized operations staff.
