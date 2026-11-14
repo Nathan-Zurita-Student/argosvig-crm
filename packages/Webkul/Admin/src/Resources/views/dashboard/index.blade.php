@@ -87,7 +87,7 @@
         <!-- Left Section -->
         {!! view_render_event('admin.dashboard.index.content.left.before') !!}
 
-        <div class="flex flex-1 flex-col gap-4 max-xl:flex-auto">
+        <div class="flex min-w-0 flex-1 flex-col gap-4 max-xl:flex-auto">
             <!-- Revenue Stats -->
             @include('admin::dashboard.index.revenue')
 

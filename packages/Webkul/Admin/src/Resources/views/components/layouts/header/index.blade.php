@@ -45,7 +45,7 @@
         @include('admin::components.layouts.header.quick-creation')
     </div>
 
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-1.5">
         {!! view_render_event('admin.layout.header.actions.before') !!}
         <div class="md:hidden">
             <!-- Mega Search Bar -->

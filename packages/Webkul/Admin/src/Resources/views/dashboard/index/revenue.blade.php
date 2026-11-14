@@ -80,7 +80,7 @@
                             class="w-full max-w-full items-end"
                         ></canvas>
 
-                        <div class="flex justify-center gap-5">
+                        <div class="flex flex-wrap justify-center gap-5">
                             <div class="flex items-center gap-2">
                                 <span class="h-3.5 w-3.5 rounded-sm bg-green-500 opacity-80"></span>
 
