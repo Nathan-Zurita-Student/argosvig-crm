@@ -1,6 +1,7 @@
 @props([
     'type' => 'text',
     'name' => '',
+    'validateOnSubmitOnly' => false,
 ])
 
 @switch($type)
@@ -13,6 +14,12 @@
             v-slot="{ field, errors }"
             {{ $attributes->only(['name', ':name', 'value', ':value', 'v-model', 'rules', ':rules', 'label', ':label']) }}
             name="{{ $name }}"
+            @if ($validateOnSubmitOnly)
+                :validate-on-blur="false"
+                :validate-on-change="false"
+                :validate-on-input="false"
+                :validate-on-model-update="false"
+            @endif
         >
             <input
                 type="{{ $type }}"

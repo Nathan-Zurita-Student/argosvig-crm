@@ -65,6 +65,9 @@
                                 name="email"
                                 class="sign-in-input"
                                 rules="required|email"
+                                :validate-on-submit-only="true"
+                                enterkeyhint="next"
+                                aria-describedby="email-error"
                                 autocomplete="username"
                                 autocapitalize="none"
                                 spellcheck="false"
@@ -74,7 +77,7 @@
                             />
                         </div>
 
-                        <x-admin::form.control-group.error control-name="email" />
+                        <x-admin::form.control-group.error control-name="email" id="email-error" role="alert" />
                     </x-admin::form.control-group>
 
                     <x-admin::form.control-group class="sign-in-field">
@@ -100,6 +103,9 @@
                                 name="password"
                                 class="sign-in-input sign-in-password"
                                 rules="required|min:6"
+                                :validate-on-submit-only="true"
+                                enterkeyhint="go"
+                                aria-describedby="password-error"
                                 autocomplete="current-password"
                                 :label="trans('admin::app.users.login.password')"
                                 :placeholder="trans('admin::app.users.login.password')"
@@ -121,7 +127,7 @@
                             </button>
                         </div>
 
-                        <x-admin::form.control-group.error control-name="password" />
+                        <x-admin::form.control-group.error control-name="password" id="password-error" role="alert" />
                     </x-admin::form.control-group>
 
                     <button type="submit" class="sign-in-submit">
@@ -140,6 +146,15 @@
 
     @push('scripts')
         <script>
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' || event.isComposing || ! event.target.matches('.sign-in-form #email')) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.target.form.elements.namedItem('password').focus();
+            });
+
             document.addEventListener('click', (event) => {
                 const toggle = event.target.closest('.sign-in-visibility');
 
