@@ -4,7 +4,7 @@
 
 <v-inline-phone-edit
     {{ $attributes->except('value') }}
-    :value={{ json_encode($attributes->get('value')) }}
+    :value="{{ json_encode($attributes->get('value')) }}"
     :allow-edit="{{ $allowEdit ? 'true' : 'false' }}"
 >
     <div class="group w-full max-w-full hover:rounded-sm">
