@@ -24,14 +24,10 @@
                         alt="{{ config('app.name') }}"
                     />
                 @else
-                    <img
-                        class="h-10"
-                        src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                        data-theme-logo
-                        data-light-src="{{ vite()->asset('images/logo.svg') }}"
-                        data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
-                        alt="{{ config('app.name') }}"
-                    />
+                    <span class="flex items-center gap-2 text-[#061A42] dark:text-white">
+                        <x-admin::brand.shield class="h-10 w-12 shrink-0" />
+                        <span class="text-lg font-bold tracking-wider">ARGOSVIG</span>
+                    </span>
                 @endif
             </x-slot>
 

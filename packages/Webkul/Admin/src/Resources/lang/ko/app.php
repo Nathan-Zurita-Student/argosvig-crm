@@ -53,6 +53,11 @@ return [
         'login-error' => '입력하신 정보가 저희 기록과 일치하지 않습니다.',
         'not-permission' => '관리자 패널에 접근할 권한이 없습니다.',
         'login' => [
+            'heading' => '계정에 로그인',
+            'portal' => '기업 포털',
+            'operations' => '영업 및 운영 관리',
+            'operations-description' => '문서, 근태 및 내부 업무를 관리합니다.',
+            'show-password' => '비밀번호 표시',
             'email' => '이메일 주소',
             'forget-password-link' => '비밀번호를 잊으셨나요?',
             'password' => '비밀번호',

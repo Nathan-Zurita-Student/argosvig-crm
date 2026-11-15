@@ -7,6 +7,7 @@
         <a
             href="{{ route('admin.dashboard.index') }}"
             class="shrink-0"
+            aria-label="{{ config('app.name') }}"
         >
             @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
                 <img
@@ -15,24 +16,10 @@
                     alt="{{ config('app.name') }}"
                 />
             @else
-                <img
-                    class="h-10 max-sm:hidden"
-                    src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                    id="logo-image"
-                    data-theme-logo
-                    data-light-src="{{ vite()->asset('images/logo.svg') }}"
-                    data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
-                    alt="{{ config('app.name') }}"
-                />
-
-                <img
-                    class="h-10 sm:hidden"
-                    src="{{ request()->cookie('dark_mode') ? vite()->asset('images/mobile-dark-logo.svg') : vite()->asset('images/mobile-light-logo.svg') }}"
-                    data-theme-logo
-                    data-light-src="{{ vite()->asset('images/mobile-light-logo.svg') }}"
-                    data-dark-src="{{ vite()->asset('images/mobile-dark-logo.svg') }}"
-                    alt="{{ config('app.name') }}"
-                />
+                <span id="logo-image" class="flex items-center gap-2 text-[#061A42] dark:text-white">
+                    <x-admin::brand.shield class="h-10 w-12 shrink-0" />
+                    <span class="max-sm:hidden text-xl font-bold tracking-wider">ARGOSVIG</span>
+                </span>
             @endif
         </a>
 
@@ -113,15 +100,7 @@
                             height="24"
                         />
                     @else
-                        <img
-                            src="{{ request()->cookie('dark_mode') ? vite()->asset('images/dark-logo.svg') : vite()->asset('images/logo.svg') }}"
-                            data-theme-logo
-                            data-light-src="{{ vite()->asset('images/logo.svg') }}"
-                            data-dark-src="{{ vite()->asset('images/dark-logo.svg') }}"
-                            alt="{{ config('app.name') }}"
-                            width="24"
-                            height="24"
-                        />
+                        <x-admin::brand.shield class="h-6 w-6 text-[#061A42] dark:text-white" />
                     @endif
 
                     <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Portal Corporativo</p>
@@ -177,10 +156,6 @@
             data() {
                 return {
                     isDarkMode: {{ request()->cookie('dark_mode') ?? 0 }},
-
-                    logo: "{{ vite()->asset('images/logo.svg') }}",
-
-                    dark_logo: "{{ vite()->asset('images/dark-logo.svg') }}",
                 };
             },
 
@@ -197,11 +172,6 @@
                     document.documentElement.classList.toggle('dark', this.isDarkMode === 1);
 
                     this.$emitter.emit('change-theme', this.isDarkMode ? 'dark' : 'light');
-
-                    // Every theme-aware logo (desktop, mobile and the sidebar drawer) follows the theme.
-                    document.querySelectorAll('[data-theme-logo]').forEach((image) => {
-                        image.src = this.isDarkMode ? image.dataset.darkSrc : image.dataset.lightSrc;
-                    });
                 },
 
                 isDarkModeCookie() {

@@ -53,6 +53,11 @@ return [
         'login-error' => 'Thông tin đăng nhập không khớp với hồ sơ của chúng tôi.',
         'not-permission' => 'Bạn không có quyền truy cập vào bảng quản trị.',
         'login' => [
+            'heading' => 'Truy cập tài khoản',
+            'portal' => 'Cổng thông tin nội bộ',
+            'operations' => 'Quản lý kinh doanh và vận hành',
+            'operations-description' => 'Tài liệu, chấm công và quy trình nội bộ.',
+            'show-password' => 'Hiện mật khẩu',
             'email' => 'Địa chỉ Email',
             'forget-password-link' => 'Quên Mật khẩu?',
             'password' => 'Mật khẩu',

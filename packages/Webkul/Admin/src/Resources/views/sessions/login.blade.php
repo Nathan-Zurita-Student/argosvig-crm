@@ -3,120 +3,156 @@
         Argosvig | @lang('admin::app.users.login.title')
     </x-slot>
 
-    <div class="min-h-screen bg-[#020b22] lg:grid lg:grid-cols-[1.35fr_.65fr]">
-        <section
-            class="relative hidden min-h-screen overflow-hidden bg-[#020b22] bg-contain bg-center bg-no-repeat lg:flex lg:items-end"
-            style="background-image: url('{{ vite()->asset('images/argosvig-banner.png') }}');"
-            aria-label="Argosvig"
-        >
-            <div class="absolute inset-0 bg-gradient-to-t from-[#020b22] via-transparent to-transparent"></div>
+    @push('styles')
+        @include('admin::sessions.login-styles')
+    @endpush
 
-            <div class="relative z-10 p-10 text-white xl:p-14">
-                <p class="text-xs font-semibold uppercase tracking-[0.32em] text-blue-300">Portal corporativo</p>
-                <h1 class="mt-3 max-w-xl text-3xl font-bold leading-tight xl:text-4xl">Gestão segura, integrada e eficiente.</h1>
-                <p class="mt-3 max-w-lg text-sm leading-6 text-blue-100/80">Ambiente interno para gestão comercial e operacional da Argosvig.</p>
+    <div class="sign-in" data-theme="{{ request()->cookie('dark_mode') ? 'dark' : 'light' }}">
+        <aside class="sign-in-hero" aria-label="Argosvig">
+            <div class="sign-in-identity">
+                @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
+                    <img src="{{ Storage::url($logo) }}" alt="Argosvig" />
+                @else
+                    <x-admin::brand.shield />
+                    <span>ARGOSVIG</span>
+                @endif
             </div>
-        </section>
 
-        <main class="flex min-h-screen items-center justify-center px-6 py-10 sm:px-10 lg:bg-white lg:px-12 dark:lg:bg-gray-950">
-            <div class="w-full max-w-[420px]">
-                <div class="mb-8 flex justify-center lg:justify-start">
-                    @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
-                        <img class="h-12 max-w-[260px] object-contain" src="{{ Storage::url($logo) }}" alt="Argosvig" />
-                    @else
-                        <picture>
-                            <source media="(min-width: 1024px)" srcset="{{ vite()->asset('images/logo.svg') }}">
-                            <img class="h-12 w-auto" src="{{ vite()->asset('images/dark-logo.svg') }}" alt="Argosvig" />
-                        </picture>
-                    @endif
+            <div class="sign-in-emblem" aria-hidden="true">
+                <div class="sign-in-orbit">
+                    <span class="sign-in-orbit-tracer"></span>
                 </div>
+                <x-admin::brand.shield />
+            </div>
 
-                <div class="rounded-2xl border border-white/10 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8 dark:border-gray-800 dark:bg-gray-900 lg:border-gray-200 lg:shadow-xl">
-                    <div class="mb-7">
-                        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brandColor">Acesso restrito</p>
-                        <h2 class="mt-2 text-2xl font-bold text-[#061A42] dark:text-white">Bem-vindo à Argosvig</h2>
-                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Entre com suas credenciais corporativas.</p>
-                    </div>
+            <div class="sign-in-story">
+                <p>@lang('admin::app.users.login.operations')</p>
+                <span>@lang('admin::app.users.login.operations-description')</span>
+            </div>
+        </aside>
 
-                    {!! view_render_event('admin.sessions.login.form_controls.before') !!}
+        <main class="sign-in-main">
+            <div class="sign-in-content">
+                <header class="sign-in-heading">
+                    <p class="sign-in-portal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="10" rx="2" />
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4m-4 4v2" />
+                        </svg>
+                        @lang('admin::app.users.login.portal')
+                    </p>
 
-                    <x-admin::form :action="route('admin.session.store')">
-                        <div class="space-y-5">
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label class="required">
-                                    @lang('admin::app.users.login.email')
-                                </x-admin::form.control-group.label>
+                    <h1>@lang('admin::app.users.login.heading')</h1>
+                </header>
 
-                                <x-admin::form.control-group.control
-                                    type="email"
-                                    class="w-full"
-                                    id="email"
-                                    name="email"
-                                    rules="required|email"
-                                    :label="trans('admin::app.users.login.email')"
-                                    :placeholder="trans('admin::app.users.login.email')"
-                                />
+                {!! view_render_event('admin.sessions.login.form_controls.before') !!}
 
-                                <x-admin::form.control-group.error control-name="email" />
-                            </x-admin::form.control-group>
+                <x-admin::form :action="route('admin.session.store')" class="sign-in-form">
+                    <x-admin::form.control-group class="sign-in-field">
+                        <x-admin::form.control-group.label for="email">
+                            @lang('admin::app.users.login.email')
+                        </x-admin::form.control-group.label>
 
-                            <x-admin::form.control-group class="relative w-full">
-                                <x-admin::form.control-group.label class="required">
-                                    @lang('admin::app.users.login.password')
-                                </x-admin::form.control-group.label>
+                        <div class="sign-in-control">
+                            <svg class="sign-in-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="5" width="18" height="14" rx="3" />
+                                <path d="m4 8 8 5 8-5" />
+                            </svg>
 
-                                <x-admin::form.control-group.control
-                                    type="password"
-                                    class="w-full ltr:pr-10 rtl:pl-10"
-                                    id="password"
-                                    name="password"
-                                    rules="required|min:6"
-                                    :label="trans('admin::app.users.login.password')"
-                                    :placeholder="trans('admin::app.users.login.password')"
-                                />
-
-                                <button
-                                    type="button"
-                                    class="icon-eye-hide absolute top-11 -translate-y-2/4 cursor-pointer border-0 bg-transparent text-2xl ltr:right-3 rtl:left-3"
-                                    onclick="switchVisibility()"
-                                    id="visibilityIcon"
-                                    aria-label="Mostrar ou ocultar senha"
-                                ></button>
-
-                                <x-admin::form.control-group.error control-name="password" />
-                            </x-admin::form.control-group>
+                            <x-admin::form.control-group.control
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="sign-in-input"
+                                rules="required|email"
+                                autocomplete="username"
+                                autocapitalize="none"
+                                spellcheck="false"
+                                :label="trans('admin::app.users.login.email')"
+                                :placeholder="trans('admin::app.users.login.email')"
+                                :value="old('email')"
+                            />
                         </div>
 
-                        <div class="mt-7 flex items-center justify-between gap-4">
-                            <a class="text-xs font-semibold leading-6 text-brandColor hover:underline" href="{{ route('admin.forgot_password.create') }}">
+                        <x-admin::form.control-group.error control-name="email" />
+                    </x-admin::form.control-group>
+
+                    <x-admin::form.control-group class="sign-in-field">
+                        <div class="sign-in-password-label">
+                            <x-admin::form.control-group.label for="password">
+                                @lang('admin::app.users.login.password')
+                            </x-admin::form.control-group.label>
+
+                            <a href="{{ route('admin.forgot_password.create') }}">
                                 @lang('admin::app.users.login.forget-password-link')
                             </a>
+                        </div>
 
-                            <button class="primary-button min-w-[110px]" aria-label="{{ trans('admin::app.users.login.submit-btn') }}">
-                                @lang('admin::app.users.login.submit-btn')
+                        <div class="sign-in-control">
+                            <svg class="sign-in-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="5" y="11" width="14" height="10" rx="2" />
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4m-4 4v2" />
+                            </svg>
+
+                            <x-admin::form.control-group.control
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="sign-in-input sign-in-password"
+                                rules="required|min:6"
+                                autocomplete="current-password"
+                                :label="trans('admin::app.users.login.password')"
+                                :placeholder="trans('admin::app.users.login.password')"
+                            />
+
+                            <button
+                                type="button"
+                                id="visibilityIcon"
+                                class="sign-in-visibility"
+                                aria-controls="password"
+                                aria-label="{{ trans('admin::app.users.login.show-password') }}"
+                                aria-pressed="false"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                    <circle cx="12" cy="12" r="2.5" />
+                                    <path class="sign-in-visibility-slash" d="m4 20 16-16" />
+                                </svg>
                             </button>
                         </div>
-                    </x-admin::form>
 
-                    {!! view_render_event('admin.sessions.login.form_controls.after') !!}
-                </div>
+                        <x-admin::form.control-group.error control-name="password" />
+                    </x-admin::form.control-group>
 
-                <p class="mt-6 text-center text-xs text-blue-100/70 lg:text-gray-400">
-                    © {{ date('Y') }} Argosvig · Ambiente interno e confidencial
-                </p>
+                    <button type="submit" class="sign-in-submit">
+                        @lang('admin::app.users.login.submit-btn')
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 12h15m-6-6 6 6-6 6" />
+                        </svg>
+                    </button>
+                </x-admin::form>
+
+                {!! view_render_event('admin.sessions.login.form_controls.after') !!}
             </div>
         </main>
     </div>
 
     @push('scripts')
         <script>
-            function switchVisibility() {
-                const passwordField = document.getElementById('password');
-                const visibilityIcon = document.getElementById('visibilityIcon');
+            document.addEventListener('click', (event) => {
+                const toggle = event.target.closest('.sign-in-visibility');
 
-                passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-                visibilityIcon.classList.toggle('icon-eye');
-            }
+                if (! toggle) {
+                    return;
+                }
+
+                const password = document.getElementById(toggle.getAttribute('aria-controls'));
+                const visible = password.type === 'password';
+
+                password.type = visible ? 'text' : 'password';
+                toggle.setAttribute('aria-pressed', String(visible));
+            });
         </script>
     @endpush
 </x-admin::layouts.anonymous>

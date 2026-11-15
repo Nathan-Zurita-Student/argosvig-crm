@@ -53,6 +53,11 @@ return [
         'login-error' => 'The credentials do not match our records.',
         'not-permission' => 'You do not have permission to access the admin panel.',
         'login' => [
+            'heading' => 'Access your account',
+            'portal' => 'Corporate portal',
+            'operations' => 'Commercial and operations management',
+            'operations-description' => 'Documents, timekeeping and internal workflows.',
+            'show-password' => 'Show password',
             'email' => 'Email Address',
             'forget-password-link' => 'Forget Password ?',
             'password' => 'Password',

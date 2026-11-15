@@ -53,6 +53,11 @@ return [
         'login-error' => 'As credenciais não correspondem aos nossos registros.',
         'not-permission' => 'Você não tem permissão para acessar o painel administrativo.',
         'login' => [
+            'heading' => 'Acesse sua conta',
+            'portal' => 'Portal corporativo',
+            'operations' => 'Gestão comercial e operacional',
+            'operations-description' => 'Documentos, folha de ponto e rotinas internas.',
+            'show-password' => 'Mostrar senha',
             'email' => 'Endereço de E-mail',
             'forget-password-link' => 'Esqueceu a Senha?',
             'password' => 'Senha',

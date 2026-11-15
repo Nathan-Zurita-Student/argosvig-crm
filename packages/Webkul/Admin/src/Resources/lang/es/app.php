@@ -53,6 +53,11 @@ return [
         'login-error' => 'Las credenciales no coinciden con nuestros registros.',
         'not-permission' => 'No tienes permiso para acceder al panel de administración.',
         'login' => [
+            'heading' => 'Accede a tu cuenta',
+            'portal' => 'Portal corporativo',
+            'operations' => 'Gestión comercial y operativa',
+            'operations-description' => 'Documentos, control horario y procesos internos.',
+            'show-password' => 'Mostrar contraseña',
             'email' => 'Dirección de correo electrónico',
             'forget-password-link' => '¿Olvidaste tu contraseña?',
             'password' => 'Contraseña',

@@ -53,6 +53,11 @@ return [
         'login-error' => '認証情報が登録内容と一致しません。',
         'not-permission' => '管理パネルへのアクセス権限がありません。',
         'login' => [
+            'heading' => 'アカウントにアクセス',
+            'portal' => '社内ポータル',
+            'operations' => '営業・業務管理',
+            'operations-description' => '書類、勤怠、社内業務を管理できます。',
+            'show-password' => 'パスワードを表示',
             'email' => 'メールアドレス',
             'forget-password-link' => 'パスワードをお忘れですか？',
             'password' => 'パスワード',

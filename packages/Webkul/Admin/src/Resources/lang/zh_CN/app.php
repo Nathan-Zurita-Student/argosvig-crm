@@ -53,6 +53,11 @@ return [
         'login-error' => '凭据与我们的记录不匹配。',
         'not-permission' => '您没有权限访问管理面板。',
         'login' => [
+            'heading' => '访问您的账户',
+            'portal' => '企业门户',
+            'operations' => '销售与运营管理',
+            'operations-description' => '管理文档、考勤和内部流程。',
+            'show-password' => '显示密码',
             'email' => '邮箱地址',
             'forget-password-link' => '忘记密码？',
             'password' => '密码',

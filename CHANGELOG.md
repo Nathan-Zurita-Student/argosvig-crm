@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Redesigned the sign-in screen with animation and introduced a sharper vector Argosvig shield in the portal and navigation.
+
 * [fixed] Contact details load with formatted phone numbers, and dashboard contact links open in the current tab.
 
 * [feature] Added Argosvig AI settings with direct OpenAI, Claude and Gemini connections and optional OpenRouter support.

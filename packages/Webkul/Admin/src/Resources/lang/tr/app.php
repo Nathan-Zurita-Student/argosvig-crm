@@ -53,6 +53,11 @@ return [
         'login-error' => 'Kimlik bilgileri kayıtlarımızla eşleşmiyor.',
         'not-permission' => 'Yönetici paneline erişim izniniz yok.',
         'login' => [
+            'heading' => 'Hesabınıza erişin',
+            'portal' => 'Kurumsal portal',
+            'operations' => 'Satış ve operasyon yönetimi',
+            'operations-description' => 'Belgeler, mesai takibi ve iç iş akışları.',
+            'show-password' => 'Parolayı göster',
             'email' => 'E-posta Adresi',
             'forget-password-link' => 'Şifremi Unuttum?',
             'password' => 'Şifre',
