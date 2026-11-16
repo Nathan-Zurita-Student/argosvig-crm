@@ -1,16 +1,10 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>{{ $title }}</title>
-    <style>
-        body { color: #142443; font: 12px 'DejaVu Sans', sans-serif; margin: 36px; }
-        h1 { border-bottom: 2px solid #244a96; font-size: 21px; padding-bottom: 12px; }
-        section { line-height: 1.55; overflow-wrap: break-word; }
-    </style>
-</head>
-<body>
-    <h1>{{ $title }}</h1>
-    <section>{!! nl2br(e($content)) !!}</section>
-</body>
-</html>
+@extends('human_resources::ai.pdf-layout', ['issued' => now()->format('d/m/Y H:i')])
+
+@section('document')
+    <main>
+        @php
+            $body = \Illuminate\Support\Str::markdown($content, ['html_input' => 'strip', 'allow_unsafe_links' => false]);
+        @endphp
+        {!! preg_replace('/<img\b[^>]*>/i', '', $body) !!}
+    </main>
+@endsection

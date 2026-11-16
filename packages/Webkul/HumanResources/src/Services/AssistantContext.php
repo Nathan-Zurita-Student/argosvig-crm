@@ -4,11 +4,13 @@ namespace Webkul\HumanResources\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Admin\Traits\ScopesMailAccess;
 use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\Contact\Models\PersonProxy;
 use Webkul\Email\Models\EmailProxy;
+use Webkul\HumanResources\Models\ChecklistProxy;
 use Webkul\HumanResources\Models\DepartmentProxy;
 use Webkul\HumanResources\Models\EmployeeDocumentProxy;
 use Webkul\HumanResources\Models\EmployeeProxy;
@@ -134,12 +136,23 @@ class AssistantContext
         return [['module' => $type, 'record' => $facts], [['label' => trans('human_resources::ai.open_record'), 'url' => route($route, $record->id)]]];
     }
 
-    private function listing(string $route): array
+    public function reportQuery(string $route): ?Builder
     {
+        if ($route === 'admin.human_resources.checklists.index'
+            && class_exists(ChecklistProxy::class)
+            && Schema::hasTable('hr_checklists')
+            && bouncer()->hasPermission('checklists')) {
+            return ChecklistProxy::query();
+        }
+
+        if (! isset(self::LISTS[$route])) {
+            return null;
+        }
+
         [$model, $permission, $type] = self::LISTS[$route];
-        abort_unless(bouncer()->hasPermission($permission), 401);
-        if (str_starts_with($permission, 'human-resources.')) {
-            abort_unless(bouncer()->getAuthorizedUserIds() === null, 401);
+        if (! bouncer()->hasPermission($permission)
+            || (str_starts_with($permission, 'human-resources.') && bouncer()->getAuthorizedUserIds() !== null)) {
+            return null;
         }
 
         $query = $model::query();
@@ -148,6 +161,15 @@ class AssistantContext
         } elseif ($type === 'activity') {
             $query = $this->visibleActivities($query);
         }
+
+        return $query;
+    }
+
+    private function listing(string $route): array
+    {
+        $query = $this->reportQuery($route);
+        abort_unless($query, 401);
+        $type = self::LISTS[$route][2];
 
         $facts = ['module' => $type, 'scope' => 'Total de registros acessíveis no módulo, sem os filtros da tela.', 'total' => (clone $query)->count()];
         $column = match ($type) {

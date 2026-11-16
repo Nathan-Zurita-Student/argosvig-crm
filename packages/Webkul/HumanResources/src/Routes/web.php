@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\HumanResources\Http\Controllers\AiConnectionController;
 use Webkul\HumanResources\Http\Controllers\AssistantController;
+use Webkul\HumanResources\Http\Controllers\AssistantReportController;
 use Webkul\HumanResources\Http\Controllers\CommercialFollowUpController;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
 use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
@@ -25,6 +26,7 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::post('ask', [AssistantController::class, 'ask'])->middleware('throttle:crm-ai')->name('ask');
     Route::post('draft', [AssistantController::class, 'openDraft'])->name('draft');
     Route::post('download', [AssistantController::class, 'download'])->middleware('throttle:crm-ai')->name('download');
+    Route::get('report/download', AssistantReportController::class)->middleware('throttle:crm-ai')->name('report');
     Route::post('transcribe', VoiceTranscriptionController::class)->middleware('throttle:crm-ai')->name('transcribe');
     Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:crm-ai')->name('incident_draft');
 });

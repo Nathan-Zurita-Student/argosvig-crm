@@ -4,7 +4,7 @@ return [
     [
         'key' => 'crm-ai',
         'name' => 'human_resources::ai.assistant',
-        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download', 'admin.ai.transcribe', 'admin.ai.incident_draft'],
+        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download', 'admin.ai.report', 'admin.ai.transcribe', 'admin.ai.incident_draft'],
         'sort' => 16,
     ],
     [

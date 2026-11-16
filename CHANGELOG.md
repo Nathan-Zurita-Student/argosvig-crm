@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added a scoped CRM overview PDF with database-backed totals and tables, and standardized the layout of assistant-generated documents.
+
 * [feature] Added voice dictation to the AI assistant and an AI-assisted incident form that fills fields from a typed or dictated account.
 
 * [fixed] Sign-in shows validation errors only on submit and moves from email to password when Enter is pressed.
