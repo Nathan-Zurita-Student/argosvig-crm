@@ -28,6 +28,7 @@ class HumanResourcesServiceProvider extends ServiceProvider
             $route = $request->route()->getName();
             $limit = match ($route) {
                 'admin.ai.connection.test' => 4,
+                'admin.ai.transcribe', 'admin.ai.incident_draft' => 6,
                 'admin.ai.download' => 15,
                 default => 12,
             };

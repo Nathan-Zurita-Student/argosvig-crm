@@ -16,6 +16,7 @@ use Webkul\HumanResources\Http\Controllers\ServiceContractController;
 use Webkul\HumanResources\Http\Controllers\ShiftAssignmentController;
 use Webkul\HumanResources\Http\Controllers\TimekeepingController;
 use Webkul\HumanResources\Http\Controllers\VacationController;
+use Webkul\HumanResources\Http\Controllers\VoiceTranscriptionController;
 use Webkul\HumanResources\Http\Controllers\WorkSiteController;
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/ai')->name('admin.ai.')->group(function () {
@@ -24,6 +25,8 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::post('ask', [AssistantController::class, 'ask'])->middleware('throttle:crm-ai')->name('ask');
     Route::post('draft', [AssistantController::class, 'openDraft'])->name('draft');
     Route::post('download', [AssistantController::class, 'download'])->middleware('throttle:crm-ai')->name('download');
+    Route::post('transcribe', VoiceTranscriptionController::class)->middleware('throttle:crm-ai')->name('transcribe');
+    Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:crm-ai')->name('incident_draft');
 });
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/operations')->name('admin.operations.')->group(function () {
@@ -32,7 +35,6 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::get('coverage/{site}', [OperationsAssistantController::class, 'coverage'])->whereNumber('site')->name('coverage');
     Route::get('contract-report', [OperationsAssistantController::class, 'exportContract'])->name('contract_report');
     Route::get('incident-draft', [IncidentDraftController::class, 'create'])->name('incident_draft');
-    Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:4,1')->name('incident_draft.store');
 });
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/commercial-follow-up')->group(function () {

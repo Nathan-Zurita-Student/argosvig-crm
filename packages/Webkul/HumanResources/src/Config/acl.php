@@ -4,7 +4,7 @@ return [
     [
         'key' => 'crm-ai',
         'name' => 'human_resources::ai.assistant',
-        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download'],
+        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download', 'admin.ai.transcribe', 'admin.ai.incident_draft'],
         'sort' => 16,
     ],
     [
@@ -16,7 +16,7 @@ return [
     [
         'key' => 'operations-assistant.ai',
         'name' => 'human_resources::operations.ai_title',
-        'route' => ['admin.operations.ask', 'admin.operations.incident_draft', 'admin.operations.incident_draft.store'],
+        'route' => ['admin.operations.ask'],
         'sort' => 1,
     ],
     [
@@ -151,7 +151,7 @@ return [
     ], [
         'key' => 'human-resources.incidents.create',
         'name' => 'human_resources::app.acl.create',
-        'route' => ['admin.human_resources.incidents.create', 'admin.human_resources.incidents.store'],
+        'route' => ['admin.human_resources.incidents.create', 'admin.human_resources.incidents.store', 'admin.operations.incident_draft'],
         'sort' => 1,
     ], [
         'key' => 'human-resources.incidents.view',

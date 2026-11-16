@@ -73,28 +73,90 @@ it('sends only permitted operational metadata and treats the model answer as pla
         && ! str_contains($request->body(), 'Private title') && ! str_contains($request->body(), 'Private CPF field'));
 });
 
-it('transcribes a valid attachment and previews a draft for an authorized creator without saving it', function () {
-    enableOperationsAiForTest();
-    config(['operations.transcription_model' => 'test/transcribe']);
+function enableVoiceWorkflowForTest(): void
+{
+    config(['operations.ai_enabled' => true, 'services.openai.key' => 'synthetic-voice-test']);
+    foreach (['enable' => '1', 'provider' => 'openai', 'audio_provider' => 'openai'] as $name => $value) {
+        CoreConfig::updateOrCreate(['code' => 'general.crm_ai.settings.'.$name], ['value' => $value]);
+    }
+}
+
+it('transcribes audio only for users with assistant access', function () {
+    enableVoiceWorkflowForTest();
     Http::preventStrayRequests();
     Http::fake([
-        'https://openrouter.ai/api/v1/audio/transcriptions' => Http::response(['text' => 'Portão travado na troca de plantão.']),
-        'https://openrouter.ai/api/v1/chat/completions' => Http::response(['choices' => [['message' => ['content' => json_encode([
-            'title' => 'Portão travado', 'description' => 'Falha ao abrir o portão.', 'location' => 'Entrada', 'occurred_at' => null,
-            'employee_id' => 100, 'status' => 'closed',
-        ])]]]]),
+        'https://api.openai.com/v1/audio/transcriptions' => Http::response(['text' => 'Portão travado na troca de plantão.']),
     ]);
+
     $wav = 'RIFF'.pack('V', 38).'WAVEfmt '.pack('VvvVVvv', 16, 1, 1, 8000, 16000, 2, 16).'data'.pack('Vv', 2, 0);
     $upload = UploadedFile::fake()->createWithContent('relato.wav', $wav);
-    $url = route('admin.operations.incident_draft.store');
-    $this->actingAs(operationsUser(['operations-assistant', 'operations-assistant.ai']), 'user')->post($url, ['audio' => $upload])->assertUnauthorized();
+    $url = route('admin.ai.transcribe');
+    $headers = ['Accept' => 'application/json'];
+    $this->actingAs(operationsUser(['operations-assistant']), 'user')
+        ->post($url, ['audio' => $upload], $headers)->assertUnauthorized();
+
+    $invalidAudio = tempnam(sys_get_temp_dir(), 'crm-non-audio-');
+    try {
+        file_put_contents($invalidAudio, 'not audio');
+        $this->actingAs(operationsUser(['crm-ai'], 'individual'), 'user')
+            ->post($url, ['audio' => new UploadedFile($invalidAudio, 'falso.wav', 'audio/wav', null, true)], $headers)
+            ->assertUnprocessable()->assertJsonValidationErrors('audio');
+    } finally {
+        unlink($invalidAudio);
+    }
     Http::assertNothingSent();
 
-    $this->actingAs(getDefaultAdmin(), 'user')->post($url, ['audio' => $upload])->assertRedirect(route('admin.human_resources.incidents.create'))
-        ->assertSessionHas('incident_draft', fn ($draft) => $draft['title'] === 'Portão travado' && ! isset($draft['employee_id'], $draft['status']));
-    $this->get(route('admin.human_resources.incidents.create'))->assertOk()->assertSee('Falha ao abrir o portão.');
+    $this->post($url, ['audio' => $upload], $headers)
+        ->assertOk()->assertExactJson(['transcript' => 'Portão travado na troca de plantão.']);
+    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/audio/transcriptions') && str_contains($request->body(), 'audio.wav'));
+});
+
+it('prepares incident fields from a written account for review without saving it', function () {
+    enableVoiceWorkflowForTest();
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://api.openai.com/v1/chat/completions' => Http::response(['choices' => [['message' => ['content' => json_encode([
+            'title' => 'Portão travado',
+            'description' => 'Falha ao abrir o portão.',
+            'location' => 'Entrada',
+            'occurred_at' => '2026-11-15T17:20',
+            'severity' => 'high',
+            'assigned_to' => 100,
+            'status' => 'closed',
+        ])]]]]),
+    ]);
+
+    $url = route('admin.ai.incident_draft');
+    $narrative = ['narrative' => 'Em 15/11/2026 às 17:20 o portão da entrada travou. Gravidade alta.'];
+    $this->actingAs(operationsUser(['crm-ai']), 'user')->postJson($url, $narrative)->assertUnauthorized();
+    Http::assertNothingSent();
+
+    $this->actingAs(operationsUser(['crm-ai', 'human-resources.incidents', 'human-resources.incidents.create'], 'individual'), 'user')
+        ->get(route('admin.operations.incident_draft'))->assertRedirect(route('admin.human_resources.incidents.create'));
+    $this->get(route('admin.human_resources.incidents.create'))->assertOk()
+        ->assertSee('incident-ai-narrative', false)->assertDontSee('type="file" name="audio"', false);
+    $this->postJson($url, $narrative)->assertOk()->assertExactJson(['fields' => [
+        'title' => 'Portão travado',
+        'description' => 'Falha ao abrir o portão.',
+        'location' => 'Entrada',
+        'occurred_at' => '2026-11-15T17:20',
+        'severity' => 'high',
+    ]]);
     $this->assertDatabaseMissing('hr_incidents', ['title' => 'Portão travado']);
-    Http::assertSent(fn ($request) => str_ends_with($request->url(), '/audio/transcriptions') && $request['input_audio']['format'] === 'wav');
+});
+
+it('leaves unreliable incident fields empty and preserves the account for review', function () {
+    enableVoiceWorkflowForTest();
+    Http::preventStrayRequests();
+    Http::fake([
+        'https://api.openai.com/v1/chat/completions' => Http::response(['choices' => [['message' => ['content' => json_encode([
+            'description' => null, 'location' => null, 'occurred_at' => '2026-02-30T19:22', 'severity' => 'unknown',
+        ])]]]]),
+    ]);
+
+    $account = 'O portão apresentou falha em uma data ainda desconhecida.';
+    $this->actingAs(operationsUser(['crm-ai', 'human-resources.incidents.create']), 'user')->postJson(route('admin.ai.incident_draft'), ['narrative' => $account])
+        ->assertOk()->assertExactJson(['fields' => ['description' => $account]]);
 });
 
 it('counts distinct confirmed staff and excludes overlapping shifts and vacations from coverage suggestions', function () {

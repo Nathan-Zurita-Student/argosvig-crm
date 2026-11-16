@@ -1,6 +1,24 @@
 <?php
 
 return [
+    'dictation' => [
+        'start' => 'Ditar por voz',
+        'connecting' => 'Aguardando acesso ao microfone…',
+        'stop' => 'Parar e transcrever',
+        'recording' => 'Gravando por até 60 segundos. O áudio é enviado ao provedor ao parar.',
+        'transcribing' => 'Transcrevendo…',
+        'cancel' => 'Cancelar ditado',
+        'unavailable' => 'Para usar o microfone, abra o CRM em HTTPS ou em localhost, com um navegador compatível.',
+        'microphone_error' => 'Não foi possível acessar o microfone. Confira a permissão no navegador.',
+        'failed' => 'Não foi possível transcrever a gravação. Tente ditar novamente.',
+        'too_long' => 'A transcrição não cabe neste campo. Encurte o texto ou dite um trecho menor.',
+    ],
+    'incident_draft' => [
+        'label' => 'Relato da ocorrência',
+        'help' => 'Escreva ou dite o que aconteceu. Se souber, informe local, data, hora e gravidade. A IA sugere os campos para sua revisão.',
+        'placeholder' => 'Ex.: Em 15/11/2026, às 17h20, o portão da entrada travou. Gravidade alta.',
+        'fill' => 'Preencher com IA',
+    ],
     'settings' => 'Abrir configurações da IA',
     'key' => 'Chave de API',
     'key_missing' => 'Cadastre a chave do provedor escolhido.',

@@ -1,5 +1,9 @@
 <v-crm-assistant></v-crm-assistant>
 
+@if (app(\Webkul\HumanResources\Services\OperationsAi::class)->transcriptionAvailable())
+    @include('human_resources::ai.dictation')
+@endif
+
 @pushOnce('scripts')
     <script type="text/x-template" id="v-crm-assistant-template">
         <button type="button" class="secondary-button whitespace-nowrap max-sm:!px-2" @click="$refs.dialog.showModal()" aria-label="@lang('human_resources::ai.assistant')">
@@ -32,7 +36,18 @@
                         <button type="button" class="secondary-button" @click="question = @js(trans('human_resources::ai.'.$prompt))">@lang('human_resources::ai.'.$prompt.'_button')</button>
                     @endforeach
                 </div>
-                <div><button type="submit" class="primary-button" :disabled="busy">@lang('human_resources::ai.send')</button></div>
+                <div class="flex items-center gap-2">
+                    <button type="submit" class="primary-button" :disabled="busy || dictating">@lang('human_resources::ai.send')</button>
+                    @if (app(\Webkul\HumanResources\Services\OperationsAi::class)->transcriptionAvailable())
+                        <v-ai-dictation
+                            placement="end"
+                            :disabled="busy"
+                            :remaining="Math.max(0, 2500 - question.length - (question ? 1 : 0))"
+                            @busy-change="dictating = $event"
+                            @transcript="appendTranscript"
+                        ></v-ai-dictation>
+                    @endif
+                </div>
                 <p v-if="busy" role="status">@lang('human_resources::ai.working')</p>
                 <p v-if="error" v-text="error" role="alert" class="text-sm text-red-700 dark:text-red-300"></p>
             </form>
@@ -77,12 +92,16 @@
         app.component('v-crm-assistant', {
             template: '#v-crm-assistant-template',
             data() {
-                return { question: '', earlierQuestions: [], busy: false, error: '', result: null, request: null };
+                return { question: '', dictating: false, earlierQuestions: [], busy: false, error: '', result: null, request: null };
             },
             beforeUnmount() {
                 this.request?.abort();
             },
             methods: {
+                appendTranscript(transcript) {
+                    this.question = [this.question.trimEnd(), transcript].filter(Boolean).join(' ');
+                },
+
                 reset() {
                     this.question = '';
                     this.earlierQuestions = [];
@@ -90,7 +109,7 @@
                     this.error = '';
                 },
                 async ask() {
-                    if (this.busy || !this.question.trim()) return;
+                    if (this.busy || this.dictating || !this.question.trim()) return;
                     const question = this.question.trim();
                     this.request = new AbortController();
                     this.busy = true;

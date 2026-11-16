@@ -4,6 +4,8 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [feature] Added voice dictation to the AI assistant and an AI-assisted incident form that fills fields from a typed or dictated account.
+
 * [fixed] Sign-in shows validation errors only on submit and moves from email to password when Enter is pressed.
 
 * [enhancement] Redesigned the sign-in screen with animation and introduced a sharper vector Argosvig shield in the portal and navigation.

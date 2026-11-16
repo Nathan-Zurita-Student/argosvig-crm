@@ -1,6 +1,24 @@
 <?php
 
 return [
+    'dictation' => [
+        'start' => 'Dictate',
+        'connecting' => 'Waiting for microphone access…',
+        'stop' => 'Stop and transcribe',
+        'recording' => 'Recording for up to 60 seconds. Audio is sent to the provider when you stop.',
+        'transcribing' => 'Transcribing…',
+        'cancel' => 'Cancel dictation',
+        'unavailable' => 'Open the CRM over HTTPS or on localhost in a compatible browser to use the microphone.',
+        'microphone_error' => 'Could not access the microphone. Check your browser permissions.',
+        'failed' => 'Could not transcribe the recording. Try dictating again.',
+        'too_long' => 'The transcript does not fit. Shorten the text or dictate a shorter passage.',
+    ],
+    'incident_draft' => [
+        'label' => 'Incident account',
+        'help' => 'Type or dictate what happened. Include the location, date, time, and severity when known. AI suggests fields for you to review.',
+        'placeholder' => 'Example: On 15 November 2026 at 17:20, the entrance gate jammed. High severity.',
+        'fill' => 'Fill with AI',
+    ],
     'settings' => 'Open Argosvig AI settings',
     'key' => 'API key',
     'key_missing' => 'Add an API key for the selected provider.',
