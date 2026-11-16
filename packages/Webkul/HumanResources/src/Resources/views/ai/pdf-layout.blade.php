@@ -21,6 +21,7 @@
         h1 { margin: 16pt 0 7pt; font-size: 25pt; line-height: 1.16; color: #102653; font-weight: 700; }
         h2 { margin: 24pt 0 9pt; font-size: 15pt; line-height: 1.25; color: #102653; }
         h3 { margin: 12pt 0 6pt; font-size: 11pt; line-height: 1.25; color: #172337; }
+        h2, h3, h4, h5, h6 { page-break-after: avoid; }
         h4, h5, h6 { margin: 12pt 0 6pt; font-size: 10pt; }
         p { margin: 0 0 10pt; overflow-wrap: break-word; }
         ul, ol { margin: 6pt 0 10pt 17pt; padding: 0; }
@@ -40,13 +41,21 @@
         th, td { text-align: left; vertical-align: top; padding: 5pt 5pt; border-bottom: .55pt solid #d4dce7; overflow-wrap: break-word; }
         th { color: #132a53; background-color: #eef2f7; font-weight: 700; }
         td { color: #233248; }
-        .index { font-size: 9pt; line-height: 1.23; }
-        .index th, .index td { padding: 4pt 5pt; }
-        .records { font-size: 8.8pt; line-height: 1.3; }
+        .index-heading { margin-top: 15pt; }
+        .index { font-size: 9pt; line-height: 1.18; }
+        .index th, .index td { padding: 3pt 5pt; }
+        .records { font-size: 8.8pt; line-height: 1.3; table-layout: auto; }
         .records th, .records td { padding: 5pt 5pt; }
         .numeric { width: 83pt; text-align: right; }
         .group-name { width: 121pt; }
         .keep { page-break-inside: avoid; }
+        .priorities { margin: 0 0 9pt; font-size: 9pt; color: #4b5b71; }
+        .priorities strong { color: #102653; }
+        .filters { margin: 12pt 0; font-size: 9pt; color: #4b5b71; }
+        .records thead tr, .records .keep-next { page-break-after: avoid; }
+        .records .section-heading { background: #fff; border: 0; padding: 6pt 0 2pt; font-size: 11pt; }
+        .records .section-range { background: #fff; border: 0; padding: 0 0 7pt; font-weight: 400; color: #4b5b71; }
+        .continued { font-size: 8pt; font-weight: 400; color: #4b5b71; }
     </style>
 </head>
 <body>

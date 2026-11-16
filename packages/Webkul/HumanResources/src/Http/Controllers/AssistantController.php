@@ -17,6 +17,7 @@ use Webkul\Core\Traits\PDFHandler;
 use Webkul\HumanResources\Services\AssistantContext;
 use Webkul\HumanResources\Services\AssistantDrafts;
 use Webkul\HumanResources\Services\AssistantReport;
+use Webkul\HumanResources\Services\IncidentReportFilters;
 use Webkul\HumanResources\Services\OperationsAi;
 
 class AssistantController extends Controller
@@ -41,12 +42,14 @@ class AssistantController extends Controller
         ]);
 
         if (! $request->hasFile('attachment') && blank($data['file_token'] ?? null) && AssistantReport::requested($data['question'])) {
-            return response()->json([
-                'answer' => trans('human_resources::reports.answer'),
-                'links' => [['label' => trans('human_resources::reports.download'), 'url' => route('admin.ai.report')]],
-                'file' => null,
-                'draft' => null,
-            ])->header('Cache-Control', 'private, no-store');
+            return $this->reportLink();
+        }
+
+        if (! $request->hasFile('attachment') && blank($data['file_token'] ?? null)
+            && ($filters = IncidentReportFilters::fromQuestion($data['question'])) !== null) {
+            abort_unless($context->reportQuery('admin.human_resources.incidents.index'), 403);
+
+            return $this->reportLink($filters);
         }
         [$facts, $links] = $context->facts($data);
         $available = $drafts->available();
@@ -117,6 +120,19 @@ class AssistantController extends Controller
         return response()->streamDownload(fn () => print ($file['title']."\n\n".$file['content']), 'documento-argosvig.'.$file['format'], [
             'Content-Type' => 'text/plain; charset=UTF-8', 'Cache-Control' => 'private, no-store',
         ]);
+    }
+
+    private function reportLink(array $filters = []): JsonResponse
+    {
+        $answer = $filters ? 'filtered_answer' : 'answer';
+        $label = $filters ? 'filtered_download' : 'download';
+
+        return response()->json([
+            'answer' => trans('human_resources::reports.'.$answer),
+            'links' => [['label' => trans('human_resources::reports.'.$label), 'url' => route('admin.ai.report', $filters)]],
+            'file' => null,
+            'draft' => null,
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     private function spreadsheet(string $content, string $format)

@@ -4,6 +4,10 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Assistant PDFs keep table titles with initial records, repeat module names on continuation pages, and show upcoming deadlines and open incidents on the overview.
+
+* [feature] The assistant can generate incident report PDFs with filters for dates, severity and recorded location.
+
 * [feature] Added a scoped CRM overview PDF with database-backed totals and tables, and standardized the layout of assistant-generated documents.
 
 * [feature] Added voice dictation to the AI assistant and an AI-assisted incident form that fills fields from a typed or dictated account.

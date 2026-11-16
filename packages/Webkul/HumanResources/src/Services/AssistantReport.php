@@ -46,7 +46,7 @@ class AssistantReport
             && preg_match('/\b(?:tod[oa]s? (?:os |as )?(?:dados|registros) (?:do |da )?(?:sistema|crm)|(?:relatorio|pdf) (?:geral|completo)(?: d[oea])? (?:sistema|crm|argosvig)|(?:system|crm) (?:overview|report))\b/', $terms);
     }
 
-    public function sections(?string $only = null, int $page = 1): array
+    public function sections(?string $only = null, int $page = 1, array $filters = []): array
     {
         abort_if($only !== null && ! isset(self::SOURCES[$only]), 404);
         $sections = [];
@@ -57,13 +57,18 @@ class AssistantReport
                 continue;
             }
 
-            $query = $route === null ? $this->specialQuery($key) : $this->context->reportQuery($route);
+            $query = $this->scopedQuery($key, $route);
             if ($query === null) {
                 continue;
             }
 
             if ($key === 'activities') {
                 $query->where('type', '!=', 'system');
+            }
+
+            if ($key === 'incidents' && $only === 'incidents') {
+                $columns[] = 'location';
+                IncidentReportFilters::apply($query, $filters);
             }
 
             $total = (clone $query)->count();
@@ -107,6 +112,35 @@ class AssistantReport
         abort_if($only !== null && ! $sections, 404);
 
         return $sections;
+    }
+
+    public function priorities(): array
+    {
+        $priorities = [];
+        $today = today()->toDateString();
+        $limit = today()->addDays(30)->toDateString();
+
+        if ($query = $this->scopedQuery('incidents', self::SOURCES['incidents'][1])) {
+            $priorities['open_incidents'] = $query->whereIn('status', ['open', 'investigating'])->count();
+        }
+
+        foreach (['employee_documents', 'shared_documents'] as $section) {
+            if ($query = $this->scopedQuery($section, self::SOURCES[$section][1])) {
+                $priorities['expiring_documents'] = ($priorities['expiring_documents'] ?? 0)
+                    + $query->whereBetween('expires_at', [$today, $limit])->count();
+            }
+        }
+
+        if ($query = $this->scopedQuery('contracts', self::SOURCES['contracts'][1])) {
+            $priorities['expiring_contracts'] = $query->expiring()->count();
+        }
+
+        return $priorities;
+    }
+
+    private function scopedQuery(string $key, ?string $route): Builder|QueryBuilder|null
+    {
+        return $route === null ? $this->specialQuery($key) : $this->context->reportQuery($route);
     }
 
     private function specialQuery(string $key): Builder|QueryBuilder|null
