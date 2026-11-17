@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(CanInstall::class);
 
+        // The production/demo reverse proxy (for example, ngrok) terminates TLS
+        // before forwarding the request to Apache. Trust its forwarded scheme so
+        // generated URLs, sessions and CSRF requests remain on HTTPS.
+        $middleware->trustProxies(at: '*');
+
         $middleware->encryptCookies(except: [
             'dark_mode',
             'sidebar_collapsed',
