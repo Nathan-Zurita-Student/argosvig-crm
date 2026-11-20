@@ -138,18 +138,6 @@ class ImportDataGrid extends DataGrid
             ]);
         }
 
-        if (bouncer()->hasPermission('settings.automation.data_transfer.imports.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.settings.data-transfer.imports.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => function ($row) {
-                    return route('admin.settings.data_transfer.imports.edit', $row->id);
-                },
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.automation.data_transfer.imports.delete')) {
             $this->addAction([
                 'index' => 'delete',

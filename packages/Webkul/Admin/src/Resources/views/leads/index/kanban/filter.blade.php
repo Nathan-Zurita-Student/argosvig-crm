@@ -25,7 +25,7 @@
             <x-slot:toggle>
                 {!! view_render_event('admin.leads.index.kanban.filter.drawer.toggle_button.before') !!}
 
-                <div class="relative flex cursor-pointer items-center rounded-md bg-sky-100 px-4 py-[9px] font-semibold text-sky-600 dark:bg-brandColor dark:text-white">
+                <button type="button" class="relative flex cursor-pointer items-center rounded-md bg-sky-100 px-4 py-[9px] font-semibold text-sky-800 dark:bg-brandColor dark:text-white">
                     @lang('admin::app.leads.index.kanban.toolbar.filters.filter')
 
                     <span
@@ -33,7 +33,7 @@
                         v-if="hasAnyAppliedColumn()"
                     >
                     </span>
-                </div>
+                </button>
 
                 {!! view_render_event('admin.leads.index.kanban.filter.drawer.toggle_button.after') !!}
             </x-slot>
@@ -651,6 +651,9 @@
                 {!! view_render_event('admin.leads.index.kanban.filter.drawer.footer.after') !!}
             </x-slot>
         </x-admin::drawer>
+        <button v-if="hasAnyAppliedColumn()" type="button" class="px-2 text-sm font-medium text-brandColor hover:underline dark:text-blue-300" @click="filters = { columns: [] }; $emit('applyFilters', filters)">
+            @lang('admin::app.layouts.clear-filters')
+        </button>
 
         {!! view_render_event('admin.leads.index.kanban.filter.drawer.after') !!}
     </script>

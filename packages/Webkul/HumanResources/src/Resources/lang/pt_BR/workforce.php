@@ -16,7 +16,7 @@ return [
     'all' => 'Todos',
     'linked_to' => 'Vinculado a',
     'organizations' => 'Empresas',
-    'shared_hint' => 'Selecione pelo menos uma empresa ou um contrato. Use Ctrl ou Command para selecionar vários.',
+    'shared_hint' => 'Selecione pelo menos uma empresa ou um contrato. Processos internos e modelos em branco não precisam de vínculo. Dá para marcar vários na lista.',
     'notes' => 'Observações',
     'file_hint' => 'PDF, JPG ou PNG. Até 10 MB.',
     'saved' => 'Documento salvo.',
@@ -62,6 +62,8 @@ return [
         'solidarity_term' => 'Termo de responsabilidade solidária',
         'third_party_certificate' => 'Certidão de terceiro',
         'shared' => 'Documento compartilhado',
+        'procedure' => 'Processo ou procedimento interno',
+        'blank_form' => 'Modelo em branco para imprimir',
     ],
     'expiry' => [
         'expired' => 'Vencido',
@@ -78,5 +80,13 @@ return [
     'sources' => [
         'alterdata_csv' => 'CSV da Alterdata',
         'alterdata_api' => 'API da Alterdata',
+    ],
+    'move' => [
+        'unknown_disk' => 'O disco ":disk" não está configurado em config/filesystems.php.',
+        'nothing' => 'Todos os documentos já estão no disco :disk.',
+        'preview' => ':count documentos (:size) serão movidos para o disco :disk.',
+        'apply_hint' => 'Nada foi alterado. Rode de novo com --apply para mover.',
+        'failed' => 'O documento :id não foi movido: arquivo ausente ou cópia diferente do original.',
+        'done' => ':moved documentos movidos, :failed com falha.',
     ],
 ];

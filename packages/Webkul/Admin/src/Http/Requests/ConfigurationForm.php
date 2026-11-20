@@ -67,8 +67,7 @@ class ConfigurationForm extends FormRequest
         $rules[CrmAi::SETTINGS.'audio_provider'] = ['nullable', 'in:'.implode(',', array_keys(CrmAi::AUDIO_MODELS))];
 
         foreach (array_keys(CrmAi::MODELS) as $provider) {
-            $modelPattern = $provider === 'openrouter' ? '[\w.-]+\/[\w.:+-]+' : '[\w.-]+';
-            $rules[CrmAi::SETTINGS.$provider.'_model'] = ['nullable', 'string', 'max:180', 'regex:/\A'.$modelPattern.'\z/'];
+            $rules[CrmAi::SETTINGS.$provider.'_model'] = ['nullable', 'string', 'max:180', 'regex:/\A[\w.-]+\z/'];
 
             if (isset(CrmAi::AUDIO_MODELS[$provider])) {
                 $rules[CrmAi::SETTINGS.$provider.'_audio_model'] = $rules[CrmAi::SETTINGS.$provider.'_model'];

@@ -54,16 +54,6 @@ class WorkflowDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('settings.automation.workflows.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.settings.workflows.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.settings.workflows.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.automation.workflows.delete')) {
             $this->addAction([
                 'index' => 'delete',

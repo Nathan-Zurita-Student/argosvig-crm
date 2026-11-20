@@ -17,7 +17,12 @@ class EmployeeDocument extends Model implements EmployeeDocumentContract
         'work_card', 'address_proof', 'training', 'timesheet', 'other',
     ];
 
-    public const SHARED_TYPES = ['solidarity_term', 'third_party_certificate', 'shared'];
+    public const SHARED_TYPES = ['solidarity_term', 'third_party_certificate', 'shared', 'procedure', 'blank_form'];
+
+    /**
+     * Shared types kept for the company's own use, which need no company or contract link.
+     */
+    public const INTERNAL_TYPES = ['procedure', 'blank_form'];
 
     protected $table = 'hr_employee_documents';
 

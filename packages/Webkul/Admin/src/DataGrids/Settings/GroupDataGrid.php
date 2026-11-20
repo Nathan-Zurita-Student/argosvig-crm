@@ -41,7 +41,6 @@ class GroupDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.groups.edit', $row->id)),
             'type' => 'string',
             'label' => trans('admin::app.settings.groups.index.datagrid.name'),
             'searchable' => true,

@@ -54,7 +54,7 @@ class DocumentLibrary
             });
         } catch (Throwable $exception) {
             if ($location) {
-                Storage::disk('local')->delete($location['path']);
+                Storage::disk($location['disk'])->delete($location['path']);
             }
 
             throw $exception;
@@ -90,17 +90,27 @@ class DocumentLibrary
         ]);
     }
 
+    /**
+     * The disk new documents are written to. Each document keeps the disk it was saved on,
+     * so switching this setting never breaks the download of older files.
+     */
+    public static function disk(): string
+    {
+        return config('filesystems.documents') ?: 'local';
+    }
+
     private function storeFile(UploadedFile $file, ?int $employeeId): array
     {
+        $disk = self::disk();
         $folder = $employeeId ? "employee-documents/{$employeeId}" : 'employee-documents/shared';
-        $path = $file->store($folder, 'local');
+        $path = $file->store($folder, $disk);
 
         if (! $path) {
             throw new RuntimeException('Could not store the document.');
         }
 
         return [
-            'disk' => 'local',
+            'disk' => $disk,
             'path' => $path,
             'original_name' => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType() ?: 'application/octet-stream',

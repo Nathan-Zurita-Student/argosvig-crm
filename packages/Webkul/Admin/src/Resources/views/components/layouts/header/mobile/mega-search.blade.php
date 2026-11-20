@@ -8,14 +8,18 @@
         id="v-mobile-mega-search-template"
     >
         <div>
-            <i
+            <button
+                type="button"
+                aria-label="@lang('admin::app.components.layouts.header.mega-search.title')"
                 class="icon-search flex items-center text-2xl"
+                ref="searchToggle"
                 @click="toggleSearchInput"
                 v-show="!isSearchVisible"
-            ></i>
+            ></button>
 
             <div
                 v-show="isSearchVisible"
+                @keydown.esc.stop="toggleSearchInput"
                 class="absolute left-1/2 top-3 z-[10002] flex w-full max-w-full -translate-x-1/2 items-center px-2"
             >
                 <i class="icon-search absolute top-2 flex items-center text-2xl ltr:left-4 rtl:right-4"></i>
@@ -25,13 +29,14 @@
                     class="peer block w-full rounded-3xl border border-gray-300 bg-white px-10 py-1.5 leading-6 text-gray-600 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400"
                     :class="{'border-gray-400': isDropdownOpen}"
                     placeholder="@lang('admin::app.components.layouts.header.mega-search.title')"
+                    aria-label="@lang('admin::app.components.layouts.header.mega-search.title')"
                     v-model.lazy="searchTerm"
                     @click="searchTerm.length >= 2 ? isDropdownOpen = true : {}"
                     v-debounce="500"
                     ref="searchInput"
                 >
 
-                <i class="icon-cross-large absolute top-2 flex items-center text-2xl ltr:right-4 rtl:left-4"></i>
+                <button type="button" aria-label="@lang('admin::app.layouts.close-search')" class="icon-cross-large absolute top-2 flex items-center text-2xl ltr:right-4 rtl:left-4" @click="toggleSearchInput"></button>
 
                 <div
                     class="absolute left-[6px] right-[6px] top-10 z-10 max-h-[80vh] overflow-y-auto rounded-lg border bg-white shadow-[0px_0px_0px_0px_rgba(0,0,0,0.10),0px_1px_3px_0px_rgba(0,0,0,0.10),0px_5px_5px_0px_rgba(0,0,0,0.09),0px_12px_7px_0px_rgba(0,0,0,0.05),0px_22px_9px_0px_rgba(0,0,0,0.01),0px_34px_9px_0px_rgba(0,0,0,0.00)] dark:border-gray-800 dark:bg-gray-900"
@@ -39,14 +44,15 @@
                 >
                     <!-- Search Tabs -->
                     <div class="flex overflow-x-auto border-b text-sm text-gray-600 dark:border-gray-800 dark:text-gray-300 sm:text-base">
-                        <div
+                        <button
+                            type="button"
                             class="flex-shrink-0 cursor-pointer whitespace-nowrap px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-950 sm:px-4 sm:py-3"
                             :class="{ 'border-b-2 border-brandColor': activeTab == tab.key }"
                             v-for="tab in tabs"
                             @click="activeTab = tab.key; search();"
                         >
                             @{{ tab.title }}
-                        </div>
+                        </button>
                     </div>
 
                     <!-- Searched Results -->
@@ -502,7 +508,7 @@
                 window.addEventListener('click', this.handleFocusOut);
             },
 
-            beforeDestroy() {
+            beforeUnmount() {
                 window.removeEventListener('click', this.handleFocusOut);
             },
 
@@ -519,6 +525,7 @@
                         });
                     } else {
                         this.searchTerm = '';
+                        this.$nextTick(() => this.$refs.searchToggle?.focus());
                     }
                 },
 

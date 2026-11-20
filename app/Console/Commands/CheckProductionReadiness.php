@@ -29,7 +29,8 @@ class CheckProductionReadiness extends Command
 
         $checks['Migrações aplicadas'] = $checks['Banco acessível'] && $this->migrationsApplied($migrator);
 
-        foreach (['local', 'public'] as $disk) {
+        // The HR documents disk may be a bucket outside the server (FILESYSTEM_DOCUMENTS_DISK).
+        foreach (array_unique(['local', 'public', config('filesystems.documents') ?: 'local']) as $disk) {
             $checks['Leitura e gravação no disco '.$disk] = $this->storageAvailable($disk);
         }
 

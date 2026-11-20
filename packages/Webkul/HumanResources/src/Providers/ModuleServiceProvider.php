@@ -3,10 +3,14 @@
 namespace Webkul\HumanResources\Providers;
 
 use Webkul\Core\Providers\BaseModuleServiceProvider;
+use Webkul\HumanResources\Models\Checklist;
+use Webkul\HumanResources\Models\ChecklistColumn;
+use Webkul\HumanResources\Models\ChecklistItem;
 use Webkul\HumanResources\Models\Department;
 use Webkul\HumanResources\Models\Employee;
 use Webkul\HumanResources\Models\EmployeeDocument;
 use Webkul\HumanResources\Models\Incident;
+use Webkul\HumanResources\Models\IncidentImage;
 use Webkul\HumanResources\Models\QuoteVersion;
 use Webkul\HumanResources\Models\ServiceContract;
 use Webkul\HumanResources\Models\ShiftAssignment;
@@ -21,9 +25,13 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         EmployeeDocument::class,
         ServiceContract::class,
         Incident::class,
+        IncidentImage::class,
         WorkSite::class,
         ShiftAssignment::class,
         Vacation::class,
         QuoteVersion::class,
+        ChecklistColumn::class,
+        Checklist::class,
+        ChecklistItem::class,
     ];
 }

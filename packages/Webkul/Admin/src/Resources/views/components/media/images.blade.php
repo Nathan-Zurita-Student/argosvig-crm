@@ -104,24 +104,27 @@
             <!-- Image Preview -->
             <img
                 :src="image.url"
+                :alt="image.alt ?? ''"
+                class="object-cover"
                 :style="{'width': this.width, 'height': this.height}"
             />
 
-            <div class="invisible absolute bottom-0 top-0 flex w-full flex-col justify-between bg-white p-3 opacity-80 transition-all group-hover:visible dark:bg-gray-900">
-                <!-- Image Name -->
-                <p class="break-all text-xs font-semibold text-gray-600 dark:text-gray-300"></p>
-
+            <div class="absolute inset-x-0 bottom-0 bg-white/95 p-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 dark:bg-gray-900/95 [@media(hover:none)]:opacity-100">
                 <!-- Actions -->
                 <div class="flex justify-between">
-                    <span
+                    <button
+                        type="button"
+                        aria-label="@lang('admin::app.layouts.remove-image')"
                         class="icon-delete cursor-pointer rounded-md p-1.5 text-2xl hover:bg-gray-200 dark:hover:bg-gray-800"
                         @click="remove"
-                    ></span>
+                    ></button>
 
-                    <label
+                    <button
+                        type="button"
+                        aria-label="@lang('admin::app.layouts.replace-image')"
                         class="icon-edit cursor-pointer rounded-md p-1.5 text-2xl hover:bg-gray-200 dark:hover:bg-gray-800"
-                        :for="$.uid + '_imageInput_' + index"
-                    ></label>
+                        @click="$refs[$.uid + '_imageInput_' + index].click()"
+                    ></button>
 
                     <input
                         type="hidden"

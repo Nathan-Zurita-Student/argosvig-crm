@@ -34,6 +34,7 @@ it('groups the human resources and operations areas before administration', func
         route('admin.human_resources.shifts.index'),
         route('admin.human_resources.incidents.index'),
         route('admin.human_resources.contracts.index'),
+        route('admin.human_resources.checklists.index'),
     ]);
 });
 

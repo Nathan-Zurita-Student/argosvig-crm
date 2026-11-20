@@ -6,6 +6,7 @@
 
 <x-admin::form.control-group.control
     type="select"
+    data-searchable
     id="{{ $attribute->code }}"
     name="{{ $attribute->code }}"
     rules="{{ $validations }}"

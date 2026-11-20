@@ -21,9 +21,9 @@ function assistantUser(array $permissions): User
 
 function assistantResponse(array $result): void
 {
-    config(['services.openrouter.key' => 'synthetic-assistant-key', 'operations.ai_enabled' => true]);
+    config(['services.openai.key' => 'synthetic-assistant-key', 'operations.ai_enabled' => true]);
     Http::preventStrayRequests();
-    Http::fake(['https://openrouter.ai/api/v1/chat/completions' => Http::response([
+    Http::fake(['https://api.openai.com/v1/chat/completions' => Http::response([
         'choices' => [['message' => ['content' => json_encode($result, JSON_THROW_ON_ERROR)]]],
     ])]);
 }

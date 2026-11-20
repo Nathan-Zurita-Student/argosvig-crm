@@ -10,9 +10,9 @@
         {!! view_render_event('admin.dashboard.index.header.left.before') !!}
 
         <div class="grid gap-1.5">
-            <p class="text-2xl font-semibold dark:text-white">
+            <h1 class="text-2xl font-semibold dark:text-white">
                 {{ menu()->getLabel('dashboard', 'admin::app.dashboard.index.title') }}
-            </p>
+            </h1>
         </div>
 
         {!! view_render_event('admin.dashboard.index.header.left.after') !!}
@@ -42,8 +42,7 @@
     <section class="mb-5 overflow-hidden rounded-xl bg-gradient-to-r from-[#061534] via-[#0a2454] to-[#163d7a] p-6 text-white shadow-lg">
         <div class="flex flex-wrap items-center justify-between gap-5">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.28em] text-blue-200">Argosvig</p>
-                <h2 class="mt-2 text-2xl font-bold">@lang('human_resources::app.dashboard.title')</h2>
+                <h2 class="text-2xl font-bold">@lang('human_resources::app.dashboard.title')</h2>
                 <p class="mt-1 max-w-2xl text-sm text-blue-100">@lang('human_resources::app.dashboard.description')</p>
             </div>
 
@@ -58,19 +57,30 @@
     </section>
 
     <section class="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        @foreach (['active_employees', 'active_contracts', 'monthly_contract_value', 'documents_expiring', 'open_incidents'] as $metric)
+        @foreach (['open_incidents', 'documents_expiring', 'active_contracts', 'active_employees', 'monthly_contract_value'] as $metric)
             @continue(! isset($operationalStats[$metric]))
             @php
                 [$label, $detail, $color] = match ($metric) {
-                    'active_employees' => ['active_employees', trans('human_resources::app.dashboard.total_employees', ['count' => $operationalStats['employees']]), 'text-blue-600'],
-                    'active_contracts' => ['active_contracts', trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'text-emerald-600'],
-                    'monthly_contract_value' => ['monthly_value', isset($operationalStats['departments']) ? trans('human_resources::app.dashboard.departments', ['count' => $operationalStats['departments']]) : null, 'text-violet-600'],
-                    'documents_expiring' => ['expiring_documents', trans('human_resources::app.dashboard.next_thirty_days'), 'text-amber-600'],
-                    'open_incidents' => ['open_incidents', trans('human_resources::app.dashboard.requires_attention'), 'text-red-600'],
+                    'active_employees' => ['active_employees', trans('human_resources::app.dashboard.total_employees', ['count' => $operationalStats['employees']]), 'text-gray-900 dark:text-white'],
+                    'active_contracts' => ['active_contracts', trans('human_resources::app.dashboard.expiring_contracts', ['count' => $operationalStats['contracts_expiring']]), 'text-gray-900 dark:text-white'],
+                    'monthly_contract_value' => ['monthly_value', isset($operationalStats['departments']) ? trans('human_resources::app.dashboard.departments', ['count' => $operationalStats['departments']]) : null, 'text-gray-900 dark:text-white'],
+                    'documents_expiring' => ['expiring_documents', trans('human_resources::app.dashboard.next_thirty_days'), $operationalStats[$metric] ? 'text-amber-700 dark:text-amber-300' : 'text-gray-900 dark:text-white'],
+                    'open_incidents' => ['open_incidents', trans('human_resources::app.dashboard.requires_attention'), $operationalStats[$metric] ? 'text-red-700 dark:text-red-300' : 'text-gray-900 dark:text-white'],
+                };
+                $metricUrl = match ($metric) {
+                    'open_incidents' => route('admin.human_resources.incidents.index'),
+                    'documents_expiring' => route('admin.human_resources.document_center.index', ['expiry' => 'soon']),
+                    default => null,
                 };
             @endphp
             <div class="min-w-0 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@lang('human_resources::app.dashboard.'.$label)</p>
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    @if ($metricUrl)
+                        <a href="{{ $metricUrl }}" class="underline decoration-gray-400 underline-offset-4 hover:decoration-current">@lang('human_resources::app.dashboard.'.$label)</a>
+                    @else
+                        @lang('human_resources::app.dashboard.'.$label)
+                    @endif
+                </p>
                 {{-- Currency values are longer than counters and overflowed the five-column row. --}}
                 <p class="mt-2 break-words font-bold {{ $metric === 'monthly_contract_value' ? 'text-2xl xl:text-xl 2xl:text-2xl' : 'text-3xl' }} {{ $color }}">{{ $metric === 'monthly_contract_value' ? core()->formatBasePrice($operationalStats[$metric]) : $operationalStats[$metric] }}</p>
                 @if ($detail)
@@ -154,11 +164,12 @@
                 @if ($pipelines->count() > 1)
                     <!-- Pipeline Selector -->
                     <select
+                        data-searchable
                         class="custom-select flex min-h-[39px] w-[160px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400"
                         v-model="filters.pipeline_id"
                     >
                         @foreach ($pipelines as $pipeline)
-                            <option value="{{ $pipeline->id }}">{{ $pipeline->name }}</option>
+                            <option value="{{ $pipeline->id }}">{{ \Webkul\Admin\Helpers\CommercialLabel::display($pipeline->name, 'pipeline') }}</option>
                         @endforeach
                     </select>
                 @endif

@@ -8,9 +8,9 @@
             <div class="flex flex-col gap-2">
                 <x-admin::breadcrumbs name="contacts.persons" />
 
-                <div class="text-xl font-bold dark:text-white">
+                <h1 class="text-xl font-bold dark:text-white">
                     {{ menu()->getLabel('contacts.persons', 'admin::app.contacts.persons.index.title') }}
-                </div>
+                </h1>
             </div>
 
             <div class="flex items-center gap-x-2.5">
@@ -240,9 +240,7 @@
                             <div class="flex min-w-0 items-center gap-1.5 dark:text-gray-300">
                                 <x-admin::avatar ::name="record.person_name" />
 
-                                <span class="truncate">
-                                    @{{ record.person_name }}
-                                </span>
+                                <a :href="record.person_url" class="truncate font-medium text-brandColor hover:underline dark:text-blue-300" v-text="record.person_name"></a>
                             </div>
 
                             <!-- Emails -->
@@ -267,13 +265,16 @@
                                         class="place-self-end"
                                         v-if="available.actions.length"
                                     >
-                                        <span
+                                        <button
+                                            type="button"
                                             class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center"
                                             :class="action.icon"
+                                            :aria-label="action.title"
+                                            :title="action.title"
                                             v-text="! action.icon ? action.title : ''"
                                             v-for="action in record.actions"
                                             @click="performAction(action)"
-                                        ></span>
+                                        ></button>
                                     </p>
                                 </div>
                             </div>
@@ -308,14 +309,17 @@
                                         class="flex w-full items-center justify-end"
                                         v-if="available.actions.length"
                                     >
-                                        <span
+                                        <button
+                                            type="button"
                                             class="dark:hover:bg-gray-80 cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200"
                                             :class="action.icon"
+                                            :aria-label="action.title"
+                                            :title="action.title"
                                             v-text="! action.icon ? action.title : ''"
                                             v-for="action in record.actions"
                                             @click="performAction(action)"
                                         >
-                                        </span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -325,7 +329,8 @@
                                 <template v-for="column in available.columns">
                                     <div class="flex flex-wrap items-baseline gap-x-2">
                                         <span class="text-slate-600 dark:text-gray-300" v-html="column.label + ':'"></span>
-                                        <span class="break-words font-medium text-slate-900 dark:text-white" v-html="record[column.index]"></span>
+                                        <a v-if="column.index === 'person_name'" :href="record.person_url" class="break-words font-medium text-brandColor hover:underline dark:text-blue-300" v-text="record.person_name"></a>
+                                        <span v-else class="break-words font-medium text-slate-900 dark:text-white" v-text="record[column.index]"></span>
                                     </div>
                                 </template>
                             </div>

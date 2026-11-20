@@ -42,10 +42,13 @@ class OperationsAi
         return mb_substr($transcript, 0, 10000);
     }
 
-    public function chat(string $instruction, array $data, int $maxTokens = 650): string
+    /**
+     * @param  array{mime: string, data: string}|null  $media  an image or PDF read by the model
+     */
+    public function chat(string $instruction, array $data, int $maxTokens = 650, ?array $media = null): string
     {
-        $result = $this->result(function () use ($instruction, $data, $maxTokens) {
-            $response = $this->ai->chat($instruction, json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), $maxTokens);
+        $result = $this->result(function () use ($instruction, $data, $maxTokens, $media) {
+            $response = $this->ai->chat($instruction, json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), $maxTokens, $media);
 
             return $response->successful() ? $this->ai->text($response) : null;
         });

@@ -3,59 +3,68 @@
 namespace Webkul\HumanResources\Http\Controllers;
 
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Services\CrmAi;
 
 class AiConnectionController extends Controller
 {
-    public function index(CrmAi $ai): View
+    /**
+     * The connection is now checked from the AI settings screen; the old address leads there.
+     */
+    public function index(): RedirectResponse
     {
         $this->authorizeConfiguration();
 
-        return view('human_resources::ai.connection', [
-            'configured' => $ai->configured(), 'enabled' => $ai->enabled(), 'provider' => $ai->provider(),
-            'model' => $ai->model(), 'audioModel' => $ai->audioModel(), 'audioProvider' => $ai->audioProvider(),
-        ]);
+        return redirect()->route('admin.configuration.index', ['slug' => 'general', 'slug2' => 'crm_ai']);
     }
 
-    public function test(CrmAi $ai): RedirectResponse
+    /**
+     * Sends a short synthetic message, with no CRM data, to the saved provider and model.
+     */
+    public function test(Request $request, CrmAi $ai): JsonResponse|RedirectResponse
     {
         $this->authorizeConfiguration();
-        $message = 'key_missing';
 
-        if ($ai->configured()) {
-            try {
-                $message = 'disabled';
-                if ($ai->provider() === 'openrouter') {
-                    $key = $ai->openRouterKeyStatus();
-                    $message = match ($key->status()) {
-                        200 => is_array($key->json('data')) ? 'key_ok' : 'provider_error',
-                        401, 403 => 'invalid_key',
-                        429 => 'rate_limited',
-                        default => 'provider_error',
-                    };
-                }
+        $status = match (true) {
+            ! $ai->configured() => 'key_missing',
+            ! $ai->enabled() => 'disabled',
+            default => $this->check($ai),
+        };
 
-                if (in_array($message, ['disabled', 'key_ok'], true) && $ai->enabled()) {
-                    $test = $ai->chat('This is a connection test.', 'Respond with OK.', 512);
-                    $message = $test->successful() && filled($ai->text($test))
-                        ? 'connected'
-                        : match ($test->status()) {
-                            401, 403 => 'invalid_key',
-                            402 => 'billing',
-                            429 => $test->json('error.code') === 'insufficient_quota' ? 'billing' : 'rate_limited',
-                            400, 404 => 'model_unavailable',
-                            default => 'provider_error',
-                        };
-                }
-            } catch (ConnectionException) {
-                $message = 'provider_error';
-            }
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => $status,
+                'ok' => $status === 'connected',
+                'message' => trans('human_resources::ai.status.'.$status),
+                'model' => $ai->label(),
+            ]);
         }
 
-        return redirect()->route('admin.ai.connection')->with('ai_status', $message);
+        return redirect()->route('admin.configuration.index', ['slug' => 'general', 'slug2' => 'crm_ai'])->with('ai_status', $status);
+    }
+
+    private function check(CrmAi $ai): string
+    {
+        try {
+            $test = $ai->chat('This is a connection test.', 'Respond with OK.', 512);
+        } catch (ConnectionException) {
+            return 'provider_error';
+        }
+
+        if ($test->successful() && filled($ai->text($test))) {
+            return 'connected';
+        }
+
+        return match ($test->status()) {
+            401, 403 => 'invalid_key',
+            402 => 'billing',
+            429 => $test->json('error.code') === 'insufficient_quota' ? 'billing' : 'rate_limited',
+            400, 404 => 'model_unavailable',
+            default => 'provider_error',
+        };
     }
 
     private function authorizeConfiguration(): void

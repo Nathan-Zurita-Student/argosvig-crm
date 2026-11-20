@@ -51,7 +51,7 @@ it('keeps the primary-link convention in every crm datagrid', function () {
      * Users are edited in a modal: their grid sends the avatar data and the page
      * template turns the name into the link that opens it.
      */
-    $linkedInTemplate = ['UserDataGrid.php'];
+    $linkedInTemplate = ['UserDataGrid.php', 'GroupDataGrid.php', 'TypeDataGrid.php', 'SourceDataGrid.php', 'TagDataGrid.php', 'EventDataGrid.php', 'CampaignDatagrid.php', 'PersonDataGrid.php'];
 
     foreach ($dataGrids as $dataGrid) {
         $contents = $dataGrid->getContents();
@@ -69,7 +69,7 @@ it('keeps the primary-link convention in every crm datagrid', function () {
 it('opens the user modal from the name in the users grid', function () {
     $template = File::get(base_path('packages/Webkul/Admin/src/Resources/views/settings/users/index.blade.php'));
 
-    expect($template)->toMatch('/@click="editModal\(record\.actions\.find\(action => action\.index === \'edit\'\)\?\.url\)"\s*>\s*@\{\{ record\.name\.name \}\}\s*<\/a>/');
+    expect($template)->toMatch('/@click="editModal\(record\.actions\.find\(action => action\.index === \'edit\'\)\.url\)"\s*>\s*@\{\{ record\.name\.name \}\}\s*<\/button>/');
 
     // A page link to the edit route would answer with JSON, since that route feeds the modal.
     expect(File::get(base_path('packages/Webkul/Admin/src/DataGrids/Settings/UserDataGrid.php')))

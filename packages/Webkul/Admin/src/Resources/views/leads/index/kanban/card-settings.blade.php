@@ -20,7 +20,7 @@
             <x-slot:toggle>
                 {!! view_render_event('admin.leads.index.kanban.card_settings.dropdown.toggle_button.before') !!}
 
-                <div class="icon-setting cursor-pointer rounded-md border p-2 text-lg text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:text-gray-300 dark:hover:border-gray-400"></div>
+                <button type="button" aria-label="@lang('admin::app.leads.index.kanban.toolbar.card-settings.title')" title="@lang('admin::app.leads.index.kanban.toolbar.card-settings.title')" class="icon-setting cursor-pointer rounded-md border p-2 text-lg text-gray-600 transition-all hover:border-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brandColor dark:border-gray-800 dark:text-gray-300 dark:hover:border-gray-400"></button>
 
                 {!! view_render_event('admin.leads.index.kanban.card_settings.dropdown.toggle_button.after') !!}
             </x-slot>

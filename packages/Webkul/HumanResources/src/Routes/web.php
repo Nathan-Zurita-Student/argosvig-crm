@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Webkul\HumanResources\Http\Controllers\AiConnectionController;
 use Webkul\HumanResources\Http\Controllers\AssistantController;
 use Webkul\HumanResources\Http\Controllers\AssistantReportController;
+use Webkul\HumanResources\Http\Controllers\ChecklistBoardSettingsController;
+use Webkul\HumanResources\Http\Controllers\ChecklistController;
 use Webkul\HumanResources\Http\Controllers\CommercialFollowUpController;
 use Webkul\HumanResources\Http\Controllers\DepartmentController;
 use Webkul\HumanResources\Http\Controllers\DocumentCenterController;
@@ -29,6 +31,9 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
     Route::get('report/download', AssistantReportController::class)->middleware('throttle:crm-ai')->name('report');
     Route::post('transcribe', VoiceTranscriptionController::class)->middleware('throttle:crm-ai')->name('transcribe');
     Route::post('incident-draft', [IncidentDraftController::class, 'draft'])->middleware('throttle:crm-ai')->name('incident_draft');
+    Route::post('import', [AssistantController::class, 'import'])->middleware('throttle:crm-ai')->name('import');
+    Route::post('incident-suggestion', [AssistantController::class, 'incidentSuggestion'])->middleware('throttle:crm-ai')->name('incident_suggestion');
+    Route::post('read-document', [AssistantController::class, 'readDocument'])->middleware('throttle:crm-ai')->name('read_document');
 });
 
 Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/operations')->name('admin.operations.')->group(function () {
@@ -117,6 +122,7 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
         Route::get('create', 'create')->name('admin.human_resources.incidents.create');
         Route::post('', 'store')->name('admin.human_resources.incidents.store');
         Route::get('{id}', 'show')->name('admin.human_resources.incidents.show');
+        Route::get('{id}/images/{imageId}', 'image')->whereNumber(['id', 'imageId'])->name('admin.human_resources.incidents.images.show');
         Route::get('{id}/edit', 'edit')->name('admin.human_resources.incidents.edit');
         Route::put('{id}', 'update')->name('admin.human_resources.incidents.update');
         Route::delete('{id}', 'destroy')->name('admin.human_resources.incidents.delete');
@@ -139,4 +145,20 @@ Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_pat
         Route::put('{id}', 'update')->name('admin.human_resources.shifts.update');
         Route::delete('{id}', 'destroy')->name('admin.human_resources.shifts.delete');
     });
+
+    Route::controller(ChecklistController::class)->prefix('checklists')->name('admin.human_resources.checklists.')->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+        Route::post('move', 'move')->name('move');
+        Route::put('{id}', 'update')->whereNumber('id')->name('update');
+        Route::delete('{id}', 'destroy')->whereNumber('id')->name('delete');
+        Route::post('{id}/items', 'storeItem')->whereNumber('id')->name('items.store');
+        Route::put('{id}/items/{itemId}', 'updateItem')->whereNumber(['id', 'itemId'])->name('items.update');
+        Route::delete('{id}/items/{itemId}', 'destroyItem')->whereNumber(['id', 'itemId'])->name('items.delete');
+    });
+});
+
+Route::middleware(['web', 'admin_locale', 'user'])->prefix(config('app.admin_path').'/settings/checklist-board')->name('admin.settings.checklist_board.')->group(function () {
+    Route::get('', [ChecklistBoardSettingsController::class, 'edit'])->name('edit');
+    Route::put('', [ChecklistBoardSettingsController::class, 'update'])->name('update');
 });

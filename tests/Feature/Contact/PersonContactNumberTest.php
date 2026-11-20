@@ -1,9 +1,23 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Webkul\Admin\Security\TwoFactorAuthentication;
+use Webkul\Contact\Models\Person;
 use Webkul\Contact\Repositories\PersonRepository;
 
 uses(DatabaseTransactions::class);
+
+it('returns contact names as text with a separate detail link', function () {
+    $admin = getDefaultAdmin();
+    $person = Person::create(['name' => 'Ana & José', 'user_id' => $admin->id]);
+
+    $this->actingAs($admin, 'user')
+        ->withSession([TwoFactorAuthentication::SESSION_KEY => app(TwoFactorAuthentication::class)->fingerprint($admin)])
+        ->getJson(route('admin.contacts.persons.index', ['filters' => ['id' => [$person->id]]]), ['X-Requested-With' => 'XMLHttpRequest'])
+        ->assertOk()
+        ->assertJsonPath('records.0.person_name', 'Ana & José')
+        ->assertJsonPath('records.0.person_url', route('admin.contacts.persons.view', $person->id));
+});
 
 function sanitizePersonData(array $contactNumbers): array
 {

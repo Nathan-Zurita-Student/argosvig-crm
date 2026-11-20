@@ -87,15 +87,6 @@ class OrganizationDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('contacts.organizations.edit')) {
-            $this->addAction([
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.contacts.organizations.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.contacts.organizations.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('contacts.organizations.delete')) {
             $this->addAction([
                 'icon' => 'icon-delete',

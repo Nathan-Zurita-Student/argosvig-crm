@@ -39,7 +39,7 @@
                             :style="`grid-template-columns: repeat(${gridsCount}, minmax(0, 1fr))`"
                         >
                             <!-- Mass Actions -->
-                            <p v-if="available.massActions.length">
+                            <p v-if="available.massActions.length" data-column="selection">
                                 <label for="mass_action_select_all_records">
                                     <input
                                         type="checkbox"
@@ -66,6 +66,7 @@
                             <template v-for="column in available.columns">
                                 <div
                                     class="flex items-center gap-1.5 break-words"
+                                    :data-column="column.index"
                                     :class="{'cursor-pointer select-none hover:text-gray-800 dark:hover:text-white': column.sortable}"
                                     @click="sort(column)"
                                     v-if="column.visibility"
@@ -83,6 +84,7 @@
                             <!-- Actions -->
                             <p
                                 class="text-end"
+                                data-column="actions"
                                 v-if="available.actions.length"
                             >
                                 @lang('admin::app.components.datagrid.table.actions')
@@ -90,7 +92,7 @@
                         </div>
                         
                         <!-- Mobile Sort/Filter Header -->
-                        <div class="hidden border-b bg-gray-50 px-4 py-3 text-black dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-lg:block">
+                        <div class="datagrid-card-header hidden border-b bg-gray-50 px-4 py-3 text-black dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-lg:block">
                             <div class="flex items-center justify-between">
                                 <!-- Mass Actions for Mobile -->
                                 <div v-if="available.massActions.length">
@@ -178,7 +180,7 @@
                                 :style="`grid-template-columns: repeat(${gridsCount}, minmax(0, 1fr))`"
                             >
                                 <!-- Mass Actions -->
-                                <p v-if="available.massActions.length">
+                                <p v-if="available.massActions.length" data-column="selection">
                                     <label :for="`mass_action_select_record_${record[available.meta.primary_column]}`">
                                         <input
                                             type="checkbox"
@@ -198,6 +200,7 @@
                                 <template v-for="column in available.columns">
                                     <p
                                         class="break-words"
+                                        :data-column="column.index"
                                         v-html="record[column.index]"
                                         v-if="column.visibility"
                                     >
@@ -207,22 +210,26 @@
                                 <!-- Actions -->
                                 <p
                                     class="flex h-full items-center place-self-end"
+                                    data-column="actions"
                                     v-if="available.actions.length"
                                 >
-                                    <span
+                                    <button
+                                        type="button"
                                         class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center"
                                         :class="action.icon"
+                                        :aria-label="action.title"
+                                        :title="action.title"
                                         v-text="! action.icon ? action.title : ''"
                                         v-for="action in record.actions"
                                         @click="performAction(action)"
                                     >
-                                    </span>
+                                    </button>
                                 </p>
                             </div>
                             
                             <!-- Mobile Card View -->
                             <div
-                                class="hidden border-b px-4 py-4 text-black dark:border-gray-800 dark:text-gray-300 max-lg:block"
+                                class="datagrid-record-card hidden border-b px-4 py-4 text-black dark:border-gray-800 dark:text-gray-300 max-lg:block"
                                 v-for="record in available.records"
                             >
                                 <div class="mb-2 flex items-center justify-between">
@@ -249,14 +256,17 @@
                                             class="flex w-full items-center justify-end"
                                             v-if="available.actions.length"
                                         >
-                                            <span
+                                            <button
+                                                type="button"
                                                 class="dark:hover:bg-gray-80 cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200"
                                                 :class="action.icon"
+                                                :aria-label="action.title"
+                                                :title="action.title"
                                                 v-text="! action.icon ? action.title : ''"
                                                 v-for="action in record.actions"
                                                 @click="performAction(action)"
                                             >
-                                            </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

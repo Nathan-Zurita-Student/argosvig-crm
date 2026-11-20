@@ -6,4 +6,4 @@
     };
 @endphp
 
-<a class="secondary-button" href="{{ route($followUp) }}">@lang('human_resources::commercial.title')</a>
+<a class="secondary-button lg:ltr:ml-auto lg:rtl:mr-auto" href="{{ route($followUp) }}">@lang('human_resources::commercial.title')</a>

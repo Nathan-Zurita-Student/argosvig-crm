@@ -12,7 +12,7 @@
         enctype="multipart/form-data"
         method="PUT"
     >
-        <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+        <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-sm:static">
             <div class="flex flex-col gap-2">
                 {!! view_render_event('admin.user.account.breadcrumbs.before', ['user' => $user]) !!}
 
@@ -24,25 +24,25 @@
 
                 {!! view_render_event('admin.user.account.breadcrumbs.after', ['user' => $user]) !!}
 
-                <div class="text-xl font-bold dark:text-white">
+                <h1 class="text-xl font-bold dark:text-white">
                     {!! view_render_event('admin.user.account.title.before', ['user' => $user]) !!}
 
                     @lang('admin::app.account.edit.title')
 
                     {!! view_render_event('admin.user.account.title.after', ['user' => $user]) !!}
-                </div>
+                </h1>
             </div>
 
             <div class="flex items-center gap-x-2.5">
                 <!-- Create button for Roles -->
-                <div class="flex items-center gap-x-2.5">
+                <div class="flex flex-wrap items-center gap-2.5">
                     {!! view_render_event('admin.user.account.save_btn.before', ['user' => $user]) !!}
 
                     <a class="secondary-button" href="{{ route('admin.user.account.two_factor') }}">@lang('admin::two_factor.title')</a>
 
                     <button
                         type="submit"
-                        class="primary-button"
+                        class="primary-button max-sm:hidden"
                     >
                         @lang('admin::app.account.edit.save-btn')
                     </button>
@@ -53,11 +53,11 @@
         </div>
         
         <!-- Full Panel -->
-        <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
+        <div class="mt-3.5 flex min-w-0 gap-2.5 max-xl:flex-wrap">
             {!! view_render_event('admin.user.account.left.before', ['user' => $user]) !!}
 
             <!-- Left sub Component -->
-            <div class="flex flex-1 flex-col gap-2">
+            <div class="flex min-w-0 flex-1 flex-col gap-2 max-xl:w-full max-xl:flex-auto">
                 <!-- General -->
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
                     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
@@ -68,12 +68,13 @@
                     <x-admin::form.control-group>
                         <x-admin::media.images
                             name="image"
-                            :uploaded-images="$user->image ? [['id' => 'image', 'url' => $user->image_url]] : []"
+                            :uploaded-images="$user->image ? [['id' => 'image', 'url' => $user->image_url, 'alt' => trans('admin::app.account.edit.profile-image')]] : []"
                         />
                     </x-admin::form.control-group>
 
                     <p class="mb-4 text-xs text-gray-600 dark:text-gray-300">
                         @lang('admin::app.account.edit.upload-image-info')
+                        @lang('admin::app.layouts.account-photo-help')
                     </p>
 
                     <!-- Name -->
@@ -129,6 +130,8 @@
 
                      <!-- Change Account Password -->
                     <x-slot:content>
+                        <p class="mb-4 text-sm text-gray-600 dark:text-gray-300">@lang('admin::app.layouts.account-password-help')</p>
+
                         {!! view_render_event('admin.user.current_password.before', ['user' => $user]) !!}
 
                         <!-- Current Password -->
@@ -140,6 +143,7 @@
                             <x-admin::form.control-group.control
                                 type="password"
                                 name="current_password"
+                                autocomplete="current-password"
                                 rules="required|min:6"
                                 :label="trans('admin::app.account.edit.current-password')"
                                 :placeholder="trans('admin::app.account.edit.current-password')"
@@ -161,6 +165,7 @@
                             <x-admin::form.control-group.control
                                 type="password"
                                 name="password"
+                                autocomplete="new-password"
                                 rules="min:6"
                                 :placeholder="trans('admin::app.account.edit.password')"
                                 ref="password"
@@ -182,6 +187,7 @@
                             <x-admin::form.control-group.control
                                 type="password"
                                 name="password_confirmation"
+                                autocomplete="new-password"
                                 rules="confirmed:@password"
                                 :label="trans('admin::app.account.edit.confirm-password')"
                                 :placeholder="trans('admin::app.account.edit.confirm-password')"
@@ -196,6 +202,12 @@
             </div>
 
             {!! view_render_event('admin.user.account.right.after', ['user' => $user]) !!}
+        </div>
+
+        <div class="mt-4 sm:hidden">
+            <button type="submit" class="primary-button min-h-11 w-full justify-center">
+                @lang('admin::app.account.edit.save-btn')
+            </button>
         </div>
     </x-admin::form>
 

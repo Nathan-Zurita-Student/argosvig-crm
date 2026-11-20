@@ -8,6 +8,18 @@ Após aplicar as migrações e atualizar a configuração do ambiente, rode `php
 
 Cada administrador pode ativar a verificação em duas etapas em **Minha conta**. O fluxo pede a senha atual, confirma um código do autenticador e exibe códigos de recuperação de uso único. Guarde os códigos em local seguro e valide um novo login antes de encerrar a sessão de configuração.
 
+## Documentos na nuvem
+
+Por padrão, contracheques, folhas de ponto e os demais documentos de RH ficam em `storage/app`, no próprio servidor. Para que continuem acessíveis e protegidos quando o servidor cair, grave-os num bucket privado compatível com S3, como AWS S3, Cloudflare R2 ou Backblaze B2.
+
+1. Crie o bucket sem acesso público, com criptografia em repouso e, se o serviço oferecer, versionamento de objetos.
+2. Crie uma chave de acesso restrita a esse bucket, com leitura, gravação e exclusão.
+3. No `.env`, preencha `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` e `AWS_BUCKET`. Para R2, B2 ou MinIO, preencha também `AWS_ENDPOINT` e, se o serviço pedir, `AWS_USE_PATH_STYLE_ENDPOINT=true`.
+4. Defina `FILESYSTEM_DOCUMENTS_DISK=s3` e rode `php artisan config:cache` e `php artisan crm:check-production`. A verificação passa a gravar e ler um arquivo de teste no bucket.
+5. Documentos novos já vão para o bucket. Os antigos continuam baixando do disco em que foram salvos. Para movê-los, veja a prévia com `php artisan hr:move-documents` e depois rode `php artisan hr:move-documents --apply`. Cada arquivo é copiado, conferido pelo tamanho e só então apagado do servidor.
+
+O download continua passando pelo CRM, com permissão e registro no histórico. O bucket nunca deve ter link público.
+
 ## Backup e teste de recuperação
 
 Prepare um arquivo de opções do cliente MySQL, fora do projeto, com permissões de leitura limitadas ao operador. Preencha host, usuário e senha na seção `[client]`. Mantenha um destino privado de backup com acesso restrito, criptografia em repouso e cópia fora do servidor. O diretório padrão dos arquivos do CRM é `storage/app`.

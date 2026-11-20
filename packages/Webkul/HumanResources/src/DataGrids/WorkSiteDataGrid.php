@@ -29,9 +29,6 @@ class WorkSiteDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('human-resources.work-sites.edit')) {
-            $this->addAction(['index' => 'edit', 'icon' => 'icon-edit', 'title' => trans('human_resources::app.common.edit'), 'method' => 'GET', 'url' => fn ($row) => route('admin.human_resources.work_sites.edit', $row->id)]);
-        }
         if (bouncer()->hasPermission('human-resources.work-sites.delete')) {
             $this->addAction(['index' => 'delete', 'icon' => 'icon-delete', 'title' => trans('human_resources::app.common.delete'), 'method' => 'DELETE', 'url' => fn ($row) => route('admin.human_resources.work_sites.delete', $row->id)]);
         }

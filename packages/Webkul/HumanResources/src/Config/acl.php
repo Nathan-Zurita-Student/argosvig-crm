@@ -4,7 +4,7 @@ return [
     [
         'key' => 'crm-ai',
         'name' => 'human_resources::ai.assistant',
-        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download', 'admin.ai.report', 'admin.ai.transcribe', 'admin.ai.incident_draft'],
+        'route' => ['admin.ai.ask', 'admin.ai.draft', 'admin.ai.download', 'admin.ai.report', 'admin.ai.transcribe', 'admin.ai.incident_draft', 'admin.ai.import', 'admin.ai.incident_suggestion', 'admin.ai.read_document'],
         'sort' => 16,
     ],
     [
@@ -156,7 +156,7 @@ return [
     ], [
         'key' => 'human-resources.incidents.view',
         'name' => 'human_resources::app.acl.view',
-        'route' => 'admin.human_resources.incidents.show',
+        'route' => ['admin.human_resources.incidents.show', 'admin.human_resources.incidents.images.show'],
         'sort' => 2,
     ], [
         'key' => 'human-resources.incidents.edit',
@@ -216,5 +216,41 @@ return [
         'name' => 'human_resources::app.acl.delete',
         'route' => 'admin.human_resources.departments.delete',
         'sort' => 3,
+    ], [
+        'key' => 'checklists',
+        'name' => 'human_resources::checklists.title',
+        'route' => 'admin.human_resources.checklists.index',
+        'sort' => 12,
+    ], [
+        'key' => 'checklists.create',
+        'name' => 'human_resources::app.acl.create',
+        'route' => 'admin.human_resources.checklists.store',
+        'sort' => 1,
+    ], [
+        'key' => 'checklists.edit',
+        'name' => 'human_resources::app.acl.edit',
+        'route' => [
+            'admin.human_resources.checklists.update',
+            'admin.human_resources.checklists.move',
+            'admin.human_resources.checklists.items.store',
+            'admin.human_resources.checklists.items.update',
+            'admin.human_resources.checklists.items.delete',
+        ],
+        'sort' => 2,
+    ], [
+        'key' => 'checklists.delete',
+        'name' => 'human_resources::app.acl.delete',
+        'route' => 'admin.human_resources.checklists.delete',
+        'sort' => 3,
+    ], [
+        'key' => 'settings.operations',
+        'name' => 'human_resources::checklists.settings.group',
+        'route' => 'admin.settings.checklist_board.edit',
+        'sort' => 5,
+    ], [
+        'key' => 'settings.operations.checklist_board',
+        'name' => 'human_resources::checklists.settings.title',
+        'route' => ['admin.settings.checklist_board.edit', 'admin.settings.checklist_board.update'],
+        'sort' => 1,
     ],
 ];

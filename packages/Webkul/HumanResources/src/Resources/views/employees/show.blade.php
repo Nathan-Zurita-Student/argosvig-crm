@@ -166,6 +166,7 @@
                             <x-admin::form.control-group.label class="required">@lang('human_resources::app.documents.fields.file')</x-admin::form.control-group.label>
                             <x-admin::form.control-group.control type="file" name="file" rules="required" :label="trans('human_resources::app.documents.fields.file')" />
                             <x-admin::form.control-group.error control-name="file" />
+                            @include('human_resources::ai.document-reader')
                         </x-admin::form.control-group>
 
                         <button type="submit" class="primary-button w-full justify-center">@lang('human_resources::app.documents.upload')</button>

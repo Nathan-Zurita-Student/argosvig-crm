@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Webkul\Core\ViewRenderEventManager;
+use Webkul\Email\Models\EmailProxy;
+use Webkul\HumanResources\Automation\AiLeadEntity;
+use Webkul\HumanResources\Automation\EmailEntity;
+use Webkul\HumanResources\Console\MoveDocuments;
 use Webkul\HumanResources\Console\NotifyOperationsHandover;
 use Webkul\HumanResources\Console\RemindDocumentExpirations;
 use Webkul\HumanResources\Console\SyncAlterdataTimekeeping;
@@ -36,11 +41,7 @@ class HumanResourcesServiceProvider extends ServiceProvider
             return Limit::perMinute($limit)->by($route.'|'.($request->user('user')?->id ?? $request->ip()));
         });
 
-        Event::listen('admin.configuration.edit.back_button.before', function (ViewRenderEventManager $event) {
-            if (request()->route('slug') === 'general' && request()->route('slug2') === 'crm_ai' && bouncer()->hasPermission('configuration')) {
-                $event->addTemplate('human_resources::ai.connection-link');
-            }
-        });
+        $this->registerAiAutomations();
 
         Event::listen('admin.layout.header.actions.before', function (ViewRenderEventManager $event) {
             if (OperationsBriefing::allowed()) {
@@ -75,13 +76,46 @@ class HumanResourcesServiceProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
-            $this->commands([NotifyOperationsHandover::class, RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
+            $this->commands([MoveDocuments::class, NotifyOperationsHandover::class, RemindDocumentExpirations::class, SyncAlterdataTimekeeping::class]);
 
             $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
                 $schedule->command('hr:remind-document-expirations')->dailyAt('08:00')->withoutOverlapping();
                 $schedule->command('hr:notify-operations-handover')->dailyAt('06:00')->withoutOverlapping();
             });
         }
+    }
+
+    /**
+     * AI in the workflows: opportunities gain a summary and a next-step action, and e-mails
+     * arriving in the inbox become a trigger that can turn them into opportunities.
+     */
+    private function registerAiAutomations(): void
+    {
+        // The package names its entities and events in English only.
+        foreach (['leads', 'activities', 'persons', 'quotes'] as $entity) {
+            config([
+                "workflows.trigger_entities.{$entity}.name" => trans('human_resources::ai.automation.entities.'.$entity),
+                "workflows.trigger_entities.{$entity}.events" => collect(config("workflows.trigger_entities.{$entity}.events", []))
+                    ->map(fn (array $event) => [...$event, 'name' => trans('human_resources::ai.automation.events.'.Str::of($event['event'])->beforeLast('.')->afterLast('.'))])
+                    ->all(),
+            ]);
+        }
+
+        config([
+            'workflows.trigger_entities.leads.class' => AiLeadEntity::class,
+            'workflows.trigger_entities.emails' => [
+                'name' => trans('human_resources::ai.automation.emails'),
+                'class' => EmailEntity::class,
+                'events' => [['event' => EmailEntity::EVENT, 'name' => trans('human_resources::ai.automation.email_received')]],
+            ],
+        ]);
+
+        // Inbound processors save messages without an event of their own.
+        EmailProxy::modelClass()::created(function ($email) {
+            if (collect((array) $email->folders)->contains(fn ($folder) => strtolower((string) $folder) === 'inbox')) {
+                Event::dispatch(EmailEntity::EVENT, $email);
+            }
+        });
     }
 
     public function register(): void

@@ -186,21 +186,11 @@ class ActivityDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('activities.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.activities.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.activities.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('activities.delete')) {
             $this->addAction([
                 'index' => 'delete',
                 'icon' => 'icon-delete',
-                'title' => trans('admin::app.activities.index.datagrid.update'),
+                'title' => trans('admin::app.acl.delete'),
                 'method' => 'DELETE',
                 'url' => fn ($row) => route('admin.activities.delete', $row->id),
             ]);

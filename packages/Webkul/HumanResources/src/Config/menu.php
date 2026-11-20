@@ -51,7 +51,7 @@ return [
         'route' => 'admin.human_resources.work_sites.index',
         'sort' => 9,
         'icon-class' => 'icon-location',
-        'permission' => ['human-resources.work-sites', 'human-resources.shifts', 'human-resources.incidents', 'human-resources.contracts'],
+        'permission' => ['human-resources.work-sites', 'human-resources.shifts', 'human-resources.incidents', 'human-resources.contracts', 'checklists'],
     ], [
         'key' => 'operations.work-sites',
         'name' => 'human_resources::app.menu.sites',
@@ -80,5 +80,27 @@ return [
         'sort' => 4,
         'icon-class' => '',
         'permission' => 'human-resources.contracts',
+    ], [
+        'key' => 'operations.checklists',
+        'name' => 'human_resources::checklists.title',
+        'route' => 'admin.human_resources.checklists.index',
+        'sort' => 5,
+        'icon-class' => '',
+        'permission' => 'checklists',
+    ], [
+        // The board columns are configured in the settings, next to the lead pipelines.
+        'key' => 'settings.operations',
+        'name' => 'human_resources::checklists.settings.group',
+        'info' => 'human_resources::checklists.settings.group_info',
+        'route' => 'admin.settings.checklist_board.edit',
+        'sort' => 5,
+        'icon-class' => '',
+    ], [
+        'key' => 'settings.operations.checklist_board',
+        'name' => 'human_resources::checklists.settings.title',
+        'info' => 'human_resources::checklists.settings.info',
+        'route' => 'admin.settings.checklist_board.edit',
+        'sort' => 1,
+        'icon-class' => 'icon-kanban',
     ],
 ];

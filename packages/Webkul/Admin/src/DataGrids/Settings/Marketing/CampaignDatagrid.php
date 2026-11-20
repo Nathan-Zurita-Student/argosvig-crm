@@ -43,7 +43,6 @@ class CampaignDatagrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.marketing.campaigns.edit', $row->id)),
             'label' => trans('admin::app.settings.marketing.campaigns.index.datagrid.name'),
             'type' => 'string',
             'sortable' => true,

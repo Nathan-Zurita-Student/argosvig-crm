@@ -16,7 +16,7 @@
                 @if (! $shared && ! $document)
                     <label>
                         @lang('human_resources::app.menu.employees')
-                        <select name="employee_id" required class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
+                        <select data-searchable name="employee_id" required class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
                             <option value="">@lang('human_resources::app.common.select')</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id }}" @selected((string) old('employee_id') === (string) $employee->id)>{{ $employee->full_name }} · {{ $employee->employee_number }}</option>
@@ -40,7 +40,7 @@
                     <p class="md:col-span-2">@lang('human_resources::workforce.shared_hint')</p>
                     <label>
                         @lang('human_resources::workforce.organizations')
-                        <select name="organizations[]" multiple size="5" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
+                        <select data-searchable name="organizations[]" multiple size="5" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
                             @foreach ($organizations as $organization)
                                 <option value="{{ $organization->id }}" @selected(in_array($organization->id, (array) old('organizations', $document?->organizationLinks->pluck('organization_id')->all() ?? [])))>{{ $organization->name }}</option>
                             @endforeach
@@ -48,7 +48,7 @@
                     </label>
                     <label>
                         @lang('human_resources::app.menu.contracts')
-                        <select name="contracts[]" multiple size="5" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
+                        <select data-searchable name="contracts[]" multiple size="5" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
                             @foreach ($contracts as $contract)
                                 <option value="{{ $contract->id }}" @selected(in_array($contract->id, (array) old('contracts', $document?->contracts->modelKeys() ?? [])))>{{ $contract->contract_number }} · {{ $contract->title }}</option>
                             @endforeach
@@ -70,6 +70,7 @@
                     <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" @required(! $document) class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">
                     <small>@lang('human_resources::workforce.file_hint')</small>
                 </label>
+                @include('human_resources::ai.document-reader')
                 <label class="md:col-span-2">
                     @lang('human_resources::workforce.notes')
                     <textarea name="notes" maxlength="2000" rows="3" class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:text-white">{{ old('notes', $document?->notes) }}</textarea>

@@ -23,6 +23,7 @@ class LeadResource extends JsonResource
             'status' => $this->status,
             'expected_close_date' => $this->expected_close_date,
             'rotten_days' => $this->rotten_days,
+            'next_activity_at' => $this->whenHas('next_activity_at', fn ($date) => $date ? core()->formatDate($date, 'd/m/Y H:i') : null),
             'closed_at' => $this->closed_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

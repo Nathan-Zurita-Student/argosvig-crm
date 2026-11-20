@@ -3,9 +3,9 @@
 </template>
 
 <template v-else>
-    <div class="flex items-center justify-between gap-4 rounded-t-lg border border-b-0 border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-md:flex-wrap">
+    <div class="flex flex-wrap items-center justify-between gap-4 rounded-t-lg border border-b-0 border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
         <!-- Left Toolbar -->
-        <div class="toolbarLeft flex gap-x-1">
+        <div class="toolbarLeft flex min-w-0 max-w-full gap-x-1">
             {{ $toolbarLeftBefore }}
             
             <!-- Mass Actions Panel -->

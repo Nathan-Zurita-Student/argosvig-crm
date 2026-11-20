@@ -73,16 +73,6 @@ class DepartmentDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('human-resources.departments.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('human_resources::app.common.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.human_resources.departments.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('human-resources.departments.delete')) {
             $this->addAction([
                 'index' => 'delete',

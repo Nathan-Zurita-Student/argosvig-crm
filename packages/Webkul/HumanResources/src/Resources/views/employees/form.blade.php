@@ -58,6 +58,7 @@
 
         <x-admin::form.control-group.control
             type="select"
+            data-searchable
             name="department_id"
             id="department_id"
             :value="old('department_id', $employee?->department_id)"

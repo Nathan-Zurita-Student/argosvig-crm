@@ -77,6 +77,16 @@
         data-turbo-track="reload"
     >
 
+    <!-- Texts of the searchable selects (assets/js/plugins/searchable-select.js), shared with the lookup. -->
+    <meta
+        name="searchable-select"
+        content="{{ json_encode([
+            'search' => trans('admin::app.components.lookup.search'),
+            'noResults' => trans('admin::app.components.lookup.no-results'),
+            'placeholder' => trans('admin::app.components.lookup.click-to-add'),
+        ]) }}"
+    >
+
     @stack('meta')
 
     {{
@@ -150,7 +160,7 @@
             <!-- Page Sidebar Blade Component -->
             <x-admin::layouts.sidebar.desktop />
 
-            <div class="flex min-h-[calc(100vh-62px)] max-w-full flex-1 flex-col bg-gray-100 pt-3 transition-all duration-300 dark:bg-gray-950">
+            <div class="flex min-h-[calc(100vh-62px)] min-w-0 max-w-full flex-1 flex-col bg-gray-100 pt-3 transition-all duration-300 dark:bg-gray-950">
                 <!-- Page Content Blade Component -->
                 <div class="px-4 pb-4 transition-all duration-300 lg:ltr:pl-[235px] lg:group-[.sidebar-collapsed]/container:ltr:pl-[85px] lg:rtl:pr-[235px] lg:group-[.sidebar-collapsed]/container:rtl:pr-[85px]">
                     {{ $slot }}

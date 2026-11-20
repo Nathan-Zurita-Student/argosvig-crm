@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | HR Documents Disk
+    |--------------------------------------------------------------------------
+    |
+    | Where new HR documents (payslips, timesheets, contracts and shared files)
+    | are written. Use "s3" to keep them in a private bucket outside the server;
+    | files already stored keep the disk they were saved on until moved with
+    | `php artisan hr:move-documents`.
+    |
+    */
+
+    'documents' => env('FILESYSTEM_DOCUMENTS_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -50,6 +64,10 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
+            // S3-compatible services such as Cloudflare R2 or Backblaze B2 may need path-style URLs.
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
         ],
 
     ],

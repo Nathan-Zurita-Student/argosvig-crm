@@ -251,54 +251,49 @@ return [
         'name' => 'human_resources::ai.settings_title',
         'info' => 'human_resources::ai.settings_intro',
         'sort' => 1,
+        /**
+         * The whole section is drawn by one guided panel (provider, key, model and
+         * transcription). The remaining fields are declared so the values are saved and
+         * found by the configuration search; their own view renders nothing.
+         */
         'fields' => [
             [
                 'name' => 'enable',
                 'title' => 'human_resources::ai.enabled',
-                'type' => 'boolean',
+                'type' => 'blade',
+                'path' => 'human_resources::ai.settings',
             ], [
                 'name' => 'provider',
                 'title' => 'human_resources::ai.provider',
-                'type' => 'select',
-                'default' => 'openrouter',
-                'options' => array_map(
-                    fn ($provider) => ['title' => 'human_resources::ai.providers.'.$provider, 'value' => $provider],
-                    array_keys(CrmAi::MODELS),
-                ),
+                'type' => 'blade',
+                'path' => 'human_resources::ai.settings-stored',
             ], [
                 'name' => 'audio_provider',
                 'title' => 'human_resources::ai.audio_provider',
-                'info' => 'human_resources::ai.audio_provider_help',
-                'type' => 'select',
-                'options' => [
-                    ['title' => 'human_resources::ai.same_provider', 'value' => ''],
-                    ...array_map(
-                        fn ($provider) => ['title' => 'human_resources::ai.providers.'.$provider, 'value' => $provider],
-                        array_keys(CrmAi::AUDIO_MODELS),
-                    ),
-                ],
+                'type' => 'blade',
+                'path' => 'human_resources::ai.settings-stored',
             ],
             ...array_merge(...array_map(
                 fn ($provider, $model) => [
                     [
                         'name' => $provider.'_key',
                         'title' => 'human_resources::ai.credentials.'.$provider,
-                        'type' => 'password',
+                        'type' => 'blade',
+                        'path' => 'human_resources::ai.settings-stored',
                         'validation' => 'max:255',
-                        'info' => 'human_resources::ai.keep_key',
                     ], [
                         'name' => $provider.'_model',
                         'title' => 'human_resources::ai.models.'.$provider,
-                        'type' => 'text',
-                        'default' => $provider === 'openrouter' ? null : $model,
+                        'type' => 'blade',
+                        'path' => 'human_resources::ai.settings-stored',
+                        'default' => $model,
                     ],
                     ...isset(CrmAi::AUDIO_MODELS[$provider]) ? [[
                         'name' => $provider.'_audio_model',
                         'title' => 'human_resources::ai.audio_models.'.$provider,
-                        'type' => 'text',
-                        'default' => $provider === 'openrouter'
-                            ? config('operations.transcription_model') ?: CrmAi::AUDIO_MODELS[$provider]
-                            : CrmAi::AUDIO_MODELS[$provider],
+                        'type' => 'blade',
+                        'path' => 'human_resources::ai.settings-stored',
+                        'default' => CrmAi::AUDIO_MODELS[$provider],
                     ]] : [],
                 ],
                 array_keys(CrmAi::MODELS),
@@ -313,7 +308,7 @@ return [
         'fields' => [
             [
                 'name' => 'enabled',
-                'title' => 'human_resources::ai.enabled',
+                'title' => 'human_resources::ai.document_import_enabled',
                 'type' => 'boolean',
             ],
         ],

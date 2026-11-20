@@ -95,7 +95,6 @@ class PersonDataGrid extends DataGrid
             'sortable' => true,
             'filterable' => true,
             'searchable' => true,
-            'closure' => fn ($row) => $this->primaryLink($row->person_name, route('admin.contacts.persons.view', $row->id)),
         ]);
 
         $this->addColumn([
@@ -183,6 +182,17 @@ class PersonDataGrid extends DataGrid
             ->where('entity_type', 'persons')
             ->where('is_user_defined', 1)
             ->get();
+    }
+
+    protected function formatRecords($records): mixed
+    {
+        $records = parent::formatRecords($records);
+
+        foreach ($records as $record) {
+            $record->person_url = route('admin.contacts.persons.view', $record->id);
+        }
+
+        return $records;
     }
 
     /**

@@ -41,19 +41,19 @@
             id="v-qoute-template"
         >
             <div class="flex flex-col gap-4">
-                <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+                <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-sm:static">
                     <div class="flex flex-col gap-2">
                         <!-- Bredcrumbs -->
                         <x-admin::breadcrumbs name="quotes" />
         
-                        <div class="text-xl font-bold dark:text-white">
+                        <h1 class="text-xl font-bold dark:text-white">
                             {{ menu()->getLabel('quotes', 'admin::app.quotes.index.title') }}
-                        </div>
+                        </h1>
                     </div>
 
                     <div class="flex items-center gap-x-2.5">
                         <!-- Create button for person -->
-                        <div class="flex items-center gap-x-2.5">
+                        <div class="flex flex-wrap items-center gap-2.5">
                             {!! view_render_event('admin.quotes.index.create_button.before') !!}
                             
                             @if (bouncer()->hasPermission('quotes.create'))
@@ -73,7 +73,9 @@
                 {!! view_render_event('admin.quotes.index.datagrid.before') !!}
             
                 <!-- DataGrid -->
-                <x-admin::datagrid :src="route('admin.quotes.index')" />
+                <div class="quote-list min-w-0">
+                    <x-admin::datagrid :src="route('admin.quotes.index')" />
+                </div>
 
                 {!! view_render_event('admin.quotes.index.datagrid.after') !!}
             </div>

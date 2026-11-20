@@ -120,6 +120,7 @@ import VeeValidate from "./plugins/vee-validate";
 import CreateElement from "./plugins/createElement";
 import Draggable from "./plugins/draggable";
 import VueCal from "./plugins/vue-cal";
+import SearchableSelect from "./plugins/searchable-select";
 
 /**
  * Global directives.
@@ -145,6 +146,7 @@ export const createAdminApp = () => {
         Flatpickr,
         VeeValidate,
         VueCal,
+        SearchableSelect,
     ].forEach((plugin) => app.use(plugin));
 
     app.directive("debounce", Debounce);

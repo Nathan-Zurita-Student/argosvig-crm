@@ -71,16 +71,6 @@ class PipelineDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('settings.lead.pipelines.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.settings.pipelines.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.settings.pipelines.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.lead.pipelines.delete')) {
             $this->addAction([
                 'index' => 'delete',

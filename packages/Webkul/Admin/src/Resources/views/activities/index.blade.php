@@ -42,29 +42,35 @@
             id="v-activities-template"
         >
             <div class="flex flex-col gap-4">
-                <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+                <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-sm:static">
                     <div class="flex flex-col gap-2">
                         <x-admin::breadcrumbs name="activities" />
 
-                        <div class="text-xl font-bold dark:text-white">
+                        <h1 class="text-xl font-bold dark:text-white">
                             {{ menu()->getLabel('activities', 'admin::app.activities.index.title') }}
-                        </div>
+                        </h1>
                     </div>
 
                     {!! view_render_event('admin.activities.index.toggle_view.before') !!}
 
-                    <div class="flex">
-                        <i
+                    <div class="flex flex-wrap gap-1">
+                        <button
+                            type="button"
+                            aria-label="@lang('admin::app.layouts.list-view')"
+                            :aria-pressed="viewType === 'table'"
                             class="icon-list cursor-pointer rounded-md p-2 text-2xl"
                             :class="{'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white': viewType == 'table'}"
                             @click="toggleView('table')"
-                        ></i>
+                        ></button>
 
-                        <i
+                        <button
+                            type="button"
+                            aria-label="@lang('admin::app.layouts.calendar-view')"
+                            :aria-pressed="viewType === 'calendar'"
                             class="icon-calendar cursor-pointer rounded-md p-2 text-2xl"
                             :class="{'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white': viewType == 'calendar'}"
                             @click="toggleView('calendar')"
-                        ></i>
+                        ></button>
                     </div>
 
                     {!! view_render_event('admin.activities.index.toggle_view.after') !!}
@@ -258,9 +264,7 @@
                                                     @{{ record.id }}
                                                 </p>
 
-                                                <p class="break-words text-gray-600 dark:text-gray-300">
-                                                    @{{ record.title }}
-                                                </p>
+                                                <p class="break-words text-gray-600 dark:text-gray-300" v-html="record.title"></p>
 
                                                 <p
                                                     class="break-words text-gray-600 dark:text-gray-300"
@@ -320,13 +324,16 @@
                                                     class="place-self-end"
                                                     v-if="available.actions.length"
                                                 >
-                                                    <span
+                                                    <button
+                                                        type="button"
                                                         class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center"
                                                         :class="action.icon"
+                                                        :aria-label="action.title"
+                                                        :title="action.title"
                                                         v-text="! action.icon ? action.title : ''"
                                                         v-for="action in record.actions"
                                                         @click="performAction(action)"
-                                                    ></span>
+                                                    ></button>
                                                 </p>
                                             </div>
                                         </div>
@@ -361,14 +368,17 @@
                                                     class="flex w-full items-center justify-end"
                                                     v-if="available.actions.length"
                                                 >
-                                                    <span
+                                                    <button
+                                                        type="button"
                                                         class="dark:hover:bg-gray-80 cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200"
                                                         :class="action.icon"
+                                                        :aria-label="action.title"
+                                                        :title="action.title"
                                                         v-text="! action.icon ? action.title : ''"
                                                         v-for="action in record.actions"
                                                         @click="performAction(action)"
                                                     >
-                                                    </span>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

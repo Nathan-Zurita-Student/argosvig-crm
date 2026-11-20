@@ -208,15 +208,18 @@ class DocumentCenterController extends Controller
 
     private function sharedData(Request $request): array
     {
+        // Internal procedures and blank forms belong to the company itself, not to a client.
+        $internal = in_array($request->input('type'), EmployeeDocument::INTERNAL_TYPES, true);
+
         return $request->validate([
             'type' => ['required', Rule::in(EmployeeDocument::SHARED_TYPES)],
             'name' => ['required', 'string', 'max:255'],
             'file' => [$request->isMethod('PUT') ? 'nullable' : 'required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
             'expires_at' => ['nullable', 'date_format:Y-m-d'],
             'notes' => ['nullable', 'string', 'max:2000'],
-            'organizations' => ['required_without:contracts', 'array', 'max:100'],
+            'organizations' => [$internal ? 'nullable' : 'required_without:contracts', 'array', 'max:100'],
             'organizations.*' => ['integer', 'distinct', 'exists:organizations,id'],
-            'contracts' => ['required_without:organizations', 'array', 'max:100'],
+            'contracts' => [$internal ? 'nullable' : 'required_without:organizations', 'array', 'max:100'],
             'contracts.*' => ['integer', 'distinct', Rule::exists('hr_service_contracts', 'id')->whereNull('deleted_at')],
         ]);
     }

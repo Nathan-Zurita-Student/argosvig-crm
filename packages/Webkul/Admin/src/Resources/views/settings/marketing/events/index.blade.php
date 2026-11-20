@@ -97,7 +97,11 @@
                                 <p>@{{ record.id }}</p>
             
                                 <!-- Marketing Event Name -->
-                                <p>@{{ record.name }}</p>
+                                @if (bouncer()->hasPermission('settings.automation.events.edit'))
+                                    <button type="button" class="text-start font-medium text-brandColor hover:underline dark:text-blue-300" @click="actionType = 'edit'; edit(record)">@{{ record.name }}</button>
+                                @else
+                                    <p>@{{ record.name }}</p>
+                                @endif
 
                                 <!-- Marketing Event Description -->
                                 <p>@{{ record.description }}</p>
@@ -107,15 +111,6 @@
 
                                 <!-- Actions -->
                                 <div class="flex justify-end">
-                                    @if (bouncer()->hasPermission('settings.automation.events.edit'))
-                                        <a @click.prevent="actionType = 'edit';edit(record)">
-                                            <span
-                                                :class="record.actions.find(action => action.index === 'edit')?.icon"
-                                                class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center"
-                                            >
-                                            </span>
-                                        </a>
-                                    @endif
 
                                     @if (bouncer()->hasPermission('settings.automation.events.delete'))
                                         <a @click.prevent="performAction(record.actions.find(action => action.index === 'delete'))">
@@ -160,15 +155,6 @@
                                             class="flex w-full items-center justify-end"
                                             v-if="available.actions.length"
                                         >
-                                            @if (bouncer()->hasPermission('settings.automation.events.edit'))
-                                                <a @click.prevent="actionType = 'edit';edit(record)">
-                                                    <span
-                                                        :class="record.actions.find(action => action.index === 'edit')?.icon"
-                                                        class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-200 dark:hover:bg-gray-800 max-sm:place-self-center"
-                                                    >
-                                                    </span>
-                                                </a>
-                                            @endif
 
                                             @if (bouncer()->hasPermission('settings.automation.events.delete'))
                                                 <a @click.prevent="performAction(record.actions.find(action => action.index === 'delete'))">
@@ -188,7 +174,12 @@
                                     <template v-for="column in available.columns">
                                         <div class="flex flex-wrap items-baseline gap-x-2">
                                             <span class="text-slate-600 dark:text-gray-300" v-html="column.label + ':'"></span>
-                                            <span class="break-words font-medium text-slate-900 dark:text-white" v-html="record[column.index]"></span>
+                                            @if (bouncer()->hasPermission('settings.automation.events.edit'))
+                                                <button v-if="column.index === 'name'" type="button" class="text-start font-medium text-brandColor hover:underline dark:text-blue-300" @click="actionType = 'edit'; edit(record)">@{{ record.name }}</button>
+                                                <span v-else class="break-words font-medium text-slate-900 dark:text-white" v-html="record[column.index]"></span>
+                                            @else
+                                                <span class="break-words font-medium text-slate-900 dark:text-white" v-html="record[column.index]"></span>
+                                            @endif
                                         </div>
                                     </template>
                                 </div>

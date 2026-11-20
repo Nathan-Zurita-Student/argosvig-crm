@@ -4,6 +4,7 @@ namespace Webkul\Admin\Helpers\Reporting;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Webkul\Admin\Helpers\CommercialLabel;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\Lead\Repositories\PipelineRepository;
 use Webkul\Lead\Repositories\StageRepository;
@@ -317,7 +318,8 @@ class Lead extends AbstractReporting
             ->whereIn('lead_pipeline_stage_id', $this->wonStageIds)
             ->whereBetween('leads.created_at', [$this->startDate, $this->endDate])
             ->groupBy('lead_source_id')
-            ->get();
+            ->get()
+            ->each(fn ($source) => $source->name = CommercialLabel::display($source->name, 'source'));
     }
 
     /**
@@ -335,7 +337,8 @@ class Lead extends AbstractReporting
             ->whereIn('lead_pipeline_stage_id', $this->wonStageIds)
             ->whereBetween('leads.created_at', [$this->startDate, $this->endDate])
             ->groupBy('lead_type_id')
-            ->get();
+            ->get()
+            ->each(fn ($type) => $type->name = CommercialLabel::display($type->name, 'type'));
     }
 
     /**
@@ -355,7 +358,8 @@ class Lead extends AbstractReporting
             ->whereBetween('leads.created_at', [$this->startDate, $this->endDate])
             ->groupBy('lead_pipeline_stage_id')
             ->orderByDesc('total')
-            ->get();
+            ->get()
+            ->each(fn ($stage) => $stage->name = CommercialLabel::display($stage->name, 'pipeline.pipeline-stages'));
     }
 
     /**

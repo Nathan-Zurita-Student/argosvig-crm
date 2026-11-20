@@ -1,7 +1,7 @@
 <div class="grid gap-4 md:grid-cols-2">
     <x-admin::form.control-group class="md:col-span-2">
         <x-admin::form.control-group.label class="required">@lang('human_resources::app.vacations.fields.employee_id')</x-admin::form.control-group.label>
-        <x-admin::form.control-group.control type="select" name="employee_id" id="employee_id" :value="old('employee_id', $vacation?->employee_id)" rules="required" :label="trans('human_resources::app.vacations.fields.employee_id')">
+        <x-admin::form.control-group.control type="select" data-searchable name="employee_id" id="employee_id" :value="old('employee_id', $vacation?->employee_id)" rules="required" :label="trans('human_resources::app.vacations.fields.employee_id')">
             <option value="">@lang('human_resources::app.common.select')</option>
             @foreach ($employees as $employee)
                 <option value="{{ $employee->id }}">{{ $employee->employee_number }} · {{ $employee->full_name }}</option>

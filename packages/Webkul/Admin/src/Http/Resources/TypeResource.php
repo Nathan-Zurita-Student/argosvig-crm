@@ -4,6 +4,7 @@ namespace Webkul\Admin\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webkul\Admin\Helpers\CommercialLabel;
 
 class TypeResource extends JsonResource
 {
@@ -18,6 +19,7 @@ class TypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'display_name' => CommercialLabel::display($this->name, 'type'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

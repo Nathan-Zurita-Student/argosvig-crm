@@ -100,15 +100,6 @@ class RoleDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('settings.user.roles.edit')) {
-            $this->addAction([
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.settings.roles.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.settings.roles.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('settings.user.roles.delete')) {
             $this->addAction([
                 'icon' => 'icon-delete',

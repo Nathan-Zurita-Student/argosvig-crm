@@ -10,7 +10,7 @@
                 class="flex cursor-pointer appearance-none items-center justify-between gap-x-2 rounded-md border bg-white px-2.5 py-[7px] text-center leading-6 text-gray-600 transition-all marker:shadow hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400"
             >
                 <span class="whitespace-nowrap">
-                    {{ $pipeline->name }}
+                    {{ \Webkul\Admin\Helpers\CommercialLabel::display($pipeline->name, 'pipeline') }}
                 </span>
                 
                 <span class="icon-down-arrow text-2xl"></span>
@@ -42,7 +42,7 @@
                     ]) }}"
                     class="block px-3 py-2.5 pl-4 text-gray-600 transition-all hover:bg-gray-100 dark:hover:bg-gray-950 dark:text-gray-300 {{ $pipeline->id == $tempPipeline->id ? 'bg-gray-100 dark:bg-gray-950' : '' }}"
                 >
-                    {{ $tempPipeline->name }}
+                    {{ \Webkul\Admin\Helpers\CommercialLabel::display($tempPipeline->name, 'pipeline') }}
                 </a>
 
                 {!! view_render_event('admin.leads.index.view_switcher.pipeline.content.after', ['tempPipeline' => $tempPipeline]) !!}
@@ -53,7 +53,6 @@
             <!-- Footer -->
             <a
                 href="{{ route('admin.settings.pipelines.create') }}"
-                target="_blank"
                 class="flex items-center justify-between border-t border-gray-300 px-3 py-2.5 text-brandColor dark:border-gray-800"
             >
                 <span class="font-medium">                    
@@ -71,7 +70,8 @@
         @if (request('view_type'))
             <a
                 class="flex"
-                href="{{ route('admin.leads.index') }}"
+                aria-label="@lang('admin::app.layouts.board-view')"
+                href="{{ route('admin.leads.index', request()->except('view_type')) }}"
             >
                 <span class="icon-kanban p-2 text-2xl"></span>
             </a>
@@ -81,7 +81,8 @@
             <span class="icon-kanban rounded-md bg-white p-2 text-2xl dark:bg-gray-900"></span>
 
             <a
-                href="{{ route('admin.leads.index', ['view_type' => 'table']) }}"
+                href="{{ route('admin.leads.index', ['view_type' => 'table'] + request()->query()) }}"
+                aria-label="@lang('admin::app.layouts.list-view')"
                 class="flex"
             >
                 <span class="icon-list p-2 text-2xl"></span>

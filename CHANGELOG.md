@@ -4,6 +4,44 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 ## **v2.2.9 (Upcoming)**
 
+* [enhancement] Added image previews, zoom, and individual removal before saving incident attachments.
+
+* [feature] Added multiple image attachments up to 20 MB each and a private gallery to operational incidents, with support for adding more images later.
+
+* [fixed] Contact rows now display clean names and initials with direct links in both layouts.
+
+* [enhancement] Improved mobile opportunity browsing, localized default commercial labels, prioritized actionable dashboard metrics, and made filters, quotes, employee lists, activities, and account settings easier to use across screen sizes.
+
+* [fixed] Campaign and event names display correctly and open their editors.
+
+* [fixed] Tag names open their editor without displaying HTML or a duplicate edit button.
+
+* [fixed] Type and source names open their editors without displaying HTML or duplicate edit buttons.
+
+* [fixed] Activity titles display as links instead of showing HTML in the activity list.
+
+* [enhancement] Aligned the commercial follow-up shortcut with the other page actions on desktop.
+
+* [fixed] Group names open the editor directly without displaying markup or a duplicate edit button.
+
+* [fixed] Improved the activity page header on narrow screens.
+
+* [fixed] Improved keyboard access to user editing and mobile search controls.
+
+* [enhancement] Simplified opportunity cards by default and made table actions and card settings accessible to keyboard users.
+
+* [fixed] Improved opportunity board sizing on phones, fixed clearing its search, and made the theme switch accessible by keyboard.
+
+* [enhancement] Removed duplicate edit actions from attribute, import, and webhook lists.
+
+* [enhancement] Removed duplicate edit actions from email template, pipeline, role, and workflow lists.
+
+* [enhancement] Simplified department, work site, and contract lists and improved the opportunity page header on small screens.
+
+* [enhancement] Removed duplicate edit actions from activity, quote, and organization lists when the record name already opens the editor.
+
+* [fixed] Contact names display correctly, account settings adapt to smaller screens, and key navigation actions are easier to use.
+
 * [enhancement] Assistant PDFs keep table titles with initial records, repeat module names on continuation pages, and show upcoming deadlines and open incidents on the overview.
 
 * [feature] The assistant can generate incident report PDFs with filters for dates, severity and recorded location.
@@ -18,7 +56,39 @@ This changelog consists of the bug & security fixes and new features being inclu
 
 * [fixed] Contact details load with formatted phone numbers, and dashboard contact links open in the current tab.
 
-* [feature] Added Argosvig AI settings with direct OpenAI, Claude and Gemini connections and optional OpenRouter support.
+* [enhancement] Added a search box to the selects that list records (employees, work sites, contracts, companies, users, roles, groups, departments, pipelines and attribute options) and to every select with many options, filtering as the user types, ignoring accents, and keeping the look of the CRM fields in light and dark mode.
+
+* [feature] Added the operations checklist board: cards with checklist items move between columns, keep who checked each item and who completed the card, and completed checklists can be searched by title, item, employee or work site.
+
+* [feature] Added the checklist board settings, where every column can be added, renamed, recoloured, reordered and removed, and marked to complete the cards entering it; cards of a removed column move to the first column that does not complete cards.
+
+* [feature] Added a private S3-compatible bucket as the storage for HR documents (FILESYSTEM_DOCUMENTS_DISK), the hr:move-documents command to move stored files there after checking each copy, and the bucket to the production readiness check.
+
+* [feature] Added the internal procedure and blank form document types, which need no company or contract link.
+
+* [feature] Added file attachments to the AI assistant (PDF, Word, Excel, CSV, text and images) to summarize, compare with the CRM or fill in a record from a document; files can be attached with the clip, by dragging them onto the panel or by pasting them.
+
+* [feature] Added bulk creation from an attached spreadsheet for companies, contacts, products, employees, departments and sites, with a preview of new, existing and invalid rows before one-click confirmation.
+
+* [feature] Added plain-language search in the AI assistant, such as companies in a state without an active contract, limited to the fields and records the person may see.
+
+* [feature] Added AI suggestions by page: e-mail summary, reply, opportunity and activity; opportunity next step and proposal; incident severity and action plan.
+
+* [feature] Added AI help in forms: severity and action plan while writing an incident, and type, name and expiration date read from an employee document being uploaded.
+
+* [feature] Added AI actions to workflows: an e-mail received trigger that turns commercial messages into opportunities, and opportunity summary and next-step notes.
+
+* [fixed] Translated the workflow entity and event names, which were shown in English.
+
+* [feature] Reworked the AI settings: choose ChatGPT, Gemini or Claude, paste its key and pick a model from a list describing what each one is good at, with its reasoning, speed and cost, plus the transcription model and an in-page connection test.
+
+* [feature] Reworked the AI assistant into a side panel with suggested tasks, a conversation history, copy and retry, review cards for prefilled records and files, and the Ctrl + J shortcut; its header button is now called Assistant.
+
+* [fixed] Updated the default AI models to the current generation and gave reasoning models enough output room to answer.
+
+* [feature] Removed OpenRouter; the CRM now connects only directly to OpenAI, Google and Anthropic.
+
+* [feature] Added Argosvig AI settings with direct OpenAI, Claude and Gemini connections.
 
 * [enhancement] Rebranded the installer, console commands, and project documentation for Argosvig.
 

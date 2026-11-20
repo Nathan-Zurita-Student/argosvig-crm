@@ -41,9 +41,6 @@ class ServiceContractDataGrid extends DataGrid
 
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('human-resources.contracts.edit')) {
-            $this->addAction(['index' => 'edit', 'icon' => 'icon-edit', 'title' => trans('human_resources::app.common.edit'), 'method' => 'GET', 'url' => fn ($row) => route('admin.human_resources.contracts.edit', $row->id)]);
-        }
         if (bouncer()->hasPermission('human-resources.contracts.delete')) {
             $this->addAction(['index' => 'delete', 'icon' => 'icon-delete', 'title' => trans('human_resources::app.common.delete'), 'method' => 'DELETE', 'url' => fn ($row) => route('admin.human_resources.contracts.delete', $row->id)]);
         }

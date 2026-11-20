@@ -16,7 +16,7 @@ return [
     'all' => 'All',
     'linked_to' => 'Linked to',
     'organizations' => 'Companies',
-    'shared_hint' => 'Select at least one company or contract. Use Ctrl or Command to select multiple items.',
+    'shared_hint' => 'Select at least one company or contract. Internal procedures and blank forms need no link. Several can be checked in the list.',
     'notes' => 'Notes',
     'file_hint' => 'PDF, JPG or PNG. Up to 10 MB.',
     'saved' => 'Document saved.',
@@ -62,6 +62,8 @@ return [
         'solidarity_term' => 'Joint responsibility agreement',
         'third_party_certificate' => 'Third-party certificate',
         'shared' => 'Shared document',
+        'procedure' => 'Internal procedure',
+        'blank_form' => 'Blank form to print',
     ],
     'expiry' => [
         'expired' => 'Expired',
@@ -78,5 +80,13 @@ return [
     'sources' => [
         'alterdata_csv' => 'Alterdata CSV',
         'alterdata_api' => 'Alterdata API',
+    ],
+    'move' => [
+        'unknown_disk' => 'The ":disk" disk is not configured in config/filesystems.php.',
+        'nothing' => 'Every document is already on the :disk disk.',
+        'preview' => ':count documents (:size) will move to the :disk disk.',
+        'apply_hint' => 'Nothing was changed. Run again with --apply to move them.',
+        'failed' => 'Document :id was not moved: the file is missing or the copy differs from the original.',
+        'done' => ':moved documents moved, :failed failed.',
     ],
 ];

@@ -6,23 +6,23 @@
     <!-- Header -->
     {!! view_render_event('admin.leads.index.header.before') !!}
 
-    <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex items-center justify-between rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+    <div class="scroll-reactive-sticky sticky top-[60px] z-[1000] flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 max-sm:static">
         {!! view_render_event('admin.leads.index.header.left.before') !!}
 
         <div class="flex flex-col gap-2">
             <!-- Breadcrumb's -->
             <x-admin::breadcrumbs name="leads" />
 
-            <div class="text-xl font-bold dark:text-white">
+            <h1 class="text-xl font-bold dark:text-white">
                 {{ menu()->getLabel('leads', 'admin::app.leads.index.title') }}
-            </div>
+            </h1>
         </div>
 
         {!! view_render_event('admin.leads.index.header.left.after') !!}
 
         {!! view_render_event('admin.leads.index.header.right.before') !!}
 
-        <div class="flex items-center gap-x-2.5">
+        <div class="flex flex-wrap items-center gap-2.5">
             <!-- Upload File for Lead Creation -->
             @if(core()->getConfigData('general.crm_ai.documents.enabled') && app(\Webkul\Core\Services\CrmAi::class)->enabled() && bouncer()->hasPermission('leads.create'))
                 @include('admin::leads.index.upload')

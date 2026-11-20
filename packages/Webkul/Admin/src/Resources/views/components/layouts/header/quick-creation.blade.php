@@ -37,6 +37,7 @@
             <!-- Trigger Button -->
             <button
                 type="button"
+                aria-label="@lang('admin::app.layouts.quick-add.title')"
                 class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-brandColor text-white"
                 @click="open"
             >
@@ -64,7 +65,9 @@
                                     v-for="type in types"
                                     :key="type.name"
                                 >
-                                    <span
+                                    <button
+                                        type="button"
+                                        :aria-pressed="selectedType === type.name"
                                         :class="[
                                             'inline-block px-3 py-2.5 border-b-2 cursor-pointer text-sm font-medium',
                                             selectedType == type.name
@@ -74,7 +77,7 @@
                                         @click="selectedType = type.name"
                                     >
                                         @{{ type.label }}
-                                    </span>
+                                    </button>
                                 </template>
                             </div>
 

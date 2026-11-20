@@ -5,6 +5,7 @@ namespace Webkul\Admin\DataGrids\Lead;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Webkul\Admin\Helpers\CommercialLabel;
 use Webkul\Attribute\Models\Attribute;
 use Webkul\Attribute\Models\AttributeValue;
 use Webkul\Contact\Repositories\PersonRepository;
@@ -178,7 +179,11 @@ class LeadDataGrid extends DataGrid
             'sortable' => true,
             'filterable' => true,
             'filterable_type' => 'dropdown',
-            'filterable_options' => $this->sourceRepository->all(['name as label', 'id as value'])->toArray(),
+            'filterable_options' => $this->sourceRepository->all(['name', 'id'])->map(fn ($source) => [
+                'label' => CommercialLabel::display($source->name, 'source'),
+                'value' => $source->id,
+            ])->all(),
+            'closure' => fn ($row) => CommercialLabel::display($row->lead_source_name, 'source'),
         ]);
 
         $this->addColumn([
@@ -199,7 +204,11 @@ class LeadDataGrid extends DataGrid
             'sortable' => true,
             'filterable' => true,
             'filterable_type' => 'dropdown',
-            'filterable_options' => $this->typeRepository->all(['name as label', 'id as value'])->toArray(),
+            'filterable_options' => $this->typeRepository->all(['name', 'id'])->map(fn ($type) => [
+                'label' => CommercialLabel::display($type->name, 'type'),
+                'value' => $type->id,
+            ])->all(),
+            'closure' => fn ($row) => CommercialLabel::display($row->lead_type_name, 'type'),
         ]);
 
         $this->addColumn([
@@ -256,10 +265,11 @@ class LeadDataGrid extends DataGrid
             'filterable_type' => 'dropdown',
             'filterable_options' => $this->pipeline->stages->pluck('name', 'id')
                 ->map(function ($name, $id) {
-                    return ['value' => $id, 'label' => $name];
+                    return ['value' => $id, 'label' => CommercialLabel::display($name, 'pipeline.pipeline-stages')];
                 })
                 ->values()
                 ->all(),
+            'closure' => fn ($row) => CommercialLabel::display($row->stage, 'pipeline.pipeline-stages'),
         ]);
 
         $this->addColumn([

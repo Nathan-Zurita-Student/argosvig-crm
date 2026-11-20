@@ -1,5 +1,5 @@
 <v-mega-search>
-    <div class="relative flex w-[550px] max-w-[550px] items-center max-lg:w-[400px] ltr:ml-2.5 rtl:mr-2.5">
+    <div class="relative flex w-full min-w-0 max-w-[550px] items-center">
         <i class="icon-search absolute top-2 flex items-center text-2xl ltr:left-3 rtl:right-3"></i>
 
         <input
@@ -16,7 +16,7 @@
         id="v-mega-search-template"
     >
         <div
-            class="relative flex w-[550px] max-w-[550px] items-center max-lg:w-[400px] ltr:ml-2.5 rtl:mr-2.5"
+            class="relative flex w-full min-w-0 max-w-[550px] items-center"
             ref="headerSearch"
         >
             <i class="icon-search absolute top-2 flex items-center text-2xl ltr:left-3 rtl:right-3"></i>

@@ -6,6 +6,18 @@ Os documentos de RH, documentos compartilhados e marcações de ponto são recur
 
 Documento Solidário foi tratado como arquivo interno reutilizável entre empresas e contratos. Confirme o significado e o fluxo com a Argosvig antes de usar em produção. As associações organizam registros dentro da central e não concedem acesso a clientes ou terceiros.
 
+Os tipos **Processo ou procedimento interno** e **Modelo em branco para imprimir** (por exemplo, a folha de ponto vazia) entram como documentos compartilhados e não exigem empresa ou contrato vinculado. Para guardar os arquivos fora do servidor, veja [Documentos na nuvem](argosvig-producao.md#documentos-na-nuvem).
+
+## Quadro de checklists
+
+Em **Operação > Quadro de checklists**, cada cartão é um checklist com itens a marcar, e pode ser ligado a um colaborador, um posto, um responsável e um prazo. Fica registrado quem marcou cada item e quando. O cartão que entra numa coluna com **Concluir cartões** ligado guarda a data e quem concluiu, e volta a ficar aberto se for para uma coluna sem essa opção.
+
+As colunas de conclusão mostram os últimos 30 dias. A busca por título, item, colaborador ou posto, e os filtros, mostram também os mais antigos.
+
+As colunas são configuradas em **Configurações > Operação > Quadro de checklists**: adicionar, renomear, mudar a cor, reordenar, remover e ligar **Concluir cartões**. O quadro começa com **A fazer**, **Em andamento** e **Concluído** (esta com **Concluir cartões** ligado), e todas podem ser alteradas ou removidas; o quadro só precisa manter uma coluna. Os cartões de uma coluna removida vão para a primeira coluna que não conclui cartões. Ligar ou desligar **Concluir cartões** numa coluna conclui ou reabre os cartões que já estão nela.
+
+Permissões: **Quadro de checklists** dá acesso ao quadro. **Criar**, **Editar** (inclui mover cartões e marcar itens) e **Excluir** controlam as ações. A configuração das colunas tem permissão própria, dentro de **Configurações**.
+
 ## Controle de ponto
 
 O CRM permite consultar e exportar as marcações por colaborador e período. A apuração e o espelho oficial continuam na Alterdata.

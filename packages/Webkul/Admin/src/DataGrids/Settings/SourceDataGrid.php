@@ -38,7 +38,6 @@ class SourceDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.sources.edit', $row->id)),
             'label' => trans('admin::app.settings.sources.index.datagrid.name'),
             'type' => 'string',
             'searchable' => true,

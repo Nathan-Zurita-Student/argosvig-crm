@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <div class="flex items-center gap-1.5 max-md:hidden">
+    <div class="flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 max-lg:hidden">
         <!-- Mega Search Bar -->
         @include('admin::components.layouts.header.desktop.mega-search')
 
@@ -40,9 +40,9 @@
         @include('admin::components.layouts.header.quick-creation')
     </div>
 
-    <div class="flex items-center gap-1.5">
+    <div class="flex shrink-0 items-center gap-1.5">
         {!! view_render_event('admin.layout.header.actions.before') !!}
-        <div class="md:hidden">
+        <div class="lg:hidden">
             <!-- Mega Search Bar -->
             @include('admin::components.layouts.header.mobile.mega-search')
         </div>
@@ -65,7 +65,7 @@
             </div>
         </v-dark>
 
-        <div class="md:hidden">
+        <div class="lg:hidden">
             <!-- Quick Creation Bar -->
             @include('admin::components.layouts.header.quick-creation')
         </div>
@@ -76,14 +76,15 @@
                 @php($user = auth()->guard('user')->user())
 
                 @if ($user->image)
-                    <button class="flex h-9 w-9 cursor-pointer overflow-hidden rounded-full hover:opacity-80 focus:opacity-80">
+                    <button type="button" aria-label="@lang('admin::app.layouts.my-account')" class="flex h-9 w-9 cursor-pointer overflow-hidden rounded-full hover:opacity-80 focus:opacity-80">
                         <img
                             src="{{ $user->image_url }}"
+                            alt=""
                             class="h-full w-full object-cover"
                         />
                     </button>
                 @else
-                    <button class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-pink-400 font-semibold leading-6 text-white">
+                    <button type="button" aria-label="@lang('admin::app.layouts.my-account')" class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-pink-400 font-semibold leading-6 text-white">
                         {{ substr($user->name, 0, 1) }}
                     </button>
                 @endif
@@ -141,11 +142,15 @@
         id="v-dark-template"
     >
         <div class="flex">
-            <span
-                class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-100 dark:hover:bg-gray-950"
+            <button
+                type="button"
+                aria-label="@lang('admin::app.layouts.toggle-theme')"
+                title="@lang('admin::app.layouts.toggle-theme')"
+                :aria-pressed="!!isDarkMode"
+                class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brandColor dark:hover:bg-gray-950"
                 :class="[isDarkMode ? 'icon-light' : 'icon-dark']"
                 @click="toggle"
-            ></span>
+            ></button>
         </div>
     </script>
 

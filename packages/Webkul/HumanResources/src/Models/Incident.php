@@ -4,6 +4,7 @@ namespace Webkul\HumanResources\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Webkul\HumanResources\Contracts\Incident as IncidentContract;
 use Webkul\User\Models\UserProxy;
@@ -36,5 +37,10 @@ class Incident extends Model implements IncidentContract
     public function reporter(): BelongsTo
     {
         return $this->belongsTo(UserProxy::modelClass(), 'reported_by');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(IncidentImageProxy::modelClass());
     }
 }

@@ -163,7 +163,9 @@ class QuoteDataGrid extends DataGrid
             'searchable' => false,
             'sortable' => true,
             'filterable' => true,
-            'closure' => fn ($row) => core()->formatDate($row->expired_at, 'd M Y'),
+            'closure' => fn ($row) => $row->expired_at
+                ? core()->formatDate($row->expired_at, app()->isLocale('pt_BR') ? 'd/m/Y' : 'd M Y')
+                : '—',
         ]);
 
         $this->addColumn([
@@ -173,7 +175,7 @@ class QuoteDataGrid extends DataGrid
             'searchable' => false,
             'sortable' => true,
             'filterable' => true,
-            'closure' => fn ($row) => core()->formatDate($row->created_at),
+            'closure' => fn ($row) => core()->formatDate($row->created_at, app()->isLocale('pt_BR') ? 'd/m/Y H:i' : 'd M Y h:iA'),
         ]);
     }
 
@@ -182,16 +184,6 @@ class QuoteDataGrid extends DataGrid
      */
     public function prepareActions(): void
     {
-        if (bouncer()->hasPermission('quotes.edit')) {
-            $this->addAction([
-                'index' => 'edit',
-                'icon' => 'icon-edit',
-                'title' => trans('admin::app.quotes.index.datagrid.edit'),
-                'method' => 'GET',
-                'url' => fn ($row) => route('admin.quotes.edit', $row->id),
-            ]);
-        }
-
         if (bouncer()->hasPermission('quotes.print')) {
             $this->addAction([
                 'index' => 'print',

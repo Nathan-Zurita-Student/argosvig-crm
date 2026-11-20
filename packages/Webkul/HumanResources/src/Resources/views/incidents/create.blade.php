@@ -1,6 +1,6 @@
 <x-admin::layouts>
     <x-slot:title>@lang('human_resources::app.incidents.create.title')</x-slot>
-    <x-admin::form :action="route('admin.human_resources.incidents.store')" method="POST">
+    <x-admin::form :action="route('admin.human_resources.incidents.store')" method="POST" enctype="multipart/form-data">
         <div class="flex flex-col gap-4">
             <div class="flex flex-wrap justify-between gap-3 rounded-lg border border-gray-300 bg-white p-4 text-gray-800 shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
                 <h1 class="text-xl font-bold dark:text-white">@lang('human_resources::app.incidents.create.title')</h1>

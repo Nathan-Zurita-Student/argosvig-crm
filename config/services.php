@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'openrouter' => [
-        'key' => env('OPENROUTER_API_KEY'),
-    ],
     'openai' => [
         'key' => env('OPENAI_API_KEY'),
     ],

@@ -13,7 +13,7 @@
                 @elseif ($sites->isNotEmpty())
                     <label>
                         @lang('human_resources::operations.site')
-                        <select name="site" class="block rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
+                        <select data-searchable name="site" class="block rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
                             <option value="">@lang('human_resources::workforce.all')</option>
                             @foreach ($sites as $option)
                                 <option value="{{ $option->id }}" @selected($site?->id === $option->id)>{{ $option->name }}</option>

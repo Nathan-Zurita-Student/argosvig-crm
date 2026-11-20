@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Webkul\Admin\Security\TwoFactorAuthentication;
 use Webkul\Lead\Models\Lead;
 
 uses(DatabaseTransactions::class);
@@ -14,7 +15,9 @@ it('enforces configured stage requirements for single and bulk moves', function 
     $missing = Lead::create(['title' => 'Missing close date'] + $base);
     $complete = Lead::create(['title' => 'Has close date', 'expected_close_date' => today()->addWeek()->toDateString()] + $base);
 
-    $this->actingAs($admin, 'user')->get(route('admin.settings.pipelines.edit', $pipeline->id))->assertOk()
+    $this->actingAs($admin, 'user')
+        ->withSession([TwoFactorAuthentication::SESSION_KEY => app(TwoFactorAuthentication::class)->fingerprint($admin)])
+        ->get(route('admin.settings.pipelines.edit', $pipeline->id))->assertOk()
         ->assertSee(trans('admin::pipeline_requirements.title'));
 
     $this->putJson(route('admin.leads.stage.update', $missing->id), ['lead_pipeline_stage_id' => $target->id])

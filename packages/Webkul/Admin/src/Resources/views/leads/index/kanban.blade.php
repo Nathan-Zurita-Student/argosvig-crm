@@ -21,17 +21,33 @@
             </div>
         </template>
 
+        <div v-else-if="loadFailed" class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 dark:text-white" role="alert">
+            <p class="mb-3">@lang('admin::app.layouts.board-load-error')</p>
+            <button type="button" class="secondary-button" @click="boot">@lang('admin::app.layouts.retry')</button>
+        </div>
+
         <template v-else>
             <div class="flex flex-col gap-4">
                 @include('admin::leads.index.kanban.toolbar')
 
                 {!! view_render_event('admin.leads.index.kanban.content.before') !!}
 
-                <div class="flex gap-2.5 overflow-x-auto max-h-[calc(100vh-300px)]">
+                <label class="grid gap-1 text-sm font-medium text-gray-700 dark:text-gray-200 md:hidden">
+                    @lang('admin::app.leads.index.datagrid.stage')
+                    <select v-model="mobileStage" class="min-h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-base dark:border-gray-700 dark:bg-gray-900">
+                        <option v-for="stage in stageLeads" :key="stage.id" :value="Number(stage.sort_order)">
+                            @{{ stage.display_name }} (@{{ stage.leads.meta.total }})
+                        </option>
+                    </select>
+                </label>
+
+                <div class="flex max-w-full gap-2.5 md:max-h-[calc(100vh-300px)] md:overflow-x-auto">
                     <!-- Stage Cards -->
                     <div
-                        class="flex min-w-[275px] max-w-[275px] flex-col gap-1 rounded-lg border border-gray-300 bg-white dark:border-gray-800 dark:bg-gray-900"
+                        class="flex w-full min-w-0 flex-col gap-1 rounded-lg border border-gray-300 bg-white dark:border-gray-800 dark:bg-gray-900 md:w-[275px] md:shrink-0"
                         v-for="(stage, index) in stageLeads"
+                        :key="stage.id"
+                        :class="{ 'max-md:hidden': Number(index) !== mobileStage }"
                     >
                         {!! view_render_event('admin.leads.index.kanban.content.stage.header.before') !!}
 
@@ -39,15 +55,16 @@
                         <div class="flex flex-col px-2 py-3">
                             <!-- Stage Title and Action -->
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-medium dark:text-white">
-                                    @{{ stage.name }} (@{{ stage.leads.meta.total }})
-                                </span>
+                                <h2 class="text-sm font-semibold dark:text-white">
+                                    @{{ stage.display_name }} (@{{ stage.leads.meta.total }})
+                                </h2>
 
                                 @if (bouncer()->hasPermission('leads.create'))
                                     <a
                                         :href="'{{ route('admin.leads.create') }}' + '?stage_id=' + stage.id"
                                         class="icon-add cursor-pointer rounded p-1 text-lg text-gray-600 transition-all hover:bg-gray-200 hover:text-gray-800 dark:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-white"
-                                        target="_blank"
+                                        aria-label="@lang('admin::app.leads.index.kanban.create-lead-btn')"
+                                        title="@lang('admin::app.leads.index.kanban.create-lead-btn')"
                                     >
                                     </a>
                                 @endif
@@ -56,14 +73,14 @@
                             <!-- Stage Total Leads and Amount -->
                             <div class="flex items-center justify-between gap-2">
                                 <span class="text-xs font-medium dark:text-white">
-                                    @{{ $admin.formatPrice(stage.lead_value) }}
+                                    @{{ stage.formatted_lead_value }}
                                 </span>
 
                                 <!-- Progress Bar -->
-                                <div class="h-1 w-36 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
+                                <div aria-hidden="true" class="h-1 w-24 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
                                     <div
                                         class="h-1 bg-green-500"
-                                        :style="{ width: (stage.lead_value / totalStagesAmount) * 100 + '%' }"
+                                        :style="{ width: (totalStagesAmount > 0 ? (stage.lead_value / totalStagesAmount) * 100 : 0) + '%' }"
                                     ></div>
                                 </div>
                             </div>
@@ -75,11 +92,13 @@
 
                         <!-- Draggable Stage Lead Cards -->
                         <draggable
-                            class="flex h-[calc(100vh-317px)] flex-col gap-2 overflow-y-auto p-2"
+                            class="journal-scroll flex flex-col gap-2 p-2 md:h-[calc(100vh-317px)] md:overflow-y-auto"
                             :class="{ 'justify-center': stage.leads.data.length === 0 }"
                             ghost-class="draggable-ghost"
                             handle=".lead-item"
                             v-bind="{animation: 200}"
+                            :delay="160"
+                            :delay-on-touch-only="true"
                             :list="stage.leads.data"
                             item-key="id"
                             group="leads"
@@ -94,6 +113,7 @@
                                     <img
                                         class="dark:mix-blend-exclusion dark:invert"
                                         src="{{ vite()->asset('images/empty-placeholders/pipedrive.svg') }}"
+                                        alt=""
                                     >
 
                                     <div class="flex flex-col items-center gap-4">
@@ -124,7 +144,7 @@
                                 {!! view_render_event('admin.leads.index.kanban.content.stage.body.card.before') !!}
 
                                 <a
-                                    class="lead-item flex cursor-pointer flex-col gap-5 rounded-lg border border-gray-300 shadow-xl shadow-slate-200 bg-gray-100 p-2 dark:border-gray-400 dark:bg-gray-400"
+                                    class="lead-item flex cursor-pointer flex-col gap-2.5 rounded-lg border border-gray-200 bg-gray-50 p-3 text-gray-900 hover:border-blue-400 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
                                     :href="'{{ route('admin.leads.view', 'replaceId') }}'.replace('replaceId', element.id)"
                                 >
                                     {!! view_render_event('admin.leads.index.kanban.content.stage.body.card.header.before') !!}
@@ -142,25 +162,17 @@
                                                     @{{ element.person ? element.person.name : 'Unknown' }}
                                                 </span>
 
-                                                <span class="text-[10px] leading-normal">
+                                                <span class="text-xs leading-normal">
                                                     @{{ element.person && element.person.organization ? element.person.organization.name : '' }}
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div
-                                            class="group relative"
+                                            class="text-end text-xs font-medium text-rose-700 dark:text-rose-300"
                                             v-if="cardFields.rottenDays && element.rotten_days > 0"
                                         >
-                                            <span class="icon-rotten cursor-default text-xl text-rose-600"></span>
-
-                                            <div class="absolute -top-1 right-7 hidden w-max flex-col items-center group-hover:flex">
-                                                <span class="whitespace-no-wrap relative rounded-md bg-black px-4 py-2 text-xs leading-none text-white shadow-lg">
-                                                    @{{ "@lang('admin::app.leads.index.kanban.rotten-days', ['days' => 'replaceDays'])".replace('replaceDays', element.rotten_days) }}
-                                                </span>
-
-                                                <div class="absolute -right-1 top-2 h-3 w-3 rotate-45 bg-black"></div>
-                                            </div>
+                                            @{{ "@lang('admin::app.leads.index.kanban.rotten-days', ['days' => 'replaceDays'])".replace('replaceDays', element.rotten_days) }}
                                         </div>
                                     </div>
 
@@ -169,11 +181,15 @@
                                     {!! view_render_event('admin.leads.index.kanban.content.stage.body.card.title.before') !!}
 
                                     <!-- Lead Title -->
-                                    <p class="text-xs font-medium">
+                                    <p class="break-words text-sm font-semibold">
                                         @{{ element.title }}
                                     </p>
 
                                     {!! view_render_event('admin.leads.index.kanban.content.stage.body.card.title.after') !!}
+
+                                    <p v-if="element.next_activity_at && !element.closed_at" class="text-sm text-gray-600 dark:text-gray-300">
+                                        @lang('admin::app.layouts.next-activity'): @{{ element.next_activity_at }}
+                                    </p>
 
                                     <div class="flex flex-wrap gap-1">
                                         <div
@@ -196,14 +212,14 @@
                                             class="rounded-xl bg-gray-200 px-2 py-1 text-xs font-medium dark:bg-gray-800 dark:text-white"
                                             v-if="cardFields.source && element.source"
                                         >
-                                            @{{ element.source.name }}
+                                            @{{ element.source.display_name }}
                                         </div>
 
                                         <div
                                             class="rounded-xl bg-gray-200 px-2 py-1 text-xs font-medium dark:bg-gray-800 dark:text-white"
                                             v-if="cardFields.type && element.type"
                                         >
-                                            @{{ element.type.name }}
+                                            @{{ element.type.display_name }}
                                         </div>
 
                                         <!-- Tags -->
@@ -230,6 +246,10 @@
                                 {!! view_render_event('admin.leads.index.kanban.content.stage.body.card.after') !!}
                             </template>
                         </draggable>
+
+                        <button v-if="stage.leads.meta.current_page < stage.leads.meta.last_page" type="button" class="secondary-button m-2 justify-center md:hidden" :disabled="isLoadingMore" @click="loadMore(stage)">
+                            @lang('admin::app.layouts.load-more')
+                        </button>
 
                         {!! view_render_event('admin.leads.index.kanban.content.stage.body.after') !!}
                     </div>
@@ -350,8 +370,10 @@
                     stages: @json($pipeline->stages->toArray()),
 
                     stageLeads: {},
+                    mobileStage: @json((int) $pipeline->stages->first()?->sort_order),
 
                     isLoading: true,
+                    loadFailed: false,
 
                     isLoadingMore: false,
 
@@ -360,9 +382,9 @@
                         rottenDays: true,
                         assignedUser: true,
                         leadValue: true,
-                        source: true,
-                        type: true,
-                        tags: true,
+                        source: false,
+                        type: false,
+                        tags: false,
                     },
 
                     tagTextColor: {
@@ -413,6 +435,9 @@
                  * @returns {void}
                  */
                 boot() {
+                    this.isLoading = true;
+                    this.loadFailed = false;
+
                     this.cardFields = this.getCardFields();
 
                     let kanbans = this.getKanbans();
@@ -508,8 +533,18 @@
 
                             return response;
                         })
-                        .catch(error => {
-                            console.log(error)
+                        .catch(() => {
+                            this.isLoading = false;
+                            this.loadFailed = Object.keys(this.stageLeads).length === 0;
+
+                            if (! this.loadFailed) {
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: @json(trans('admin::app.layouts.board-load-error')),
+                                });
+                            }
+
+                            return { data: {} };
                         });
                 },
 
@@ -625,7 +660,7 @@
                                     }
                                 });
 
-                            this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
+                            this.$emitter.emit('add-flash', { type: 'error', message: error.response?.data?.message ?? @json(trans('admin::app.layouts.board-load-error')) });
                         });
                 },
 
@@ -663,7 +698,7 @@
                             this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                         })
                         .catch(error => {
-                            this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
+                            this.$emitter.emit('add-flash', { type: 'error', message: error.response?.data?.message ?? @json(trans('admin::app.layouts.board-load-error')) });
                         }).finally(() => {
                             this.finalized.updating = false;
                         });
@@ -725,6 +760,10 @@
                         return;
                     }
 
+                    this.loadMore(stage);
+                },
+
+                loadMore(stage) {
                     if (this.isLoadingMore) {
                         return;
                     }

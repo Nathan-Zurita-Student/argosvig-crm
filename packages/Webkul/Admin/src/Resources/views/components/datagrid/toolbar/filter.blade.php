@@ -37,7 +37,7 @@
                     ref="filterDrawer"
                 >
                     <x-slot:toggle>
-                        <div class="relative flex cursor-pointer items-center rounded-md bg-sky-100 px-4 py-[9px] font-semibold text-sky-600 dark:bg-brandColor dark:text-white">
+                        <button type="button" class="relative flex cursor-pointer items-center rounded-md bg-sky-100 px-4 py-[9px] font-semibold text-sky-800 dark:bg-brandColor dark:text-white">
                             @lang('admin::app.components.datagrid.toolbar.filter.title')
 
                             <span
@@ -45,7 +45,7 @@
                                 v-if="hasAnyAppliedColumn()"
                             >
                             </span>
-                        </div>
+                        </button>
                     </x-slot>
 
                     <x-slot:header class="p-3.5">
@@ -58,13 +58,14 @@
                                 @lang('admin::app.components.datagrid.filters.title')
                             </p>
 
-                            <div
+                            <button
+                                type="button"
                                 v-if="hasAnyAppliedColumn() || isFilterDirty"
                                 class="cursor-pointer text-xs font-medium leading-8 text-brandColor hover:underline ltr:ml-11 ltr:mr-11 rtl:mr-11"
                                 @click="removeAllAppliedFilters()"
                             >
                                 @lang('admin::app.components.datagrid.filters.custom-filters.clear-all')
-                            </div>
+                            </button>
                         </div>
 
                         <!-- Save Filter Title -->
@@ -899,6 +900,9 @@
                         </div>
                     </x-slot>
                 </x-admin::drawer>
+                <button v-if="hasAnyAppliedColumn()" type="button" class="self-center px-2 text-sm font-medium text-brandColor hover:underline dark:text-blue-300" @click="removeAllAppliedFilters(); $emit('applyFilters', filters)">
+                    @lang('admin::app.layouts.clear-filters')
+                </button>
             </template>
         </slot>
     </script>

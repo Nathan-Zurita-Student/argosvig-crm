@@ -10,6 +10,7 @@ use Webkul\Admin\Traits\ScopesMailAccess;
 use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\Contact\Models\PersonProxy;
 use Webkul\Email\Models\EmailProxy;
+use Webkul\HumanResources\Models\ChecklistColumnProxy;
 use Webkul\HumanResources\Models\ChecklistProxy;
 use Webkul\HumanResources\Models\DepartmentProxy;
 use Webkul\HumanResources\Models\EmployeeDocumentProxy;
@@ -87,6 +88,7 @@ class AssistantContext
             $route === 'admin.operations.index' => ['type' => 'operations'],
             request()->routeIs('admin.human_resources.document_center.*') => ['type' => 'documents'],
             request()->routeIs('admin.human_resources.timekeeping.*') => ['type' => 'timekeeping'],
+            request()->routeIs('admin.human_resources.checklists.*') => ['type' => 'checklists'],
             default => [],
         };
     }
@@ -97,6 +99,10 @@ class AssistantContext
 
         if (in_array($type, ['overview', 'operations', 'documents', 'timekeeping'], true)) {
             return $this->overview($type);
+        }
+
+        if ($type === 'checklists') {
+            return $this->checklists();
         }
 
         if ($type === 'email') {
@@ -230,6 +236,11 @@ class AssistantContext
                 $links[] = ['label' => trans('human_resources::workforce.documents'), 'url' => route('admin.human_resources.document_center.index', ['expiry' => 'soon'])];
             }
         }
+        if ($type === 'overview' && bouncer()->hasPermission('checklists')) {
+            $facts['open_checklists'] = ChecklistProxy::query()->whereNull('completed_at')->count();
+            $facts['overdue_checklists'] = ChecklistProxy::query()->whereNull('completed_at')->whereDate('due_date', '<', today())->count();
+            $links[] = ['label' => trans('human_resources::checklists.title'), 'url' => route('admin.human_resources.checklists.index')];
+        }
         if (bouncer()->getAuthorizedUserIds() === null && bouncer()->hasPermission('timekeeping')) {
             $links[] = ['label' => trans('human_resources::workforce.timekeeping'), 'url' => route('admin.human_resources.timekeeping.index')];
             if ($type === 'timekeeping') {
@@ -242,6 +253,42 @@ class AssistantContext
         }
 
         return [$facts, $links];
+    }
+
+    /**
+     * The checklist board: each column with its open cards, so the AI can say what is late,
+     * who is responsible and what is left to check.
+     */
+    private function checklists(): array
+    {
+        abort_unless(bouncer()->hasPermission('checklists'), 401);
+
+        $columns = ChecklistColumnProxy::query()->orderBy('position')->get();
+        $open = ChecklistProxy::query()->whereNull('completed_at')
+            ->with(['employee', 'workSite', 'assignee'])->withCount(['items', 'items as items_done' => fn ($items) => $items->whereNotNull('completed_at')])
+            ->orderBy('due_date')->orderBy('id')->limit(60)->get()->groupBy('column_id');
+
+        $facts = [
+            'module' => 'checklists',
+            'date' => now()->toDateString(),
+            'open_cards' => ChecklistProxy::query()->whereNull('completed_at')->count(),
+            'overdue_cards' => ChecklistProxy::query()->whereNull('completed_at')->whereDate('due_date', '<', today())->count(),
+            'completed_last_30_days' => ChecklistProxy::query()->where('completed_at', '>=', now()->subDays(30))->count(),
+            'columns' => $columns->map(fn ($column) => [
+                'name' => $column->label,
+                'completes_cards' => $column->completes,
+                'cards' => ($open[$column->id] ?? collect())->map(fn ($card) => array_filter([
+                    'title' => $card->title,
+                    'employee' => $card->employee?->full_name,
+                    'site' => $card->workSite?->name,
+                    'assignee' => $card->assignee?->name,
+                    'due_date' => $card->due_date?->toDateString(),
+                    'items' => $card->items_count ? $card->items_done.'/'.$card->items_count : null,
+                ]))->values()->all(),
+            ])->all(),
+        ];
+
+        return [$facts, [['label' => trans('human_resources::checklists.title'), 'url' => route('admin.human_resources.checklists.index')]]];
     }
 
     private function visibleActivities(Builder $query): Builder

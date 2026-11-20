@@ -125,6 +125,18 @@ class LeadController extends Controller
 
             $data[$stage->sort_order] = (new StageResource($stage))->jsonSerialize();
 
+            if (bouncer()->hasPermission('activities')) {
+                $query->withMin(['activities as next_activity_at' => function ($activities) use ($userIds) {
+                    $activities->where('activities.is_done', false)
+                        ->whereNotNull('activities.schedule_from')
+                        ->whereIn('activities.type', ['call', 'meeting', 'lunch'])
+                        ->when($userIds, fn ($query) => $query->where(function ($query) use ($userIds) {
+                            $query->whereIn('activities.user_id', $userIds)
+                                ->orWhereHas('participants', fn ($participants) => $participants->whereIn('user_id', $userIds));
+                        }));
+                }], 'schedule_from');
+            }
+
             $data[$stage->sort_order]['leads'] = [
                 'data' => LeadResource::collection($paginator = $query->with([
                     'tags',

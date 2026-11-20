@@ -51,7 +51,6 @@ class TagDataGrid extends DataGrid
 
         $this->addColumn([
             'index' => 'name',
-            'closure' => fn ($row) => $this->primaryLink($row->name, route('admin.settings.tags.edit', $row->id)),
             'label' => trans('admin::app.settings.tags.index.datagrid.name'),
             'type' => 'string',
             'searchable' => true,

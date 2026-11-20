@@ -5,10 +5,12 @@ namespace Webkul\HumanResources\Services;
 use Illuminate\Support\Facades\Validator;
 use Webkul\Contact\Models\OrganizationProxy;
 use Webkul\Contact\Models\PersonProxy;
+use Webkul\HumanResources\Models\ChecklistColumnProxy;
 use Webkul\HumanResources\Models\DepartmentProxy;
 use Webkul\HumanResources\Models\EmployeeProxy;
 use Webkul\HumanResources\Models\ServiceContractProxy;
 use Webkul\HumanResources\Models\WorkSiteProxy;
+use Webkul\User\Models\UserProxy;
 
 class AssistantDrafts
 {
@@ -26,7 +28,14 @@ class AssistantDrafts
         'site' => ['human-resources.work-sites.create', 'admin.human_resources.work_sites.create', ['code' => 'string|max:100', 'name' => 'string|max:255', 'city' => 'string|max:100', 'state' => 'string|size:2', 'required_staff' => 'integer|min:1|max:10000', 'notes' => 'string|max:5000']],
         'shift' => ['human-resources.shifts.create', 'admin.human_resources.shifts.create', ['starts_at' => 'date_format:Y-m-d\TH:i', 'ends_at' => 'date_format:Y-m-d\TH:i', 'shift_type' => 'in:day,night,flexible', 'notes' => 'string|max:5000']],
         'vacation' => ['human-resources.vacations.create', 'admin.human_resources.vacations.create', ['starts_at' => 'date_format:Y-m-d', 'ends_at' => 'date_format:Y-m-d', 'type' => 'in:regular,collective,split', 'notes' => 'string|max:5000']],
+        // A card of the checklist board: the board opens its "new card" modal filled in.
+        'checklist' => ['checklists.create', 'admin.human_resources.checklists.index', ['title' => 'string|max:150', 'description' => 'string|max:5000', 'due_date' => 'date_format:Y-m-d', 'column' => 'string|max:60', 'assignee_name' => 'string|max:255']],
     ];
+
+    /**
+     * Checklist items the AI may write on one card.
+     */
+    private const CHECKLIST_ITEMS = 50;
 
     private const RELATIONS = [
         'organization_name' => [OrganizationProxy::class, 'name', 'organization_id', 'contacts.organizations'],
@@ -42,6 +51,7 @@ class AssistantDrafts
         'contract' => ['organization_name'], 'employee' => ['department_code'], 'vacation' => ['employee_number_ref'],
         'shift' => ['employee_number_ref', 'site_code'],
         'incident' => ['employee_number_ref', 'contract_number_ref'], 'site' => ['contract_number_ref'],
+        'checklist' => ['employee_number_ref', 'site_code'],
     ];
 
     public function available(): array
@@ -54,6 +64,10 @@ class AssistantDrafts
         }
         if (isset($forms['quote']) && bouncer()->hasPermission('products')) {
             $forms['quote'][] = 'items (lista de objetos com product_sku e quantity)';
+        }
+        if (isset($forms['checklist'])) {
+            $forms['checklist'][] = 'items (lista de textos, um por item a marcar no checklist)';
+            $forms['checklist'][] = 'column é o nome de uma coluna do quadro: '.ChecklistColumnProxy::query()->orderBy('position')->pluck('label')->implode(', ');
         }
 
         return $forms;
@@ -84,6 +98,14 @@ class AssistantDrafts
                 if (Validator::make($item, ['product_sku' => 'required|string|max:100', 'quantity' => 'required|integer|min:1|max:100000'])->passes()) {
                     $valid['items'][] = $item;
                 }
+            }
+        }
+        if ($type === 'checklist' && is_array($fields['items'] ?? null)) {
+            $items = collect($fields['items'])->filter(fn ($item) => is_string($item) && trim($item) !== '' && ! preg_match('/[<>]|\{\{|\}\}/', $item))
+                ->map(fn ($item) => mb_substr(trim($item), 0, 255))->take(self::CHECKLIST_ITEMS)->values()->all();
+
+            if ($items) {
+                $valid['items'] = $items;
             }
         }
 
@@ -138,6 +160,31 @@ class AssistantDrafts
         if ($type === 'quote' && isset($fields['items'])) {
             $fields['draft_items'] = $fields['items'];
             unset($fields['items']);
+        }
+
+        if ($type === 'checklist') {
+            // Column and assignee by name, kept only when exactly one matches.
+            if (isset($fields['column'])) {
+                $columns = ChecklistColumnProxy::query()->whereRaw('LOWER(label) = ?', [mb_strtolower($fields['column'])])->limit(2)->pluck('id');
+
+                if ($columns->count() === 1) {
+                    $fields['column_id'] = (int) $columns->first();
+                }
+
+                unset($fields['column']);
+            }
+
+            if (isset($fields['assignee_name'])) {
+                $users = UserProxy::query()->where('status', 1)->where('name', $fields['assignee_name'])->limit(2)->pluck('id');
+
+                if ($users->count() === 1) {
+                    $fields['assigned_to'] = (int) $users->first();
+                }
+
+                unset($fields['assignee_name']);
+            }
+
+            $fields['checklist_draft'] = 1;
         }
 
         return $fields;
